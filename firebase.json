@@ -8,15 +8,19 @@
     ],
     "cleanUrls": true,
     "trailingSlash": false,
-    "rewrites": [{
+    "rewrites": [
+      {
         "source": "**",
         "destination": "/inbox/index.html"
-    }],
-    "redirects": [{
+      }
+    ],
+    "redirects": [
+      {
         "source": "/",
         "destination": "/inbox/index.html",
         "type": 302
-    }]
+      }
+    ]
   },
   "database": {
     "rules": "database.rules.json"
