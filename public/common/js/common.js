@@ -124,17 +124,19 @@ function download(filename, text) {
 
 // copy text
 function copy(node) {
+    let ret = false;
     navigator.clipboard.writeText(
         node.innerHTML.replace(/<br>/g, '\n')
                       .replace(/<[^>]*>/g, '')
     )
     .then(function() {
-        return true;
+        ret = true;
     },
     function(e) {
-        if (debug) err(e);
-        return false;
+        ret = false;
+        if (debug) throw (e);
     });
+    return ret;
 }
 
 // replace unsupported firebase characters with something else

@@ -117,7 +117,7 @@ $("#btnsend").addEventListener("click", e => {
             if (debug) log("Log: data pushed");
         },
         function(e) {
-            err(e);
+            throw (e);
         });
     }
     setTimeout(function() {
@@ -127,8 +127,9 @@ $("#btnsend").addEventListener("click", e => {
 });
 // global onclick listeners
 document.body.addEventListener("click", e => {
-    if (debug) log("Log: id = " + e.target.id + "\n" +
-                   "node = " + e.target.nodeName + "\n" +
+    if (debug) log("Log: click\n" +
+                   "id    = " + e.target.id + "\n" +
+                   "node  = " + e.target.nodeName + "\n" +
                    "class = " + e.target.className);
     if (e.target.nodeName.toLowerCase() == "img") {
         location.href = e.target.src;
@@ -170,8 +171,9 @@ let longPressTimer;
 let longPressTimeout;
 // on mouse down listener
 document.body.addEventListener("pointerdown", e => {
-    if (debug) log("Log: id = " + e.target.id + "\n" +
-                   "node = " + e.target.nodeName + "\n" +
+    if (debug) log("Log: pointerdown\n" +
+                   "id    = " + e.target.id + "\n" +
+                   "node  = " + e.target.nodeName + "\n" +
                    "class = " + e.target.className);
     if (e.target.className == "bubbles") {
         longPressTimer = setTimeout(function() {
