@@ -10,8 +10,9 @@ body {
 .menuRoot .menu div button:last-child {
     border-radius: 0 0 10px 10px;
 }
-.dialogRoot .dialog {
-    top: 110px;
+.dialogRoot .dialog,
+.menuRoot .menu {
+    top: 100px;
 }
 .titlebar {
     height: 54px;
