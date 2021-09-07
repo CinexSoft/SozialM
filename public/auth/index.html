@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, height=device-height, user-scalable=no">
+    <link rel="shortcut icon" type="image/x-icon" href="https://sozialnmedien.web.app/favicon.ico"/>
+    <link rel="icon" type="image/x-icon" href="https://sozialnmedien.web.app/favicon.ico"/>
+    <title>Login or Sign Up</title>
+    <script>
+        // checking if user is logged in
+        if (localStorage.getItem("User.isLoggedIn") == "true") {
+            console.log("Log: already signed in");
+            location.href = "/inbox";
+            location.href = "../inbox";
+        }
+    </script>
+    <!-- font awesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- global stylesheet -->
+    <link rel="stylesheet" href="../common/css/common.css">
+    <!-- this stylesheet -->
+    <link rel="stylesheet" href="../auth/styles.css">
+</head>
+<body>
+    <div class="background"></div>
+    <h1 class="backhead">sozialnmedien</h1>
+    <div class="root login" id="login">
+        <h3>Login</h3>
+        <input type="email" id="login_email" placeholder="E-Mail">
+        <div onclick="$('#login_pass').focus()">
+            <input type="password" id="login_pass" class="password" placeholder="Password"><i class="fa fa-eye-slash" onclick="togglePass(); $('#login_pass').focus();"></i>
+        </div>
+        <h id="login_err">An error occurred</h>
+        <a id="pass_reset" href="resetpassword">Reset password</a>
+        <button id="btn_login">Login</button>
+    </div>
+    <div class="root signup" id="signup">
+        <h3>Sign Up</h3>
+        <input type="email" class="email" id="signup_email" placeholder="E-Mail">
+        <div onclick="$('#signup_pass').focus()">
+            <input type="password" class="password" id="signup_pass" placeholder="Password"><i class="fa fa-eye-slash c1" onclick="togglePass(); $('#signup_pass').focus();"></i>
+        </div>
+        <div onclick="$('#signup_pass_c').focus()">
+            <input type="password" class="password" id="signup_pass_c" placeholder="Confirm Password"><i class="fa fa-eye-slash c2" onclick="togglePass(); $('#signup_pass_c').focus();"></i>
+        </div>
+        <h id="signup_err">An error occurred</h>
+        <button id="btn_signup">Sign Up</button>
+    </div>
+    <footer>
+        <div class="footer" style="font-size: 0.8rem; color: #333">
+            <font class="swinfo noselect">Don't have an account? </font><font class="switchlink noselect" style="font-weight: bold; color: #128c7e" onclick="toogleRoot()">Sign Up</font>!
+        </div>
+    </footer>
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-database.js"></script>
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+         https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-analytics.js"></script>
+    <!-- global script, contains firebase init -->
+    <script src="../common/js/firebaseinit.js"></script>
+    <script src="../common/js/common.js"></script>
+    <!-- init auth variable -->
+    <script>
+        const auth = firebase.auth();
+    </script>
+    <!-- main script -->
+    <script src="../auth/script.js"></script>
+</body>
+</html>

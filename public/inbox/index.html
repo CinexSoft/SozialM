@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="robots" content="noindex">
+    <meta name="googlebot" content="noindex">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, height=device-height, user-scalable=no">
+    <link rel="shortcut icon" type="image/x-icon" href="https://sozialnmedien.web.app/favicon.ico"/>
+    <link rel="icon" type="image/x-icon" href="https://sozialnmedien.web.app/favicon.ico"/>
+    <title>Inbox</title>
+    <script>
+        // checking if user is logged in
+        if (localStorage.getItem("User.isLoggedIn") != "true") {
+            console.log("Log: not signed in");
+            location.href = "/auth";
+            location.href = "../auth";
+        }
+    </script>
+    <!-- font awesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- global css -->
+    <link rel="stylesheet" href="../common/css/common.css">
+    <!-- this stylesheet -->
+    <link rel="stylesheet" href="../inbox/styles.css">
+</head>
+<body>
+    
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-database.js"></script>
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+         https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-analytics.js"></script>
+    <!-- global script, contains firebase init -->
+    <script src="../common/js/firebaseinit.js"></script>
+    <script src="../common/js/common.js"></script>
+    <!-- init database variable -->
+    <script>
+        let database = firebase.database();
+    </script>
+    <!-- main script -->
+    <script src="../inbox/script.js"></script>
+</body>
+</html>

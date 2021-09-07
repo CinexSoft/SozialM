@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="robots" content="noindex">
+    <meta name="googlebot" content="noindex">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, height=device-height, user-scalable=no">
+    <link rel="shortcut icon" type="image/x-icon" href="https://sozialnmedien.web.app/favicon.ico"/>
+    <link rel="icon" type="image/x-icon" href="https://sozialnmedien.web.app/favicon.ico"/>
+    <title>Chat</title>
+    <script>
+        const chatRoot = "/chat/ejs993ejiei3/";
+    </script>
+    <script type="none">
+        // checking if chat root exists
+        if (localStorage.getItem("User.isLoggedIn") != "true") {
+            console.log("Log: not signed in");
+            location.href = "/auth";
+            location.href = "../auth";
+        }
+        else if (localStorage.getItem("Chat.root") != undefined) {
+            console.log("Log: chat root found");
+            // chat root
+            chatRoot = "/chat/" + localStorage.getItem("Chat.root") + "/";
+        }
+        else {
+            console.log("Log: chat root not found");
+            location.href = "/inbox";
+            location.href = "../inbox";
+        }
+    </script>
+    <!-- font awesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- code highlighter library -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/github.min.css">
+    <!-- global css -->
+    <link rel="stylesheet" href="../common/css/common.css">
+    <!-- this stylesheet -->
+    <link rel="stylesheet" href="../chat/styles.css">
+</head>
+<body>
+    <div class="menuRoot" id="menuRoot">
+        <div class="menu" id="menu">
+            <h2 class="prim_bg">Time: </h2>
+            <div>
+                <button id="menu_copy">Copy message</button><hr>
+                <button id="menu_copylinks">Copy links</button><hr>
+                <button id="menu_unsend">Unsend</button><hr>
+                <button id="menu_dnImage" style="border-radius: 0 0 10px 10px">Download image</button>
+            </div>
+        </div>
+    </div>
+    <div class="dialogRoot" id="dialogRoot">
+        <div class="dialog" id="dialog">
+            <h2 class="prim_bg">Loading</h2>
+            <div>
+                Your chats are being fetched. Once done, this message will self close.
+            </div>
+            <button id="btn_dialog" class="prim_bg">Close</button>
+        </div>
+    </div> 
+    <div class="root">
+        <div class="titlebar prim_bg">
+            <h class="title" style="font-size: 1rem;">&ensp;⟨</h>
+            <img class="dp" alt="profile" src="https://mpng.subpng.com/20180805/ohe/kisspng-computer-icons-clip-art-user-interface-icon-design-profile-icons-download-for-free-in-png-and-svg-5b67424e5b1245.540135551533493838373.jpg">
+            <h class="title">Demo Chat</h>
+        </div>
+        <div class="chatbg">
+            <div class="chatarea markdown" id="chatarea">
+                <div class="info">
+                    <p class="fa fa-info-circle">&ensp;Messages in this chat are only server-to-end encrypted</p>
+                </div>
+            </div>
+            <div class="msgpreview markdown" id="msgpreview">
+                <font class="header" color="#7d7d7d">Markdown preview</font>
+            </div>
+            <div class="msgbox">
+                <textarea id="txtmsg" placeholder="Message" rows="5"></textarea>
+                <button id="btnsend"><i class="fa fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-database.js"></script>
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+         https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-analytics.js"></script>
+    <!-- global script, contains firebase init -->
+    <script src="../common/js/firebaseinit.js"></script>
+    <script src="../common/js/common.js"></script>
+    <!-- init database variable -->
+    <script>
+        const database = firebase.database();
+    </script>
+    <!-- highlight library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js"></script>
+    <!-- md to html converter -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.1/showdown.min.js"></script>
+    <!-- main script -->
+    <script src="../chat/script.js"></script>
+</body>
+</html>

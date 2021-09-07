@@ -1,0 +1,50 @@
+# This is a basic workflow to help you get started with Actions
+
+name: ObfuscateJS
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  pull_request:
+    branches: [ "NA" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: get repository from repo server to runner
+        uses: actions/checkout@v2
+
+      # Runs a single command using the runners shell
+      - name: test echo
+        run: echo Executing obfuscator
+
+      # Runs a set of commands using the runners shell
+      - name: obfuscate codes
+        run: |
+          echo Test A should run
+          # echo Test B Shouldn't run
+          # npm i -g javascript-obfuscator
+          # touch identifier.cache.json
+          # javascript-obfuscator public/ --self-defending true --debug-protection true --domain-lock sozialnmedien.web.app,sozialnmedien.firebaseapp.com --identifier-names-cache-path identifier.cache.json --domain-lock-redirect-url sozialnmedien.web.app --numbers-to-expressions true --split-strings true
+          # find | grep -e "\.js" | grep -v "json" | grep "\-obfuscated" > renamelist
+          # while read -r line
+          # do
+          #  mv -v $line $(echo $line | sed 's/-obfuscated//g')
+          # done < "renamelist"
+      - name: commit and push
+        run: |
+          git config --global user.name "CinexSoft"
+          git config --global user.email "cinexsoft@gmail.com"
+          git add -A
+          git commit -m "Javascript codes obfuscated"
+          git push

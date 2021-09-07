@@ -1,0 +1,24 @@
+{
+  "hosting": {
+    "public": "public",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "cleanUrls": true,
+    "trailingSlash": false,
+    "rewrites": [{
+        "source": "**",
+        "destination": "/inbox/index.html"
+    }],
+    "redirects": [{
+        "source": "/",
+        "destination": "/inbox/index.html",
+        "type": 302
+    }]
+  },
+  "database": {
+    "rules": "database.rules.json"
+  }
+}

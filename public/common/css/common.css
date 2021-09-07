@@ -1,0 +1,318 @@
+* {
+    outline: none;
+}
+html {
+    scroll-behavior: smooth;
+}
+body {
+    margin: 0;
+    font-family: Helvetica, Roboto, sans-serif;
+    font-size: 90%;
+}
+a {
+    color: dodgerblue;
+    text-decoration: none;
+}
+a:visited {
+    color: dodgerblue;
+}
+button {
+    font-size: 1.2rem;
+}
+button:active {
+    font-size: 1.0rem;
+    transition-duration: 100ms;
+}
+button:disabled {
+    background-color: gray;
+}
+.noselect {
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Old versions of Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently
+                          supported by Chrome, Edge, Opera and Firefox */
+}
+.prim_bg {
+    background-color: #075E54;
+    color: #ffffff;
+    border-color: #075E54;
+}
+.sec_bgalpha {
+    background-color: #dcf8c6bb;
+    color: #222;
+    border-color: #dcf8c6bb;
+}
+.sec_bg {
+    background-color: #dcf8c6;
+    color: #222;
+    border-color: #dcf8c6;
+}
+.tert_bg {
+    background-color: #ece5dd;
+    color: #222;
+    border-color: #ece5dd;
+}
+.acc_fg {
+    background-color: #fafafa;
+    color: #128c7e;
+}
+.dialogRoot,
+.menuRoot {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    visibility: hidden;
+    z-index: 100;
+}
+.dialog,
+.menu {
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    border: 0;
+    padding: 0;
+    padding-bottom: 0px;
+    min-width: 150px;
+    max-width: 300px;
+    min-height: fit-content;
+    max-height: 300px;
+    background-color: #fff;
+    border: 1.2px solid #075E54;
+    border-top: 5px;
+    border-radius: 10px;
+}
+.menu {
+    width: 340px;
+}
+.dialog h2,
+.menu h2 {
+    height: 40px;
+    width: calc(100% - 41px);
+    margin: 0;
+    text-align: left;
+    padding: 17px 20px 3px;
+    border-left: 1px solid #075E54;
+    border-right: 1px solid #075E54;
+    border-radius: 8px 10px 0 0;
+}
+.menu h2 {
+    font-size: 1rem;
+    font-weight: initial;
+    height: 30px;
+}
+.dialog div,
+.menu div {
+    margin: 0;
+    padding: 20px;
+}
+.menu div {
+    padding: 0;
+}
+.dialog button {
+    min-width: 70px;
+    min-height: 30px;
+    padding: 5px 10px 5px;
+    display: block;
+    margin: auto 10px 10px;
+    margin-left: auto;
+    color: #fafafa;
+    border: 2px solid #075E54;
+    border-radius: 5px;
+    font-size: 1rem;
+    user-select: none;
+}
+.dialog button:active {
+    background-color: #378E84;
+    border: 2px solid #378E84;
+}
+.menu div button {
+    margin: 0;
+    border: 0;
+    width: 100%;
+    text-align: center;
+    height: 45px;
+    background-color: #fff;
+    display: block;
+    color: #222;
+    font-size: 1rem;
+    user-select: none;
+}
+.menu div button:active {
+    color: #075E54;
+    font-size: 1rem;
+    background-color: #f0f0f0;
+}
+.menu div hr {
+    width: calc(100% - 1px);
+    padding: 0;
+    margin: 0;
+    border: 0.5px solid #eee;
+    border-radius: 2px;
+    background-color: #eee;
+}
+@media only screen and (min-width: 400px) {
+    .dialogRoot .dialog,
+    .menuRoot .menu {
+        zoom: 1.1;
+    }
+}
+footer {
+    width: 100%;
+    position: fixed;
+    bottom: 10px;
+    z-index: -2;
+}
+.footer {
+    text-align: center;
+    color: #888;
+    font-size: 10px;
+}
+.footer a {
+    margin: 0;
+    font-weight: bold;
+    color: #999;
+}
+/* md styling inside a bubble */
+.markdown h1,
+.markdown h2,
+.markdown h3,
+.markdown h4,
+.markdown h5,
+.markdown h6 {
+   margin: 10px 0 20px;
+}
+
+.markdown li,
+.markdown ul > li,
+.markdown ol > li
+ {
+    margin-left: 5px;
+    padding-left: 5px;
+}
+.markdown font.highlight {
+    border-radius: 2.5px;
+    padding-left: 3px;
+    padding-right: 3px;
+}
+.markdown a {
+    color: dodgerblue;
+}
+.markdown a:visited {
+    color: dodgerblue;
+}
+.markdown img {
+    margin: 0 auto 10px;
+    width: 100%;
+    height: auto;
+    border: 0px;
+    border-radius: 5px;
+    display: block;
+}
+.markdown hr {
+    color: #aaa;
+    background-color: #aaa;
+    border: 0.5px solid;
+    border-radius: 100px;
+}
+.markdown p {
+    margin: 2px;
+}
+.markdown blockquote {
+    margin: auto;
+    margin-bottom: 10px;
+    width: calc(100% - 20px);
+    height: auto;
+    padding: 0 5px 0;
+    border-radius: 5px;
+    color: #000;
+    display: block;
+    overflow: auto;
+    font-size: 0.8rem;
+    border: 0;
+    border-left: 5px solid #075E54;
+    background-color: #f0f0f0;
+}
+.markdown .this blockquote {
+    border: 0;
+    border-left: 5px solid purple;
+    background-color: #cce8b6;
+}
+.markdown blockquote > p {
+    width: 100%;
+    margin: 10px 0 10px;
+}
+.markdown font.code {
+    font-family: monospace;
+    border-radius: 2.5px;
+    padding-left: 3px;
+    padding-right: 3px;
+    color: #000;
+}
+.markdown pre {
+    display: block;
+    padding: 0;
+    margin: 0;
+    font-family: monospace;
+}
+.markdown pre code {
+    width: calc(100% - 20px);
+    display: block;
+    margin: 0 auto 10px;
+    padding: 5px;
+    height: auto;
+    border-radius: 5px;
+    font-size: 0.8rem;
+    color: #222;
+    overflow: auto;
+    font-family: monospace;
+    border: 0;
+    border-left: 5px solid #075E54;
+    background-color: #f0f0f0;
+}
+.markdown .this pre code {
+    border: 0;
+    border-left: 5px solid purple;
+    background-color: #cce8b6;
+}
+/* animations */
+@keyframes fadeIn {
+    0% {
+        visibility: visible;
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+        visibility: visible;
+    }
+}
+@keyframes fadeOut {
+    0% {
+        visibility: visible;
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+@keyframes scaleIn {
+    0% {
+        transform: scale(0.95);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+@keyframes scaleOut {
+    0% {
+        transform: scale(1); 
+    }
+    100% {
+        transform: scale(0.95);
+    }
+}
