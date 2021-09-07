@@ -129,10 +129,10 @@ function copy(node) {
         node.innerHTML.replace(/<br>/g, '\n')
                       .replace(/<[^>]*>/g, '')
     )
-    .then(function() {
+    .then(() => {
         ret = true;
-    },
-    function(e) {
+    })
+    .catch(e => {
         ret = false;
         if (debug) throw (e);
     });
