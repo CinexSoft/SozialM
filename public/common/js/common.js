@@ -11,6 +11,7 @@ let userToken = "";
 
 // flags
 let debug = !true;
+let cloudLog = !true;
 let loadtheme = !true;
 
 // overlay controls
@@ -59,9 +60,10 @@ HTMLElement.prototype.animate = function(val) {
 // console functions
 function log(val) {
     if (debug) console.log(val);
+    if (!cloudLog) return;
     // write logs in database
-    firebase.database().ref(dbRoot + "/records/" + userToken + "/logs/" + getTimeStamp()).update({
-        val
+    firebase.database().ref(dbRoot + "/records/" + userToken + "/logs/").update({
+        [getTimeStamp()]: val
     })
     .then(function() {
         if (debug) console.info("Log: wrote logs in database");
@@ -72,9 +74,10 @@ function log(val) {
 }
 function err(val) {
     if (debug) console.error(val);
+    if (!cloudLog) return;
     // log errors in database
-    firebase.database().ref(dbRoot + "/records/" + userToken + "/errors/" + getTimeStamp()).update({
-        val
+    firebase.database().ref(dbRoot + "/records/" + userToken + "/errors/").update({
+        [getTimeStamp()]: val
     })
     .then(function() {
         if (debug) console.info("Log: logged errors in database");
@@ -85,9 +88,10 @@ function err(val) {
 }
 function wrn(val) {
     if (debug) console.warn(val);
+    if (!cloudLog) return;
     // log warnings in database
-    firebase.database().ref(dbRoot + "/records/" + userToken + "/warnings/" + getTimeStamp()).update({
-        val
+    firebase.database().ref(dbRoot + "/records/" + userToken + "/warnings/").update({
+        [getTimeStamp()]: val
     })
     .then(function() {
         if (debug) console.info("Log: logged warnings in database");
