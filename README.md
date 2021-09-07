@@ -62,4 +62,3 @@ tested, and then merged to `MAIN`.
 - Important functions can be found in `public/common/js/common.js`.
 - Important styles can be found in `public/common/css/common.css`.
 - Keep `HTML`, `CSS` and `JavaScript` files seperate for faster page loading.
-
