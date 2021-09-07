@@ -7,7 +7,7 @@ body {
 .menuRoot {
     visibility: hidden;
 }
-.menuRoot .menu div #menu_dnImage {
+.menuRoot .menu div button:last-child {
     border-radius: 0 0 10px 10px;
 }
 .dialogRoot .dialog {
