@@ -1,6 +1,6 @@
 // common.js
 
-// let font = "sans-serif";
+// global theme colors
 let accent_primary_bgcolor = "#075E54";
 let accent_secondary_bgcolor = "#dcf8c6";
 let accent_tertiary_bgcolor = "#ece5dd";
@@ -13,9 +13,8 @@ let userToken = "";
 let debug = !true;
 let loadtheme = !true;
 
-// overlay control
+// overlay controls
 const overlay = {
-    overlay: "",
     instanceOpen: false,
     animDuration: 250
 }
@@ -123,20 +122,17 @@ function download(filename, text) {
 }
 
 // copy text
-function copy(node) {
-    let ret = false;
+function copyPlainTxt(element) {
     navigator.clipboard.writeText(
-        node.innerHTML.replace(/<br>/g, '\n')
-                      .replace(/<[^>]*>/g, '')
+        element.innerHTML.replace(/<br>/g, '\n')
+                         .replace(/<[^>]*>/g, '')
     )
     .then(() => {
-        ret = true;
     })
     .catch(e => {
-        ret = false;
-        if (debug) throw (e);
+        if (debug) err(e);
+        dialog.display("Uh oh!", "Copy text to clipboard failed");
     });
-    return ret;
 }
 
 // replace unsupported firebase characters with something else
@@ -172,12 +168,11 @@ const dialog = {
             throw "Error: typeof function is "+ (typeof func) + ", expected function";
             return;
         }
+        button = button || "Close";
         // delay when one overlay is already open
         let timeout;
-        if (overlay.overlay != "") {
+        if (overlay.instanceOpen) {
             timeout = overlay.animDuration;
-            if (overlay.overlay == "dialog") dialog.hide();
-            else if (overlay.overlay == "menu") menu.hide();
         }
         else {
             timeout = 0;
@@ -185,22 +180,15 @@ const dialog = {
         setTimeout(function() {
             $("#dialog").child("h2")[0].innerHTML = title;
             $("#dialog").child("div")[0].innerHTML = message.replace(/\n/g, "<br>");
-            if (button != undefined) {
-                $("#dialog").child("button")[0].style.visibility = "visible";
-                $("#dialog").child("button")[0].innerHTML = button;
-                $("#dialog").child("button")[0].addEventListener("click", e => {
-                    if (func != undefined) {
-                        func();
-                    }
-                });
-            }
-            else {
-                $("#dialog").child("button")[0].style.visibility = "hidden";
-            }
+            $("#dialog").child("button")[0].innerHTML = button;
+            $("#dialog").child("button")[0].addEventListener("click", e => {
+                if (func != undefined) {
+                    func();
+                }
+            });
             $("#dialogRoot").animate("fadeIn " + overlay.animDuration + "ms");
             $("#dialog").animate("scaleIn " + overlay.animDuration + "ms");
             overlay.instanceOpen = true;
-            overlay.overlay = "dialog";
         }, timeout);
     },
     hide: function(func) {
@@ -212,7 +200,6 @@ const dialog = {
         $("#dialog").animate("scaleOut " + overlay.animDuration + "ms");
         setTimeout(function() {
             overlay.instanceOpen = false;
-            overlay.overlay = "";
         }, overlay.animDuration);
     }
 }
@@ -222,10 +209,8 @@ const menu = {
     display: function() {
         // delay when one overlay is already open
         let timeout;
-        if (overlay.overlay != "") {
+        if (overlay.instanceOpen) {
             timeout = overlay.animDuration;
-            if (overlay.overlay == "dialog") dialog.hide();
-            else if (overlay.overlay == "menu") menu.hide();
         }
         else {
             timeout = 0;
@@ -234,7 +219,6 @@ const menu = {
             $("#menuRoot").animate("fadeIn " + overlay.animDuration + "ms");
             $("#menu").animate("scaleIn " + overlay.animDuration + "ms");
             overlay.instanceOpen = true;
-            overlay.overlay = "menu";
         }, timeout);
     },
     hide: function() {
@@ -242,10 +226,26 @@ const menu = {
         $("#menu").animate("scaleOut " + overlay.animDuration + "ms");
         setTimeout(function() {
             overlay.instanceOpen = false;
-            overlay.overlay = "";
         }, overlay.animDuration);
     }
 }
+
+// global onclick listeners
+document.body.addEventListener("click", e => {
+    if (debug) log("Log: click\n" +
+                   "id    = " + e.target.id + "\n" +
+                   "node  = " + e.target.nodeName + "\n" +
+                   "class = " + e.target.className);
+    if (e.target.id == "btn_dialog" &&
+        e.target.innerHTML == "Close") {
+        dialog.hide(function() {
+            $(".msgbox")[0].animate("fadeIn " + overlay.animDuration + "ms");
+        });
+    }
+    else if (e.target.className == "menuRoot") {
+        menu.hide();
+    }
+});
 
 function getTimeStamp() {
     return new Date().getTime();

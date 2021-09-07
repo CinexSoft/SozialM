@@ -103,7 +103,7 @@ $("#btnsend").addEventListener("click", e => {
         $("#msgpreview").innerHTML = "<font class=\"header\" color=\"#7d7d7d\">Markdown preview</font>";
         $("#msgpreview").style.display = "none";
         if (msg.length > 1024 * 2) {
-            dialog.display("Warning", "Text exceeds limit of 2KB", "Close");
+            dialog.display("Warning", "Text exceeds limit of 2KB");
             $(".msgbox")[0].animate("fadeOut " + overlay.animDuration + "ms");
             return;
         }
@@ -125,39 +125,18 @@ $("#btnsend").addEventListener("click", e => {
     }, 20);
     loadTheme();
 });
-// global onclick listeners
+// onclick listeners
 document.body.addEventListener("click", e => {
-    if (debug) log("Log: click\n" +
-                   "id    = " + e.target.id + "\n" +
-                   "node  = " + e.target.nodeName + "\n" +
-                   "class = " + e.target.className);
     if (e.target.nodeName.toLowerCase() == "img") {
         location.href = e.target.src;
         if (debug) log("Log: img onclick(): src = " + e.target.src);
-    }
-    else if (e.target.className == "dialogRoot") {
-        dialog.hide(function() {
-            $(".msgbox")[0].animate("fadeIn " + overlay.animDuration + "ms");
-        });
-    }
-    else if (e.target.className == "menuRoot") {
-        // hide menu
-        if (debug) log("Log: menuRoot: className = " + e.target.className);
-        menu.hide();
-    }
-    else if (e.target.id == "btn_dialog" &&
-             e.target.innerHTML == "Close") {
-        dialog.hide(function() {
-            $(".msgbox")[0].animate("fadeIn " + overlay.animDuration + "ms");
-        });
     }
     else if (e.target.id == "menu_dnImage") {
         
     }
     else if (e.target.id == "menu_copy") {
-        if (!copy(longPressed)) {
-            dialog.display("Uh oh!", "Copy text to clipboard failed", "Close");
-        }
+        menu.hide();
+        copyPlainTxt(longPressed)
     }
     else if (e.target.id == "menu_copylinks") {
         

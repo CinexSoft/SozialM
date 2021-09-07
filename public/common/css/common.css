@@ -83,6 +83,7 @@ button:disabled {
     background-color: #fff;
     border-radius: 10px;
     text-align: center;
+    color: #333;
 }
 .dialog h2,
 .menu h2 {
