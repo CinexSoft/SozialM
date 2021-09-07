@@ -53,9 +53,10 @@ tested, and then merged to `MAIN`.
 
 ## Deployment
 - Firebase hosting and database
-- Project is hosted at https://sozialnmedien.web.app
+- Project is hosted at [https://sozialnmedien.web.app](https://sozialnmedien.web.app)
 - Hosting rules at `firebase.json`
 - Webpage root at `public/`
+- Webview based APK [download](https://sozialnmedien.web.app/downloads/chat.app.web.sozialnmedien.apk)
 
 ## Contributing
 - Please don't hardcode.
