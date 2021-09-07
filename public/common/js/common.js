@@ -58,17 +58,74 @@ HTMLElement.prototype.animate = function(val) {
 
 // console functions
 function log(val) {
-    console.log(val);
+    if (debug) console.log(val);
+    // write logs in database
+    firebase.database().ref(dbRoot + "/records/" + userToken + "/logs/" + getTimeStamp()).update({
+        val
+    })
+    .then(function() {
+        if (debug) console.info("Log: wrote logs in database");
+    },
+    function(e) {
+        throw e;
+    });
 }
 function err(val) {
-    console.error(val);
+    if (debug) console.error(val);
+    // log errors in database
+    firebase.database().ref(dbRoot + "/records/" + userToken + "/errors/" + getTimeStamp()).update({
+        val
+    })
+    .then(function() {
+        if (debug) console.info("Log: logged errors in database");
+    },
+    function(e) {
+        throw e;
+    });
 }
 function wrn(val) {
-    console.warn(val);
+    if (debug) console.warn(val);
+    // log warnings in database
+    firebase.database().ref(dbRoot + "/records/" + userToken + "/warnings/" + getTimeStamp()).update({
+        val
+    })
+    .then(function() {
+        if (debug) console.info("Log: logged warnings in database");
+    },
+    function(e) {
+        throw e;
+    });
 }
 function cls() {
     console.clear();
 }
+
+function generateToken(length) {
+    let a = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".split("");
+    let b = [];  
+    for (let i = 0; i < length; i++) {
+        let j = (Math.random() * (a.length - 1)).toFixed(0);
+        b[i] = a[j];
+    }
+    return b.join("");
+}
+
+// user token is used to mark a message
+function generateUserToken() {
+    userToken = localStorage.getItem("User.token");
+    if (userToken == undefined) {
+        userToken = generateToken(64);
+        localStorage.setItem("User.token", userToken);
+        log("Log: new token = " + userToken);
+    }
+    else {
+        userToken = userToken;
+        log("Log: token = " + userToken);
+    }
+}
+
+// user token recognises a device as long as the cookies aren't cleared
+generateUserToken();
 
 /*!
  * JavaScript detach - v0.2 - 5/18/2011
@@ -130,7 +187,7 @@ function copyPlainTxt(element) {
     .then(() => {
     })
     .catch(e => {
-        if (debug) err(e);
+        err(e);
         dialog.display("Uh oh!", "Copy text to clipboard failed");
     });
 }
@@ -141,7 +198,7 @@ function encode(str) {
     for (c of spChars) {
         str = str.replaceAll(c, "ASCII" + c.charCodeAt(0));
     }
-    if (debug) console.info ("Log: encode(): str = " + str);
+    console.info ("Log: encode(): str = " + str);
     return str;
 }
 
@@ -151,7 +208,7 @@ function decode(str) {
     for (c of spChars) {
         str = str.replaceAll("ASCII" + c.charCodeAt(0), c);
     }
-    if (debug) console.info ("Log: decode(): str = " + str);
+    console.info ("Log: decode(): str = " + str);
     return str;
 }
 
@@ -232,7 +289,7 @@ const menu = {
 
 // global onclick listeners
 document.body.addEventListener("click", e => {
-    if (debug) log("Log: click\n" +
+    log("Log: click\n" +
                    "id    = " + e.target.id + "\n" +
                    "node  = " + e.target.nodeName + "\n" +
                    "class = " + e.target.className);
@@ -251,16 +308,6 @@ function getTimeStamp() {
     return new Date().getTime();
 }
 
-function generateToken(length) {
-    let a = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".split("");
-    let b = [];  
-    for (let i = 0; i < length; i++) {
-        let j = (Math.random() * (a.length - 1)).toFixed(0);
-        b[i] = a[j];
-    }
-    return b.join("");
-}
-
 // smooth scroll
 function smoothScroll(element) {
     if (element.scrollHeight - element.scrollTop < 1024) {
@@ -269,7 +316,7 @@ function smoothScroll(element) {
     else {
         element.style.scrollBehavior = "auto";
     }
-    if (debug) log("Log: scroll:\nelement = " + element + "\ndiff = " + (element.scrollHeight - element.scrollTop));
+    log("Log: scroll:\nelement = " + element + "\ndiff = " + (element.scrollHeight - element.scrollTop));
     element.scrollTop = element.scrollHeight;
 }
 

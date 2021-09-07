@@ -6,21 +6,21 @@ function toogleRoot() {
         $(".swinfo")[0].innerHTML = "Already have an account? ";
         $(".switchlink")[0].innerHTML = "Log In";
         rootFlag = "signup";
-        if (debug) log("Log: rootFlag = " + rootFlag);
+        log("Log: rootFlag = " + rootFlag);
     }
     else if (rootFlag == "signup") {
         $("#signup").style.display = "none";
         $(".swinfo")[0].innerHTML = "Don't have an account? ";
         $(".switchlink")[0].innerHTML = "Sign Up";
         rootFlag = "login";
-        if (debug) log("Log: rootFlag = " + rootFlag);
+        log("Log: rootFlag = " + rootFlag);
     }
     document.getElementById(rootFlag).style.display = "block";
 }
 // toggle password visibility
 function togglePass() {
     for (element of $(".password")) {
-        if (debug) log("Log: togglePass(): type = " + element.type);
+        log("Log: togglePass(): type = " + element.type);
         if (element.type == "password") {
             element.type = "text";
             for (element of $(".fa-eye-slash")) {
@@ -49,7 +49,7 @@ $("#btn_login").addEventListener("click", e => {
         $("#login_err").innerHTML = (error.code != "auth/invalid-argument" && error.code != "auth/internal-error") ?
                                      error.message : "An error occurred, try again later";
         $("#login_err").style.display = "block";
-        if (debug) throw ("Error: " + error.message + " code: " + error.code);
+        err("Error: " + error.message + " code: " + error.code);
     });
 });
 // signup button clicked
@@ -72,7 +72,7 @@ $("#btn_signup").addEventListener("click", e => {
         $("#signup_err").innerHTML = (error.code != "auth/invalid-argument" && error.code != "auth/internal-error") ?
                                       error.message : "An error occurred, try again later";
         $("#signup_err").style.display = "block";
-        if (debug) throw ("Error: " + error.message + " code: " + error.code);
+        err("Error: " + error.message + " code: " + error.code);
     });
 });
-if (debug) log("Log: document and script load complete");
+log("Log: document and script load complete");

@@ -6,6 +6,10 @@
       "chat": {
         ".read": true,
         ".write": true
+      },
+      "records": {
+        ".read": false,
+        ".write": true
       }
     }
   }

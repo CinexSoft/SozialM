@@ -48,24 +48,13 @@ function startDBListener() {
             $(".msgbox")[0].animate("fadeIn " + overlay.animDuration + "ms");
         });
         loadTheme();
-        if (debug) log("Log: db update fetched");
+        log("Log: db update fetched");
     });
-}
-// user token is used to mark a message
-userToken = localStorage.getItem("Chat.userToken");
-if (userToken == undefined) {
-    userToken = generateToken(64);
-    localStorage.setItem("Chat.userToken", userToken);
-    if (debug) log("Log: new token = " + userToken);
-}
-else {
-    userToken = userToken;
-    if (debug) log("Log: token = " + userToken);
 }
 // on key up listener
 document.addEventListener("keyup", e => {
     let key = e.key;
-    if (debug) log("Log: keypress: key = " + key);
+    log("Log: keypress: key = " + key);
     let HTML = mdtohtml.makeHtml($("#txtmsg").value.trim());
     if (HTML != "") {
         $("#msgpreview").style.display = "block";
@@ -114,10 +103,10 @@ $("#btnsend").addEventListener("click", e => {
         })
         .then(function() {
             $("#txtmsg").value = "";
-            if (debug) log("Log: data pushed");
+            log("Log: data pushed");
         },
         function(e) {
-            throw (e);
+            err(e);
         });
     }
     setTimeout(function() {
@@ -129,7 +118,7 @@ $("#btnsend").addEventListener("click", e => {
 document.body.addEventListener("click", e => {
     if (e.target.nodeName.toLowerCase() == "img") {
         location.href = e.target.src;
-        if (debug) log("Log: img onclick(): src = " + e.target.src);
+        log("Log: img onclick(): src = " + e.target.src);
     }
     else if (e.target.id == "menu_dnImage") {
         
@@ -150,7 +139,7 @@ let longPressTimer;
 let longPressTimeout;
 // on mouse down listener
 document.body.addEventListener("pointerdown", e => {
-    if (debug) log("Log: pointerdown\n" +
+    log("Log: pointerdown\n" +
                    "id    = " + e.target.id + "\n" +
                    "node  = " + e.target.nodeName + "\n" +
                    "class = " + e.target.className);
@@ -160,7 +149,7 @@ document.body.addEventListener("pointerdown", e => {
             e.target.style.userSelect = "none";
         }, 200);
         longPressTimeout = setTimeout(function() {
-            if (debug) log("Log: long press triggered");
+            log("Log: long press triggered");
             longPressed = e.target;
             e.target.style.transform = "scale(1)";
             clearTimeout(longPressTimer);
@@ -171,7 +160,7 @@ document.body.addEventListener("pointerdown", e => {
 });
 // on mouse up listener
 document.body.addEventListener("pointerup", e => {
-    if (debug) log("Log: pointer up");
+    log("Log: pointer up");
     e.target.style.transform = "scale(1)";
     e.target.style.userSelect = "auto";
     clearTimeout(longPressTimer);
@@ -180,7 +169,7 @@ document.body.addEventListener("pointerup", e => {
 });
 // swipe gesture listener
 document.body.addEventListener("touchmove", e => {
-    if (debug) log("Log: swiped");
+    log("Log: swiped");
     e.target.style.transform = "scale(1)";
     e.target.style.userSelect = "auto";
     clearTimeout(longPressTimer);
