@@ -45,7 +45,7 @@ function startDBListener() {
             smoothScroll($("#chatarea"));
         }, 20);
         dialog.hide(function() {
-            $(".msgbox")[0].animate("fadeIn 200ms");
+            $(".msgbox")[0].animate("fadeIn " + overlay.animDuration + "ms");
         });
         loadTheme();
         if (debug) log("Log: db update fetched");
@@ -104,7 +104,7 @@ $("#btnsend").addEventListener("click", e => {
         $("#msgpreview").style.display = "none";
         if (msg.length > 1024 * 2) {
             dialog.display("Warning", "Text exceeds limit of 2KB", "Close");
-            $(".msgbox")[0].animate("fadeOut 200ms");
+            $(".msgbox")[0].animate("fadeOut " + overlay.animDuration + "ms");
             return;
         }
         $("#txtmsg").focus();
@@ -136,7 +136,7 @@ document.body.addEventListener("click", e => {
     }
     else if (e.target.className == "dialogRoot") {
         dialog.hide(function() {
-            $(".msgbox")[0].animate("fadeIn 200ms");
+            $(".msgbox")[0].animate("fadeIn " + overlay.animDuration + "ms");
         });
     }
     else if (e.target.className == "menuRoot") {
@@ -147,7 +147,7 @@ document.body.addEventListener("click", e => {
     else if (e.target.id == "btn_dialog" &&
              e.target.innerHTML == "Close") {
         dialog.hide(function() {
-            $(".msgbox")[0].animate("fadeIn 200ms");
+            $(".msgbox")[0].animate("fadeIn " + overlay.animDuration + "ms");
         });
     }
     else if (e.target.id == "menu_dnImage") {

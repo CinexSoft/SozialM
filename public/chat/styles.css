@@ -61,7 +61,7 @@ body {
 .chatarea .bubbles {
     padding: 5px 10px 0px;
     width: calc(100% - 20px);
-    transition-duration: 300ms;
+    transition-duration: 250ms;
 }
 .chatarea .bubbles > div {
     border: 0;

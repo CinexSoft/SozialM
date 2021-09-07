@@ -17,7 +17,7 @@ let loadtheme = !true;
 const overlay = {
     overlay: "",
     instanceOpen: false,
-    animDuration: 200
+    animDuration: 250
 }
 
 // js element selector function, inspired by JQuery
