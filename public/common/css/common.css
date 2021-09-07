@@ -18,10 +18,10 @@ a:visited {
 }
 button {
     font-size: 1.2rem;
+    transition-duration: 100ms;
 }
 button:active {
     font-size: 1.0rem;
-    transition-duration: 100ms;
 }
 button:disabled {
     background-color: gray;
@@ -77,59 +77,35 @@ button:disabled {
     border: 0;
     padding: 0;
     padding-bottom: 0px;
-    min-width: 150px;
-    max-width: 300px;
+    max-width: 320px;
     min-height: fit-content;
     max-height: 300px;
     background-color: #fff;
-    border: 1.2px solid #075E54;
-    border-top: 5px;
     border-radius: 10px;
-}
-.menu {
-    width: 340px;
+    text-align: center;
 }
 .dialog h2,
 .menu h2 {
-    height: 40px;
-    width: calc(100% - 41px);
+    font-size: 1.1rem;
+    color: #777;
+    width: calc(100% - 40px);
     margin: 0;
-    text-align: left;
-    padding: 17px 20px 3px;
-    border-left: 1px solid #075E54;
-    border-right: 1px solid #075E54;
-    border-radius: 8px 10px 0 0;
+    padding: 15px 20px 15px;
+    border-radius: 10px 10px 0 0;
+    text-align: center;
 }
 .menu h2 {
-    font-size: 1rem;
-    font-weight: initial;
-    height: 30px;
+    
 }
 .dialog div,
 .menu div {
     margin: 0;
-    padding: 20px;
+    padding: 30px 20px 30px;
 }
 .menu div {
     padding: 0;
 }
-.dialog button {
-    min-width: 70px;
-    min-height: 30px;
-    padding: 5px 10px 5px;
-    display: block;
-    margin: auto 10px 10px;
-    margin-left: auto;
-    color: #fafafa;
-    border: 2px solid #075E54;
-    border-radius: 5px;
-    font-size: 1rem;
-    user-select: none;
-}
-.dialog button:active {
-    background-color: #378E84;
-    border: 2px solid #378E84;
-}
+.dialog button,
 .menu div button {
     margin: 0;
     border: 0;
@@ -138,16 +114,21 @@ button:disabled {
     height: 45px;
     background-color: #fff;
     display: block;
-    color: #222;
+    color: #777;
     font-size: 1rem;
     user-select: none;
 }
+.dialog button:active,
 .menu div button:active {
-    color: #075E54;
+    color: #fff;
     font-size: 1rem;
-    background-color: #f0f0f0;
+    background-color: #128c7e;
 }
-.menu div hr {
+.menu div button {
+    color: #555;
+}
+.dialog hr,
+.menu hr {
     width: calc(100% - 1px);
     padding: 0;
     margin: 0;

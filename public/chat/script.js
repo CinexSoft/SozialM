@@ -101,7 +101,7 @@ $("#btnsend").addEventListener("click", e => {
         $("#msgpreview").innerHTML = "<font class=\"header\" color=\"#7d7d7d\">Markdown preview</font>";
         $("#msgpreview").style.display = "none";
         if (msg.length > 1024 * 2) {
-            dialog.display("Message", "Text exceeds limit of 2KB", "Close");
+            dialog.display("Warning", "Text exceeds limit of 2KB", "Close");
             $(".msgbox")[0].animate("fadeOut 200ms");
             return;
         }
