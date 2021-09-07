@@ -46,10 +46,10 @@ $("#btn_login").addEventListener("click", e => {
         localStorage.setItem("userdata.uid", user.uid);
     })
     .catch((error) => {
-        err("Error: " + error.message + " code: " + error.code);
         $("#login_err").innerHTML = (error.code != "auth/invalid-argument" && error.code != "auth/internal-error") ?
                                      error.message : "An error occurred, try again later";
         $("#login_err").style.display = "block";
+        if (debug) throw ("Error: " + error.message + " code: " + error.code);
     });
 });
 // signup button clicked
@@ -69,10 +69,10 @@ $("#btn_signup").addEventListener("click", e => {
         localStorage.setItem("userdata.uid", user.uid);
     })
     .catch((error) => {
-        err("Error: " + error.message + " code: " + error.code);
         $("#signup_err").innerHTML = (error.code != "auth/invalid-argument" && error.code != "auth/internal-error") ?
                                       error.message : "An error occurred, try again later";
         $("#signup_err").style.display = "block";
+        if (debug) throw ("Error: " + error.message + " code: " + error.code);
     });
 });
 if (debug) log("Log: document and script load complete");
