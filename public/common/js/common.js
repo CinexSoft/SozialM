@@ -13,6 +13,13 @@ let userToken = "";
 let debug = !true;
 let loadtheme = !true;
 
+// overlay control
+const overlay = {
+    overlay: "",
+    instanceOpen: false,
+    animDuration: 250
+}
+
 // js element selector function, inspired by JQuery
 function $(val) {
     val = val.trim();
@@ -102,7 +109,33 @@ function getBrowser() {
     else {
         return "unknown";
     }
-} 
+}
+
+// download a file
+function download(filename, text) {
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', filename);
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+}
+
+// copy text
+function copy(node) {
+    navigator.clipboard.writeText(
+        node.innerHTML.replace(/<br>/g, '\n')
+                      .replace(/<[^>]*>/g, '')
+    )
+    .then(function() {
+        return true;
+    },
+    function(e) {
+        if (debug) err(e);
+        return false;
+    });
+}
 
 // replace unsupported firebase characters with something else
 function encode(str) {
@@ -124,7 +157,8 @@ function decode(str) {
     return str;
 }
 
-let dialog = {
+// dialog
+const dialog = {
     display: function(title, message, button, func) {
         if (button != undefined &&
             typeof button != "string") {
@@ -136,41 +170,78 @@ let dialog = {
             throw "Error: typeof function is "+ (typeof func) + ", expected function";
             return;
         }
-        $("#dialog").child("h2")[0].innerHTML = title;
-        $("#dialog").child("div")[0].innerHTML = message.replace(/\n/g, "<br>");
-        if (button != undefined) {
-            $("#dialog").child("button")[0].style.visibility = "visible";
-            $("#dialog").child("button")[0].innerHTML = button;
-            $("#dialog").child("button")[0].addEventListener("click", e => {
-                if (func != undefined) {
-                    func();
-                }
-            });
+        // delay when one overlay is already open
+        let timeout;
+        if (overlay.overlay != "") {
+            timeout = overlay.animDuration;
+            if (overlay.overlay == "dialog") dialog.hide();
+            else if (overlay.overlay == "menu") menu.hide();
         }
         else {
-            $("#dialog").child("button")[0].style.visibility = "hidden";
+            timeout = 0;
         }
-        $("#dialogRoot").animate("fadeIn 200ms");
-        $("#dialog").animate("scaleIn 200ms");
+        setTimeout(function() {
+            $("#dialog").child("h2")[0].innerHTML = title;
+            $("#dialog").child("div")[0].innerHTML = message.replace(/\n/g, "<br>");
+            if (button != undefined) {
+                $("#dialog").child("button")[0].style.visibility = "visible";
+                $("#dialog").child("button")[0].innerHTML = button;
+                $("#dialog").child("button")[0].addEventListener("click", e => {
+                    if (func != undefined) {
+                        func();
+                    }
+                });
+            }
+            else {
+                $("#dialog").child("button")[0].style.visibility = "hidden";
+            }
+            $("#dialogRoot").animate("fadeIn " + overlay.animDuration + "ms");
+            $("#dialog").animate("scaleIn " + overlay.animDuration + "ms");
+            overlay.instanceOpen = true;
+            overlay.overlay = "dialog";
+        }, timeout);
     },
     hide: function(func) {
         // additional function
         if (func != undefined) {
             func();
         }
-        $("#dialogRoot").animate("fadeOut 200ms");
-        $("#dialog").animate("scaleOut 200ms");
+        $("#dialogRoot").animate("fadeOut " + overlay.animDuration + "ms");
+        $("#dialog").animate("scaleOut " + overlay.animDuration + "ms");
+        setTimeout(function() {
+            overlay.instanceOpen = false;
+            overlay.overlay = "";
+        }, overlay.animDuration);
     }
 }
 
-let menu = {
+// menu dialog
+const menu = {
     display: function() {
-        $("#menuRoot").animate("fadeIn 200ms");
-        $("#menu").animate("scaleIn 200ms");
+        // delay when one overlay is already open
+        let timeout;
+        if (overlay.overlay != "") {
+            timeout = overlay.animDuration;
+            if (overlay.overlay == "dialog") dialog.hide();
+            else if (overlay.overlay == "menu") menu.hide();
+        }
+        else {
+            timeout = 0;
+        }
+        setTimeout(function() {
+            $("#menuRoot").animate("fadeIn " + overlay.animDuration + "ms");
+            $("#menu").animate("scaleIn " + overlay.animDuration + "ms");
+            overlay.instanceOpen = true;
+            overlay.overlay = "menu";
+        }, timeout);
     },
     hide: function() {
-        $("#menuRoot").animate("fadeOut 200ms");
-        $("#menu").animate("scaleOut 200ms");
+        $("#menuRoot").animate("fadeOut " + overlay.animDuration + "ms");
+        $("#menu").animate("scaleOut " + overlay.animDuration + "ms");
+        setTimeout(function() {
+            overlay.instanceOpen = false;
+            overlay.overlay = "";
+        }, overlay.animDuration);
     }
 }
 

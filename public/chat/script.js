@@ -1,6 +1,8 @@
 // Markdown converter
 const mdtohtml = new showdown.Converter();
 mdtohtml.setFlavor("github");
+// other variables
+let longPressed;
 // database listener
 function startDBListener() {
     // db listener, fetches new msg on update
@@ -43,7 +45,7 @@ function startDBListener() {
             smoothScroll($("#chatarea"));
         }, 20);
         dialog.hide(function() {
-            $(".msgbox")[0].animate("fadeIn 200ms");
+            $(".msgbox")[0].animate("fadeIn " + overlay.animDuration + "ms");
         });
         loadTheme();
         if (debug) log("Log: db update fetched");
@@ -102,7 +104,7 @@ $("#btnsend").addEventListener("click", e => {
         $("#msgpreview").style.display = "none";
         if (msg.length > 1024 * 2) {
             dialog.display("Warning", "Text exceeds limit of 2KB", "Close");
-            $(".msgbox")[0].animate("fadeOut 200ms");
+            $(".msgbox")[0].animate("fadeOut " + overlay.animDuration + "ms");
             return;
         }
         $("#txtmsg").focus();
@@ -134,7 +136,7 @@ document.body.addEventListener("click", e => {
     }
     else if (e.target.className == "dialogRoot") {
         dialog.hide(function() {
-            $(".msgbox")[0].animate("fadeIn 200ms");
+            $(".msgbox")[0].animate("fadeIn " + overlay.animDuration + "ms");
         });
     }
     else if (e.target.className == "menuRoot") {
@@ -145,8 +147,22 @@ document.body.addEventListener("click", e => {
     else if (e.target.id == "btn_dialog" &&
              e.target.innerHTML == "Close") {
         dialog.hide(function() {
-            $(".msgbox")[0].animate("fadeIn 200ms");
+            $(".msgbox")[0].animate("fadeIn " + overlay.animDuration + "ms");
         });
+    }
+    else if (e.target.id == "menu_dnImage") {
+        
+    }
+    else if (e.target.id == "menu_copy") {
+        if (!copy(longPressed)) {
+            dialog.display("Uh oh!", "Copy text to clipboard failed", "Close");
+        }
+    }
+    else if (e.target.id == "menu_copylinks") {
+        
+    }
+    else if (e.target.id == "menu_unsend") {
+        
     }
 });
 // timer variable
@@ -164,6 +180,7 @@ document.body.addEventListener("pointerdown", e => {
         }, 200);
         longPressTimeout = setTimeout(function() {
             if (debug) log("Log: long press triggered");
+            longPressed = e.target;
             e.target.style.transform = "scale(1)";
             clearTimeout(longPressTimer);
             // show menu
