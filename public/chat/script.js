@@ -1,6 +1,8 @@
 // Markdown converter
 const mdtohtml = new showdown.Converter();
 mdtohtml.setFlavor("github");
+// other variables
+let longPressed;
 // database listener
 function startDBListener() {
     // db listener, fetches new msg on update
@@ -148,6 +150,20 @@ document.body.addEventListener("click", e => {
             $(".msgbox")[0].animate("fadeIn 200ms");
         });
     }
+    else if (e.target.id == "menu_dnImage") {
+        
+    }
+    else if (e.target.id == "menu_copy") {
+        if (!copy(longPressed)) {
+            dialog.display("Uh oh!", "Copy text to clipboard failed", "Close");
+        }
+    }
+    else if (e.target.id == "menu_copylinks") {
+        
+    }
+    else if (e.target.id == "menu_unsend") {
+        
+    }
 });
 // timer variable
 let longPressTimer;
@@ -164,6 +180,7 @@ document.body.addEventListener("pointerdown", e => {
         }, 200);
         longPressTimeout = setTimeout(function() {
             if (debug) log("Log: long press triggered");
+            longPressed = e.target;
             e.target.style.transform = "scale(1)";
             clearTimeout(longPressTimer);
             // show menu
