@@ -1,14 +1,14 @@
 # SocialMediaPlatform
 A shot at a social media platform
 
-# WARNINGS
+## WARNINGS
 
 ### No 1
 Please do not activate the code obfuscator workflow.
 It's very difficult to maintain branches with the obfuscator
 running on the main branch on every push.
 <br><br>
-It also made the codes bigger and inefficient.
+It also makes code big and slow.
 
 <!--
 ### No 1
@@ -50,3 +50,16 @@ No branch other than `PUBLISH` should be MERGED to `MAIN`
 Every other branch, once ready, should be merged to `PUBLISH`,
 tested, and then merged to `MAIN`.
 -->
+
+## Deployment
+- Firebase hosting and database
+- Project is hosted at https://sozialnmedien.web.app
+- Hosting rules at `firebase.json`
+- Webpage root at `public/`
+
+## Contributing
+- Please don't hardcode.
+- Important functions can be found in `public/common/js/common.js`.
+- Important styles can be found in `public/common/css/common.css`.
+- Keep `HTML`, `CSS` and `JavaScript` files seperate for faster page loading.
+
