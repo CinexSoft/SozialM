@@ -12,7 +12,7 @@ let softboardOpen = false;
 // database listener
 function startDBListener() {
     // db listener, fetches new msg on update
-    database.ref(dbRoot + chatRoot).on('value',(snapshot) => {
+    database.ref(dbRoot + chatRoot).on('value', snapshot => {
         let getHTML = "";
         $("#chatarea").innerHTML = "";
         $("#chatarea").appendHTMLString(
@@ -26,7 +26,7 @@ function startDBListener() {
             getHTML = decode(data.message);
             if (token == userToken) {
                 $("#chatarea").appendHTMLString(
-                    "<div class=\"bubbles\">" +
+                    "<div class=\"bubbles\" id=\"" + timestamps.key + "\">" +
                     "<div class=\"this sec_bgalpha\">" +
                     getHTML +
                     "</div>" +
@@ -35,7 +35,7 @@ function startDBListener() {
             }
             else {
                 $("#chatarea").appendHTMLString(
-                    "<div class=\"bubbles\">" +
+                    "<div class=\"bubbles\" id=\"" + timestamps.key + "\">" +
                     "<div class=\"that\">" +
                     getHTML +
                     "</div>" +
@@ -159,9 +159,33 @@ document.body.addEventListener("click", e => {
     }
     else if (e.target.id == "menu_reply") {
         menu.hide();
-        preText = "<blockquote>" + longPressed.innerHTML + "</blockquote>\n\n";
+        preText = "<blockquote id=\"tm_" + longPressed.id + "\">" + longPressed.child("div")[0].innerHTML + "</blockquote>\n\n";
         $("#txtmsg").focus();
         // $("#txtmsg").selectionEnd += $("#txtmsg").value.length;
+    }
+    else if ((target = (() => {
+        if (e.target.id.includes("tm_")) {
+            return $("#" + e.target.id.substring(3));
+        }
+        for (bq of $("blockquote")) {
+            log("Log: bq id = " + bq.id);
+            if (e.target.hasParent(bq) && bq.id.includes("tm_")) {
+                log("Log: generated id = " + "#" + bq.id.substring(3));
+                return $("#" + bq.id.substring(3));
+            }
+        }
+        return null;
+    })()) != null) {
+        log("Log: target id = #" + target.id);
+        let behavior = smoothScroll(target, false);
+        target.scrollIntoView(true, {
+            behavior: behavior,
+            block: "center"
+        });
+        target.animate("highlight 4s");
+        setTimeout(() => {
+            target.animate(null);
+        }, 3000);
     }
 });
 // timer variable

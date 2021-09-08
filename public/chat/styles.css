@@ -60,7 +60,7 @@ body {
     font-size: 0.7rem;
 }
 .chatarea .bubbles {
-    padding: 5px 10px 0px;
+    padding: 2.5px 10px 2.5px;
     width: calc(100% - 20px);
     transition-duration: 250ms;
 }
@@ -165,5 +165,14 @@ body {
     }
     .msgbox {
         width: calc(400px - 20px);
+    }
+}
+/* animations */
+@keyframes highlight {
+    0% {
+        background-color: #52dcce;
+    }
+    100% {
+        background-color: transparent;
     }
 }

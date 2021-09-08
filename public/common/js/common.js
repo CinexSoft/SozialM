@@ -52,8 +52,24 @@ HTMLElement.prototype.child = function(val) {
     }
 }
 
+// checks if the parent has the passed child
+HTMLElement.prototype.hasParent = function(parent) {
+    let node = this.parentNode;
+    while (node != null) {
+        if (node == parent) {
+            log("Log: node " + node.nodeName + " has parent = " + parent.nodeName);
+            return true;
+        }
+        node = node.parentNode;
+    }
+    return false;
+}
+
 // animation
 HTMLElement.prototype.animate = function(val) {
+    if (val == null) {
+        this.style.animation = "";
+    }
     this.style.animation = val + " forwards";
 }
 
@@ -313,11 +329,14 @@ function getTimeStamp() {
 }
 
 // smooth scroll
-function smoothScroll(element) {
-    if (element.scrollHeight - element.scrollTop < 1024) {
+function smoothScroll(element, flag) {
+    flag = flag || true;
+    if (element.scrollHeight - element.scrollTop < 2000) {
+        if (!flag) return "smooth";
         element.style.scrollBehavior = "smooth";
     }
     else {
+        if (!flag) return "auto";
         element.style.scrollBehavior = "auto";
     }
     log("Log: scroll:\nelement = " + element + "\ndiff = " + (element.scrollHeight - element.scrollTop));
