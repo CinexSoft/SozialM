@@ -17,11 +17,11 @@ a:visited {
     color: dodgerblue;
 }
 button {
-    font-size: 1.2rem;
+    font-size: 15px;
     transition-duration: 200ms;
 }
 button:active {
-    font-size: 1.0rem;
+    font-size: 13px;
 }
 button:disabled {
     background-color: gray;
@@ -109,14 +109,14 @@ button:disabled {
     height: 45px;
     display: block;
     color: #777;
-    font-size: 0.9rem;
+    font-size: 15px;
     user-select: none;
     background-color: #fff;
 }
 .dialog button:active,
 .menu div button:active {
     color: #fff;
-    font-size: 0.9rem;
+    font-size: 15px;
     background-color: #128c7e;
 }
 .menu div button {
