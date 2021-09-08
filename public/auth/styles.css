@@ -113,8 +113,9 @@ body {
     padding: 7px 20px 7px;
     color: white;
 }
-.root button:active {
-    background-color: #1f998c;
+.root button:active,
+.root button:hover {
+    background-color: #2fa99c;
 }
 @media only screen and (min-width: 400px) {
     body {
