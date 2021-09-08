@@ -1,5 +1,6 @@
 * {
     outline: none;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
 html {
     scroll-behavior: smooth;
@@ -15,13 +16,15 @@ a {
 }
 a:visited {
     color: dodgerblue;
+    cursor: pointer;
 }
 button {
-    font-size: 15px;
+    font-size: 1.1rem;
     transition-duration: 200ms;
+    cursor: pointer;
 }
 button:active {
-    font-size: 13px;
+    font-size: 1.0rem;
 }
 button:disabled {
     background-color: gray;
@@ -109,11 +112,13 @@ button:disabled {
     height: 45px;
     display: block;
     color: #777;
-    font-size: 15px;
+    font-size: 1.0rem;
     user-select: none;
     background-color: #fff;
 }
+.dialog button:hover,
 .dialog button:active,
+.menu div button:hover,
 .menu div button:active {
     color: #fff;
     font-size: 15px;
@@ -188,6 +193,7 @@ footer {
     border: 0px;
     border-radius: 5px;
     display: block;
+    cursor: pointer;
 }
 .markdown hr {
     color: #aaa;
