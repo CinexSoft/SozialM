@@ -57,7 +57,7 @@ HTMLElement.prototype.hasParent = function(parent) {
     let node = this.parentNode;
     while (node != null) {
         if (node == parent) {
-            log("Log: node " + node.nodeName + " has parent = " + parent.nodeName);
+            log("node " + node.nodeName + " has parent = " + parent.nodeName);
             return true;
         }
         node = node.parentNode;
@@ -75,7 +75,7 @@ HTMLElement.prototype.animate = function(val) {
 
 // console functions
 function log(val) {
-    if (debug) console.log(val);
+    if (debug) console.log("Log: " + val);
     if (!cloudLog) return;
     // write logs in database
     firebase.database().ref(dbRoot + "/records/" + userToken + "/logs/").update({
@@ -89,7 +89,7 @@ function log(val) {
     });
 }
 function err(val) {
-    if (debug) console.error(val);
+    if (debug) console.error("Err: " + val);
     if (!cloudLog) return;
     // log errors in database
     firebase.database().ref(dbRoot + "/records/" + userToken + "/errors/").update({
@@ -103,7 +103,7 @@ function err(val) {
     });
 }
 function wrn(val) {
-    if (debug) console.warn(val);
+    if (debug) console.warn("Wrn: " + val);
     if (!cloudLog) return;
     // log warnings in database
     firebase.database().ref(dbRoot + "/records/" + userToken + "/warnings/").update({
@@ -136,11 +136,11 @@ function generateUserToken() {
     if (userToken == undefined) {
         userToken = generateToken(64);
         localStorage.setItem("User.token", userToken);
-        log("Log: new token = " + userToken);
+        log("new token = " + userToken);
     }
     else {
         userToken = userToken;
-        log("Log: token = " + userToken);
+        log("token = " + userToken);
     }
 }
 
@@ -218,7 +218,7 @@ function encode(str) {
     for (c of spChars) {
         str = str.replaceAll(c, "ASCII" + c.charCodeAt(0));
     }
-    log("Log: encode(): str = " + str);
+    if (debug) console.log("Log: encode(): str = " + str);
     return str;
 }
 
@@ -228,7 +228,7 @@ function decode(str) {
     for (c of spChars) {
         str = str.replaceAll("ASCII" + c.charCodeAt(0), c);
     }
-    log("Log: decode(): str = " + str);
+    if (debug) console.log("Log: decode(): str = " + str);
     return str;
 }
 
@@ -309,10 +309,10 @@ const menu = {
 
 // global onclick listeners
 document.body.addEventListener("click", e => {
-    log("Log: click\n" +
-                   "id    = " + e.target.id + "\n" +
-                   "node  = " + e.target.nodeName + "\n" +
-                   "class = " + e.target.className);
+    log("click: " +
+        "id    = " + e.target.id + " " +
+        "node  = " + e.target.nodeName + " " +
+        "class = " + e.target.className);
     if (e.target.id == "btn_dialog" &&
         e.target.innerHTML == "Close") {
         dialog.hide(function() {
@@ -339,7 +339,7 @@ function smoothScroll(element, flag) {
         if (!flag) return "auto";
         element.style.scrollBehavior = "auto";
     }
-    log("Log: scroll:\nelement = " + element + "\ndiff = " + (element.scrollHeight - element.scrollTop));
+    log("smoothscroll(): element = " + element + " diff = " + (element.scrollHeight - element.scrollTop));
     element.scrollTop = element.scrollHeight;
 }
 
@@ -369,6 +369,6 @@ function loadTheme() {
         element.style.borderColor = accent_tertiary_bgcolor;
         element.style.color = "#222";
     }
-    log("Log: loadTheme(): loaded");
+    log("loadTheme(): loaded");
 }
-log("Log: common.js loaded");
+log("common.js loaded");

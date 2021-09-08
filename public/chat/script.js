@@ -54,13 +54,13 @@ function startDBListener() {
             $(".msgbox")[0].animate("fadeIn " + overlay.animDuration + "ms");
         });
         loadTheme();
-        log("Log: db update fetched");
+        log("db update fetched");
     });
 }
 // on key up listener
 document.addEventListener("keyup", e => {
     let key = event.keyCode || event.charCode
-    log("Log: keypress: key = " + key);
+    log("keypress: key = " + key);
     let HTML = preText + mdtohtml.makeHtml($("#txtmsg").value.trim());
     if (HTML != "") {
         $("#msgpreview").style.display = "block";
@@ -88,7 +88,7 @@ window.addEventListener("resize", e => {
     // detects soft keyboard switch
     if (prevHeight != document.body.clientHeight && prevWidth == document.body.clientWidth) {
         softboardOpen = !softboardOpen;
-        log("Log: keyboard launch? height diff = " + (document.body.clientHeight - prevHeight));
+        log("keyboard switch? height diff = " + (document.body.clientHeight - prevHeight));
     }
     prevWidth = document.body.clientWidth;
     prevHeight = document.body.clientHeight;
@@ -127,7 +127,7 @@ $("#btnsend").addEventListener("click", e => {
         })
         .then(function() {
             $("#txtmsg").value = "";
-            log("Log: data pushed");
+            log("data pushed");
         },
         function(e) {
             err(e);
@@ -142,7 +142,7 @@ $("#btnsend").addEventListener("click", e => {
 document.body.addEventListener("click", e => {
     if (e.target.nodeName.toLowerCase() == "img") {
         location.href = e.target.src;
-        log("Log: img onclick(): src = " + e.target.src);
+        log("img onclick(): src = " + e.target.src);
     }
     else if (e.target.id == "menu_dnImage") {
         
@@ -168,15 +168,15 @@ document.body.addEventListener("click", e => {
             return $("#" + e.target.id.substring(3));
         }
         for (bq of $("blockquote")) {
-            log("Log: bq id = " + bq.id);
+            log("bq id = " + bq.id);
             if (e.target.hasParent(bq) && bq.id.includes("tm_")) {
-                log("Log: generated id = " + "#" + bq.id.substring(3));
+                log("generated id = " + "#" + bq.id.substring(3));
                 return $("#" + bq.id.substring(3));
             }
         }
         return null;
     })()) != null) {
-        log("Log: target id = #" + target.id);
+        log("target id = #" + target.id);
         let behavior = smoothScroll(target, false);
         target.scrollIntoView(true, {
             behavior: behavior,
@@ -193,17 +193,17 @@ let longPressTimer;
 let longPressTimeout;
 // on mouse down listener
 document.body.addEventListener("pointerdown", e => {
-    log("Log: pointerdown\n" +
-                   "id    = " + e.target.id + "\n" +
-                   "node  = " + e.target.nodeName + "\n" +
-                   "class = " + e.target.className);
+    log("pointerdown: " +
+         "id    = " + e.target.id + " " +
+         "node  = " + e.target.nodeName + " " +
+         "class = " + e.target.className);
     if (e.target.className == "bubbles") {
         longPressTimer = setTimeout(function() {
             e.target.style.transform = "scale(0.95)";
             e.target.style.userSelect = "none";
         }, 200);
         longPressTimeout = setTimeout(function() {
-            log("Log: long press triggered");
+            log("long press triggered");
             longPressed = e.target;
             e.target.style.transform = "scale(1)";
             clearTimeout(longPressTimer);
@@ -214,7 +214,7 @@ document.body.addEventListener("pointerdown", e => {
 });
 // on mouse up listener
 document.body.addEventListener("pointerup", e => {
-    log("Log: pointer up");
+    log("pointer up");
     e.target.style.transform = "scale(1)";
     e.target.style.userSelect = "auto";
     clearTimeout(longPressTimer);
@@ -223,7 +223,7 @@ document.body.addEventListener("pointerup", e => {
 });
 // swipe gesture listener
 document.body.addEventListener("touchmove", e => {
-    log("Log: swiped");
+    log("swiped: element = " + e.target.nodeName);
     e.target.style.transform = "scale(1)";
     e.target.style.userSelect = "auto";
     clearTimeout(longPressTimer);
