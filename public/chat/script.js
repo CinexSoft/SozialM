@@ -35,7 +35,7 @@ function startDBListener() {
             if (token == userToken) {
                 $("#chatarea").appendHTMLString(
                     "<div class=\"bubbles\" id=\"" + timestamps.key + "\">" +
-                    "<div class=\"this sec_bgalpha\">" +
+                    "<div class=\"this sec_bg\">" +
                     getHTML +
                     "</div>" +
                     "</div>"
