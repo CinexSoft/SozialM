@@ -339,7 +339,7 @@ function smoothScroll(element, flag) {
         if (!flag) return "auto";
         element.style.scrollBehavior = "auto";
     }
-    log("smoothscroll(): element = " + element + " diff = " + (element.scrollHeight - element.scrollTop));
+    log("smoothscroll(): element = " + element.nodeName + " class = " + element.className + " diff = " + (element.scrollHeight - element.scrollTop));
     element.scrollTop = element.scrollHeight;
 }
 

@@ -194,8 +194,8 @@ let longPressTimeout;
 // on mouse down listener
 document.body.addEventListener("pointerdown", e => {
     log("pointerdown: " +
-         "id    = " + e.target.id + " " +
-         "node  = " + e.target.nodeName + " " +
+         "id = " + e.target.id + " " +
+         "node = " + e.target.nodeName + " " +
          "class = " + e.target.className);
     if (e.target.className == "bubbles") {
         longPressTimer = setTimeout(function() {
@@ -223,7 +223,10 @@ document.body.addEventListener("pointerup", e => {
 });
 // swipe gesture listener
 document.body.addEventListener("touchmove", e => {
-    log("swiped: element = " + e.target.nodeName);
+    log("swiped: " +
+         "id = " + e.target.id + " " +
+         "node = " + e.target.nodeName + " " +
+         "class = " + e.target.className);
     e.target.style.transform = "scale(1)";
     e.target.style.userSelect = "auto";
     clearTimeout(longPressTimer);
