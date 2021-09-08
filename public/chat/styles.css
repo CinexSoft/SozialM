@@ -83,7 +83,7 @@ body {
     position: fixed;
     left: 10px;
     right: 0;
-    bottom: 53px;
+    bottom: 54px;
     margin-right: auto;
     padding: 10px;
     width: calc(100% - 94px);
@@ -154,9 +154,14 @@ body {
 @media only screen and (orientation: landscape) and (min-height: 420px) {
     .root,
     .titlebar,
+    .msgpreview,
     .msgbox {
         margin: auto;
         width: 400px;
+    }
+    .msgpreview {
+        margin-right: calc(10px + 70px + 25px);
+        width: calc(400px - 20px - 20px - 70px - 25px);
     }
     .msgbox {
         width: calc(400px - 20px);

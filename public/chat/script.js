@@ -78,8 +78,15 @@ window.addEventListener("resize", e => {
         smoothScroll($("#chatarea"));
     }, 10);
     previewVisible = false;
-    $("#msgpreview").innerHTML = "<font class=\"header\" color=\"#7d7d7d\">Markdown preview</font>" + "<font color=\"#7d7d7d\">Preview appears here</font>";
-    $("#msgpreview").style.display = "none";
+    let HTML = mdtohtml.makeHtml($("#txtmsg").value.trim());
+    if ($("#txtmsg").value != "") {
+        $("#msgpreview").innerHTML = "<font class=\"header\" color=\"#7d7d7d\">Markdown preview</font>" + HTML;
+        $("#msgpreview").style.display = "block";
+    }
+    else {
+        $("#msgpreview").innerHTML = "<font class=\"header\" color=\"#7d7d7d\">Markdown preview</font>" + "<font color=\"#7d7d7d\">Preview appears here</font>";
+        $("#msgpreview").style.display = "none";
+    }
 });
 // on send button clicked
 $("#btnsend").addEventListener("click", e => {
@@ -132,6 +139,12 @@ document.body.addEventListener("click", e => {
     }
     else if (e.target.id == "menu_unsend") {
         
+    }
+    else if (e.target.id == "menu_reply") {
+        menu.hide();
+        $("#txtmsg").value = "<blockquote>" + longPressed.innerHTML + "</blockquote>\n\n";
+        $("#txtmsg").focus();
+        txtarea.selectionEnd += $("#txtmsg").value.length;
     }
 });
 // timer variable
