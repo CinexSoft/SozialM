@@ -40,11 +40,6 @@ button:disabled {
     color: #ffffff;
     border-color: #075E54;
 }
-.sec_bgalpha {
-    background-color: #dcf8c6bb;
-    color: #222;
-    border-color: #dcf8c6bb;
-}
 .sec_bg {
     background-color: #dcf8c6;
     color: #222;
