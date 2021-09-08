@@ -310,8 +310,8 @@ const menu = {
 // global onclick listeners
 document.body.addEventListener("click", e => {
     log("click: " +
-        "id    = " + e.target.id + " " +
-        "node  = " + e.target.nodeName + " " +
+        "id = " + e.target.id + " " +
+        "node = " + e.target.nodeName + " " +
         "class = " + e.target.className);
     if (e.target.id == "btn_dialog" &&
         e.target.innerHTML == "Close") {
