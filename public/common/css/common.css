@@ -15,10 +15,12 @@ a {
 }
 a:visited {
     color: dodgerblue;
+    cursor: pointer;
 }
 button {
-    font-size: 1.2rem;
+    font-size: 30px;
     transition-duration: 200ms;
+    cursor: pointer;
 }
 button:active {
     font-size: 1.0rem;
@@ -113,7 +115,9 @@ button:disabled {
     user-select: none;
     background-color: #fff;
 }
+.dialog button:hover,
 .dialog button:active,
+.menu div button:hover,
 .menu div button:active {
     color: #fff;
     font-size: 0.9rem;
@@ -188,6 +192,7 @@ footer {
     border: 0px;
     border-radius: 5px;
     display: block;
+    cursor: pointer;
 }
 .markdown hr {
     color: #aaa;

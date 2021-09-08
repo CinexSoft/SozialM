@@ -74,6 +74,7 @@ body {
 .root i.fa-eye-slash {
     margin-left: 10px;
     color: #128c7e;
+    cursor: pointer;
 }
 .root h,
 .root a {
@@ -106,7 +107,7 @@ body {
     left: calc(100% - 120px);
     width: 120px;
     height: 37px;
-    font-size: 1rem;
+    font-size: 1.2rem;
     background-color: #128c7e;
     border: 1px solid #128c7e;
     border-radius: 10px;
@@ -115,7 +116,7 @@ body {
 }
 .root button:active {
     background-color: #1f998c;
-    font-size: 0.95rem;
+    font-size: 1.1rem;
 }
 @media only screen and (min-width: 400px) {
     body {

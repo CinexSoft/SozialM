@@ -26,6 +26,7 @@ body {
     border-radius: 50px;
     margin: auto 5px auto;
     background-color: #ddd;
+    cursor: pointer;
 }
 .title {
     font-size: 1.3rem;
@@ -69,6 +70,7 @@ body {
     border-radius: 10px;
     padding: 5px;
     word-wrap: break-word;
+    cursor: text;
 }
 .chatarea .that {
     max-width: 70%;
@@ -78,6 +80,9 @@ body {
 .chatarea .this {
     max-width: 70%;
     margin-left: auto;
+}
+.chatarea .bubbles blockquote {
+    cursor: pointer;
 }
 .msgpreview {
     position: fixed;
@@ -96,6 +101,7 @@ body {
     overflow: auto;
     display: none;
     box-shadow: 1px 1px 2px #aaa;
+    cursor: text;
 }
 .msgpreview font.header {
     position: relative;
@@ -145,7 +151,7 @@ body {
     border-radius: 50px;
     color: #eee;
     background-color: #128c7e;
-    font-size: 1.4rem;
+    font-size: 30px;
     box-shadow: 1px 1px 2px #aaa;
 }
 .msgbox button:active {
@@ -160,8 +166,8 @@ body {
         width: 400px;
     }
     .msgpreview {
-        margin-right: calc(10px + 70px + 25px);
-        width: calc(400px - 20px - 20px - 70px - 25px);
+        right: calc(10px + 50px);
+        width: calc(400px - 20px - 70px);
     }
     .msgbox {
         width: calc(400px - 20px);
