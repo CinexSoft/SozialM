@@ -19,12 +19,12 @@ a:visited {
     cursor: pointer;
 }
 button {
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     transition-duration: 200ms;
     cursor: pointer;
 }
 button:active {
-    font-size: 1.0rem;
+    font-size: 0.95rem;
 }
 button:disabled {
     background-color: gray;
