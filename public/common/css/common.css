@@ -117,8 +117,10 @@ button:disabled {
     background-color: #fff;
 }
 .dialog button:hover,
+.menu div button:hover {
+    background-color: #ddd;
+}
 .dialog button:active,
-.menu div button:hover,
 .menu div button:active {
     color: #fff;
     font-size: 0.9rem;
