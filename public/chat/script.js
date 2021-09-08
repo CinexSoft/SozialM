@@ -9,10 +9,18 @@ let preText = "";
 let longPressed;
 let softboardOpen = false;
 
+// the entire chat is downloaded and stored here
+// the data has timestamps as keys
+let chatData = null || JSON.parse(localStorage.getItem(chatRoot));
+
 // database listener
 function startDBListener() {
     // db listener, fetches new msg on update
     database.ref(dbRoot + chatRoot).on('value', snapshot => {
+        // locally store entire chat
+        chatData = snapshot.val();
+        localStorage.setItem(chatRoot, JSON.stringify(chatData));
+        // setting up html
         let getHTML = "";
         $("#chatarea").innerHTML = "";
         $("#chatarea").appendHTMLString(
@@ -155,7 +163,26 @@ document.body.addEventListener("click", e => {
         
     }
     else if (e.target.id == "menu_unsend") {
-        
+        menu.hide();
+        if (chatData[longPressed.id].token == userToken) {
+            if (getTimeStamp() - parseInt(longPressed.id) < 3600000) {
+                database.ref(dbRoot + chatRoot).update({
+                    [longPressed.id]: null
+                })
+                .then(function() {
+                    log("msg deleted, data updated");
+                },
+                function(e) {
+                    err(e);
+                });
+            }
+            else {
+                dialog.display("Not allowed", "You can only unsend a message within 1 hour of sending it.");
+            }
+        }
+        else {
+            dialog.display("Not allowed", "You can unsend a message only if you have sent it.");
+        }
     }
     else if (e.target.id == "menu_reply") {
         menu.hide();

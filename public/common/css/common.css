@@ -112,11 +112,11 @@ button:disabled {
     width: 100%;
     text-align: center;
     height: 45px;
-    background-color: #fff;
     display: block;
     color: #777;
     font-size: 0.9rem;
     user-select: none;
+    background-color: #fff;
 }
 .dialog button:active,
 .menu div button:active {
