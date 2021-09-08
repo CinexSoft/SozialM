@@ -112,7 +112,7 @@ button:disabled {
     height: 45px;
     display: block;
     color: #777;
-    font-size: 1.0rem;
+    font-size: 0.9rem;
     user-select: none;
     background-color: #fff;
 }
@@ -121,7 +121,7 @@ button:disabled {
 .menu div button:hover,
 .menu div button:active {
     color: #fff;
-    font-size: 15px;
+    font-size: 0.9rem;
     background-color: #128c7e;
 }
 .menu div button {
