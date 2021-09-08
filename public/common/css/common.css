@@ -78,8 +78,7 @@ button:disabled {
     padding: 0;
     padding-bottom: 0px;
     max-width: 300px;
-    min-height: fit-content;
-    max-height: 300px;
+    max-height: fit-content;
     background-color: #fff;
     border-radius: 10px;
     text-align: center;

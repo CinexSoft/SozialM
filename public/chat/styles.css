@@ -12,7 +12,7 @@ body {
 }
 .dialogRoot .dialog,
 .menuRoot .menu {
-    top: 100px;
+    top: 10px;
 }
 .titlebar {
     height: 54px;
