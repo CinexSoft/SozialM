@@ -202,7 +202,7 @@ function encode(str) {
     for (c of spChars) {
         str = str.replaceAll(c, "ASCII" + c.charCodeAt(0));
     }
-    console.info ("Log: encode(): str = " + str);
+    log("Log: encode(): str = " + str);
     return str;
 }
 
@@ -212,7 +212,7 @@ function decode(str) {
     for (c of spChars) {
         str = str.replaceAll("ASCII" + c.charCodeAt(0), c);
     }
-    console.info ("Log: decode(): str = " + str);
+    log("Log: decode(): str = " + str);
     return str;
 }
 

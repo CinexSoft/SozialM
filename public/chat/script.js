@@ -1,8 +1,14 @@
 // Markdown converter
 const mdtohtml = new showdown.Converter();
 mdtohtml.setFlavor("github");
+
 // other variables
+let prevHeight = document.body.clientHeight;
+let prevWidth = document.body.clientWidth;
+let preText = "";
 let longPressed;
+let softboardOpen = false;
+
 // database listener
 function startDBListener() {
     // db listener, fetches new msg on update
@@ -53,22 +59,24 @@ function startDBListener() {
 }
 // on key up listener
 document.addEventListener("keyup", e => {
-    let key = e.key;
+    let key = event.keyCode || event.charCode
     log("Log: keypress: key = " + key);
-    let HTML = mdtohtml.makeHtml($("#txtmsg").value.trim());
+    let HTML = preText + mdtohtml.makeHtml($("#txtmsg").value.trim());
     if (HTML != "") {
         $("#msgpreview").style.display = "block";
         $("#msgpreview").innerHTML = "<font class=\"header\" color=\"#7d7d7d\">Markdown preview</font>" + HTML;
     }
-    if ($("#txtmsg").value == "") {
+    else {
         $("#msgpreview").style.display = "none";
         $("#msgpreview").innerHTML = "<font class=\"header\" color=\"#7d7d7d\">Markdown preview</font>" + "<font color=\"#7d7d7d\">Preview appears here</font>";
     }
-    // if key pressed is enter, tab or any of the given characters
-    if (key == "Unidentified" ||
-        key == "Tab" ||
-        key == "Enter" ||
-        (", .@#₹_&-+()/*\"':;!?~`|^={}\\%[]").includes(key)) {
+    if ((key == 8 || key == 46) && $("#txtmsg").value.trim() == "") {
+        preText = "";
+        $("#msgpreview").style.display = "none";
+        $("#msgpreview").innerHTML = "<font class=\"header\" color=\"#7d7d7d\">Markdown preview</font>" + "<font color=\"#7d7d7d\">Preview appears here</font>";
+    }
+    // if html contains code, run highlighter
+    if (HTML.match(/pre/i) && HTML.match(/code/i)) {
         hljs.highlightAll();
     }
 });
@@ -77,9 +85,16 @@ window.addEventListener("resize", e => {
     setTimeout(function() {
         smoothScroll($("#chatarea"));
     }, 10);
-    previewVisible = false;
-    let HTML = mdtohtml.makeHtml($("#txtmsg").value.trim());
-    if ($("#txtmsg").value != "") {
+    // detects soft keyboard switch
+    if (prevHeight != document.body.clientHeight && prevWidth == document.body.clientWidth) {
+        softboardOpen = !softboardOpen;
+        log("Log: keyboard launch? height diff = " + (document.body.clientHeight - prevHeight));
+    }
+    prevWidth = document.body.clientWidth;
+    prevHeight = document.body.clientHeight;
+    // switches visibility of msgpreview
+    let HTML = preText + mdtohtml.makeHtml($("#txtmsg").value.trim());
+    if (HTML != "" && softboardOpen) {
         $("#msgpreview").innerHTML = "<font class=\"header\" color=\"#7d7d7d\">Markdown preview</font>" + HTML;
         $("#msgpreview").style.display = "block";
     }
@@ -96,6 +111,8 @@ $("#btnsend").addEventListener("click", e => {
         $("#txtmsg").focus();
     }
     else {
+        msg = preText + $("#txtmsg").value.trim();
+        preText = "";
         $("#msgpreview").innerHTML = "<font class=\"header\" color=\"#7d7d7d\">Markdown preview</font>";
         $("#msgpreview").style.display = "none";
         if (msg.length > 1024 * 2) {
@@ -142,9 +159,9 @@ document.body.addEventListener("click", e => {
     }
     else if (e.target.id == "menu_reply") {
         menu.hide();
-        $("#txtmsg").value = "<blockquote>" + longPressed.innerHTML + "</blockquote>\n\n";
+        preText = "<blockquote>" + longPressed.innerHTML + "</blockquote>\n\n";
         $("#txtmsg").focus();
-        txtarea.selectionEnd += $("#txtmsg").value.length;
+        // $("#txtmsg").selectionEnd += $("#txtmsg").value.length;
     }
 });
 // timer variable
