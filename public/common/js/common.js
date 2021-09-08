@@ -351,12 +351,6 @@ function loadTheme() {
         element.style.borderColor = accent_primary_bgcolor;
         element.style.color = accent_fg_color;
     }
-    // custom accents: secondary background color with alpha
-    for (element of $(".sec_bgalpha")) {
-        element.style.backgroundColor = accent_secondary_bgcolor + "bb";
-        element.style.borderColor = accent_secondary_bgcolor + "bb";
-        element.style.color = "#222";
-    }
     // custom accents: secondary background color without alpha
     for (element of $(".sec_bg")) {
         element.style.backgroundColor = accent_secondary_bgcolor;

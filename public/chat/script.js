@@ -40,6 +40,8 @@ function startDBListener() {
                     "</div>" +
                     "</div>"
                 );
+                if (debug) console.log("Log: this: timestamp = " + timestamps.key);
+                if (debug) console.log("Log: this: html = " + $("#chatarea").innerHTML);
             }
             else {
                 $("#chatarea").appendHTMLString(
@@ -49,6 +51,8 @@ function startDBListener() {
                     "</div>" +
                     "</div>"
                 );
+                if (debug) console.log("Log: that: timestamp = " + timestamps.key);
+                if (debug) console.log("Log: that: html = " + $("#chatarea").innerHTML);
             }
         });
         if ($("#chatarea").innerHTML.match(/pre/i) &&
