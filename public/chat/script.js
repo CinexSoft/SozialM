@@ -11,47 +11,53 @@ let softboardOpen = false;
 
 // the entire chat is downloaded and stored here
 // the data has timestamps as keys
-let chatData = null || JSON.parse(localStorage.getItem(chatRoot));
+const chatData = {} || JSON.parse(localStorage.getItem(chatRoot));
 
 // database listener
-function startDBListener() {
+const startDBListener = () => {
     // db listener, fetches new msg on update
-    database.ref(dbRoot + chatRoot).on('value', snapshot => {
-        // locally store entire chat
-        chatData = snapshot.val();
-        localStorage.setItem(chatRoot, JSON.stringify(chatData));
+    database.ref(dbRoot + chatRoot).on('value', (snapshot) => {
         // setting up html
         let getHTML = "";
         $("#chatarea").innerHTML = "";
-        $("#chatarea").appendHTMLString(
+        appendHTMLString($("#chatarea"),
             "<div class=\"info\">" +
             "<p class=\"fa fa-info-circle\">&ensp;Messages in this chat are only server-to-end encrypted.</p>" +
             "</div>"
         );
-        snapshot.forEach(timestamps => {
-            let data = snapshot.child(timestamps.key).val();
+        snapshot.forEach(({ key }) => {
+            let timestamp = key;
+            let data = snapshot.child(timestamp).val();
             let token = data.token;
+            // store data in local variable
+            chatData[timestamp] = {
+                token,
+                message: data.message
+            };
+            // cache chat in local storage
+            localStorage.setItem(chatRoot, JSON.stringify(chatData));
+            // get html from msg
             getHTML = decode(data.message);
             if (token == userToken) {
-                $("#chatarea").appendHTMLString(
-                    "<div class=\"bubbles\" id=\"" + timestamps.key + "\">" +
+                appendHTMLString($("#chatarea"),
+                    "<div class=\"bubbles\" id=\"" + timestamp + "\">" +
                     "<div class=\"this sec_bg\">" +
                     getHTML +
                     "</div>" +
                     "</div>"
                 );
-                if (debug) console.log("Log: this: timestamp = " + timestamps.key);
+                if (debug) console.log("Log: this: timestamp = " + timestamp);
                 if (debug) console.log("Log: this: html = " + $("#chatarea").innerHTML);
             }
             else {
-                $("#chatarea").appendHTMLString(
-                    "<div class=\"bubbles\" id=\"" + timestamps.key + "\">" +
+                appendHTMLString($("#chatarea"),
+                    "<div class=\"bubbles\" id=\"" + timestamp + "\">" +
                     "<div class=\"that\">" +
                     getHTML +
                     "</div>" +
                     "</div>"
                 );
-                if (debug) console.log("Log: that: timestamp = " + timestamps.key);
+                if (debug) console.log("Log: that: timestamp = " + timestamp);
                 if (debug) console.log("Log: that: html = " + $("#chatarea").innerHTML);
             }
         });
@@ -59,19 +65,19 @@ function startDBListener() {
             $("#chatarea").innerHTML.match(/code/i)) {
             hljs.highlightAll();
         }
-        setTimeout(function() {
+        setTimeout(() => {
             smoothScroll($("#chatarea"));
         }, 20);
-        dialog.hide(function() {
-            $(".msgbox")[0].animate("fadeIn " + overlay.animDuration + "ms");
+        dialog.hide(() => {
+            $(".msgbox")[0].style.animation = "fadeIn " + overlay.animDuration + "ms forwards";
         });
         loadTheme();
         log("db update fetched");
     });
 }
 // on key up listener
-document.addEventListener("keyup", e => {
-    let key = event.keyCode || event.charCode
+document.addEventListener("keyup", (e) => {
+    let key = e.keyCode || e.charCode
     log("keypress: key = " + key);
     let HTML = preText + mdtohtml.makeHtml($("#txtmsg").value.trim());
     if (HTML != "") {
@@ -93,8 +99,8 @@ document.addEventListener("keyup", e => {
     }
 });
 // soft keyboard launch triggers window resize event
-window.addEventListener("resize", e => {
-    setTimeout(function() {
+window.addEventListener("resize", (e) => {
+    setTimeout(() => {
         smoothScroll($("#chatarea"));
     }, 10);
     // detects soft keyboard switch
@@ -116,7 +122,7 @@ window.addEventListener("resize", e => {
     }
 });
 // on send button clicked
-$("#btnsend").addEventListener("click", e => {
+$("#btnsend").addEventListener("click", (e) => {
     let msg = $("#txtmsg").value.trim();
     if (msg == "") {
         $("#txtmsg").value = "";
@@ -129,7 +135,7 @@ $("#btnsend").addEventListener("click", e => {
         $("#msgpreview").style.display = "none";
         if (msg.length > 1024 * 2) {
             dialog.display("Warning", "Text exceeds limit of 2KB");
-            $(".msgbox")[0].animate("fadeOut " + overlay.animDuration + "ms");
+            $(".msgbox")[0].style.animation = "fadeOut " + overlay.animDuration + "ms forwards";
             return;
         }
         $("#txtmsg").focus();
@@ -137,21 +143,21 @@ $("#btnsend").addEventListener("click", e => {
             message: encode(mdtohtml.makeHtml(msg)),
             token: userToken
         })
-        .then(function() {
+        .then(() => {
             $("#txtmsg").value = "";
             log("data pushed");
         },
-        function(e) {
+        (e) => {
             err(e);
         });
     }
-    setTimeout(function() {
+    setTimeout(() => {
         smoothScroll($("#chatarea"));
     }, 20);
     loadTheme();
 });
 // onclick listeners
-document.body.addEventListener("click", e => {
+document.body.addEventListener("click", (e) => {
     if (e.target.nodeName.toLowerCase() == "img") {
         location.href = e.target.src;
         log("img onclick(): src = " + e.target.src);
@@ -173,10 +179,10 @@ document.body.addEventListener("click", e => {
                 database.ref(dbRoot + chatRoot).update({
                     [longPressed.id]: null
                 })
-                .then(function() {
+                .then(() => {
                     log("msg deleted, data updated");
                 },
-                function(e) {
+                (e) => {
                     err(e);
                 });
             }
@@ -190,7 +196,7 @@ document.body.addEventListener("click", e => {
     }
     else if (e.target.id == "menu_reply") {
         menu.hide();
-        preText = "<blockquote id=\"tm_" + longPressed.id + "\">" + longPressed.child("div")[0].innerHTML + "</blockquote>\n\n";
+        preText = "<blockquote id=\"tm_" + longPressed.id + "\">" + getChildElement(longPressed, "div")[0].innerHTML + "</blockquote>\n\n";
         $("#txtmsg").focus();
         // $("#txtmsg").selectionEnd += $("#txtmsg").value.length;
     }
@@ -200,7 +206,7 @@ document.body.addEventListener("click", e => {
         }
         for (bq of $("blockquote")) {
             log("bq id = " + bq.id);
-            if (e.target.hasParent(bq) && bq.id.includes("tm_")) {
+            if (hasElementAsParent(e.target, bq) && bq.id.includes("tm_")) {
                 log("generated id = " + "#" + bq.id.substring(3));
                 return $("#" + bq.id.substring(3));
             }
@@ -213,9 +219,10 @@ document.body.addEventListener("click", e => {
             behavior: behavior,
             block: "center"
         });
-        target.animate("highlight 4s");
+        target.style.animation = "initial";
+        target.style.animation = "highlight 4s";
         setTimeout(() => {
-            target.animate(null);
+            target.style.animation = "";
         }, 3000);
     }
 });
@@ -223,17 +230,17 @@ document.body.addEventListener("click", e => {
 let longPressTimer;
 let longPressTimeout;
 // on mouse down listener
-document.body.addEventListener("pointerdown", e => {
+document.body.addEventListener("pointerdown", (e) => {
     log("pointerdown: " +
          "id = " + e.target.id + " " +
          "node = " + e.target.nodeName + " " +
          "class = " + e.target.className);
     if (e.target.className == "bubbles") {
-        longPressTimer = setTimeout(function() {
+        longPressTimer = setTimeout(() => {
             e.target.style.transform = "scale(0.95)";
             e.target.style.userSelect = "none";
         }, 200);
-        longPressTimeout = setTimeout(function() {
+        longPressTimeout = setTimeout(() => {
             log("long press triggered");
             longPressed = e.target;
             e.target.style.transform = "scale(1)";
@@ -244,7 +251,7 @@ document.body.addEventListener("pointerdown", e => {
     }
 });
 // on mouse up listener
-document.body.addEventListener("pointerup", e => {
+document.body.addEventListener("pointerup", (e) => {
     log("pointer up");
     e.target.style.transform = "scale(1)";
     e.target.style.userSelect = "auto";
@@ -253,7 +260,7 @@ document.body.addEventListener("pointerup", e => {
     
 });
 // swipe gesture listener
-document.body.addEventListener("touchmove", e => {
+document.body.addEventListener("touchmove", (e) => {
     log("swiped: " +
          "id = " + e.target.id + " " +
          "node = " + e.target.nodeName + " " +
@@ -263,4 +270,5 @@ document.body.addEventListener("touchmove", e => {
     clearTimeout(longPressTimer);
     clearTimeout(longPressTimeout);
 });
+
 startDBListener();

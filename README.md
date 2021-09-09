@@ -59,6 +59,7 @@ tested, and then merged to `MAIN`.
 - Webview based APK [download](https://sozialnmedien.web.app/downloads/chat.app.web.sozialnmedien.apk)
 
 ## Contributing
+- Follow `Airbnb` JavaScript style guide - [https://github.com/airbnb/javascript](https://github.com/airbnb/javascript).
 - Please don't hardcode.
 - Important functions can be found in `public/common/js/common.js`.
 - Important styles can be found in `public/common/css/common.css`.

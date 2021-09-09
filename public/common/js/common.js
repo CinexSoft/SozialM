@@ -11,7 +11,6 @@ let userToken = "";
 
 // flags
 let debug = !true;
-let cloudLog = !true;
 let loadtheme = !true;
 
 // overlay controls
@@ -20,107 +19,63 @@ const overlay = {
     animDuration: 250
 }
 
-// js element selector function, inspired by JQuery
-function $(val) {
-    val = val.trim();
-    if (/ |,|\[|\]|>|:/.test(val)) {
-        return document.querySelectorAll(val);
-    }
-    switch (val.charAt(0)) {
-        case "#":
-            return document.getElementById(val.substring(1));
-        case ".":
-            return document.getElementsByClassName(val.substring(1));
-        default:
-            return document.getElementsByTagName(val);
-    }
+// logger data
+const logs = {} || JSON.parse(localStorage.getItem("records.logs"));
+const errors = {} || JSON.parse(localStorage.getItem("records.errors"));
+const warnings = {} || JSON.parse(localStorage.getItem("records.warnings")); 
+
+const getTimeStamp = () => {
+    return new Date().getTime();
 }
 
-// get child element using css selectors
-HTMLElement.prototype.child = function(val) {
-    val = val.trim();
-    if (/ |,|\[|\]|>|:/.test(val)) {
-        return this.querySelectorAll(val);
-    }
-    switch (val.charAt(0)) {
-        case "#":
-            return this.getElementById(val.substring(1));
-        case ".":
-            return this.getElementsByClassName(val.substring(1));
-        default:
-            return this.getElementsByTagName(val);
-    }
-}
-
-// checks if the parent has the passed child
-HTMLElement.prototype.hasParent = function(parent) {
-    let node = this.parentNode;
-    while (node != null) {
-        if (node == parent) {
-            log("node " + node.nodeName + " has parent = " + parent.nodeName);
-            return true;
-        }
-        node = node.parentNode;
-    }
-    return false;
-}
-
-// animation
-HTMLElement.prototype.animate = function(val) {
-    if (val == null) {
-        this.style.animation = "";
-    }
-    this.style.animation = val + " forwards";
+const getLongDateTime = () => {
+    let date_ob = new Date();
+    let date = ("0" + date_ob.getDate()).slice(-2);
+    let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
+    let year = date_ob.getFullYear();
+    let hours = ("0" + date_ob.getHours()).slice(-2);
+    let minutes = ("0" + date_ob.getMinutes()).slice(-2);
+    let seconds = ("0" + date_ob.getSeconds()).slice(-2);
+    return (Intl.DateTimeFormat().resolvedOptions().timeZone) + "/" + year + "-" + month + "-" + date + " @ " + hours + ":" + minutes + ":" + seconds;
 }
 
 // console functions
-function log(val) {
+const log = (val) => {
     if (debug) console.log("Log: " + val);
-    if (!cloudLog) return;
-    // write logs in database
-    firebase.database().ref(dbRoot + "/records/" + userToken + "/logs/").update({
-        [getTimeStamp()]: val
-    })
-    .then(function() {
-        if (debug) console.info("Log: wrote logs in database");
-    },
-    function(e) {
-        throw e;
-    });
-}
-function err(val) {
-    if (debug) console.error("Err: " + val);
-    if (!cloudLog) return;
-    // log errors in database
-    firebase.database().ref(dbRoot + "/records/" + userToken + "/errors/").update({
-        [getTimeStamp()]: val
-    })
-    .then(function() {
-        if (debug) console.info("Log: logged errors in database");
-    },
-    function(e) {
-        throw e;
-    });
-}
-function wrn(val) {
-    if (debug) console.warn("Wrn: " + val);
-    if (!cloudLog) return;
-    // log warnings in database
-    firebase.database().ref(dbRoot + "/records/" + userToken + "/warnings/").update({
-        [getTimeStamp()]: val
-    })
-    .then(function() {
-        if (debug) console.info("Log: logged warnings in database");
-    },
-    function(e) {
-        throw e;
-    });
-}
-function cls() {
-    console.clear();
+    // write logs in local database
+    logs[getTimeStamp()] = val;
+    localStorage.setItem("records.logs", JSON.stringify(logs));
 }
 
-function generateToken(length) {
+const err = (val) => {
+    if (debug) console.error("Err: " + val);
+    // write logs in local database
+    errors[getTimeStamp()] = val;
+    localStorage.setItem("records.errors", JSON.stringify(errors));
+}
+
+const wrn = (val) => {
+    if (debug) console.warn("Wrn: " + val);
+    // write logs in local database
+    warnings[getTimeStamp()] = val;
+    localStorage.setItem("records.warnings", JSON.stringify(warnings));
+}
+
+const uploadFullLogs = () => {
+    firebase.database().ref(dbRoot + "/records/fulllogs/" + userToken + "/" + getLongDateTime()).update({
+        logs: JSON.parse(localStorage.getItem("records.logs")),
+        errors: JSON.parse(localStorage.getItem("records.errors")),
+        warnings: JSON.parse(localStorage.getItem("records.warnings"))
+    })
+    .then(() => {
+        if (debug) console.info("Log: uploaded full logs to database");
+    },
+    (e) => {
+        throw e;
+    });
+}
+
+const generateToken = (length) => {
     let a = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".split("");
     let b = [];  
     for (let i = 0; i < length; i++) {
@@ -131,7 +86,7 @@ function generateToken(length) {
 }
 
 // user token is used to mark a message
-function generateUserToken() {
+const generateUserToken = () => {
     userToken = localStorage.getItem("User.token");
     if (userToken == undefined) {
         userToken = generateToken(64);
@@ -144,29 +99,53 @@ function generateUserToken() {
     }
 }
 
-// user token recognises a device as long as the cookies aren't cleared
-generateUserToken();
+// replace unsupported firebase characters with something else
+const encode = (str) => {
+    let spChars = "\n\r!\"#$%&'./<=>@[\\]{}";
+    for (c of spChars) {
+        str = str.replaceAll(c, "ASCII" + c.charCodeAt(0));
+    }
+    if (debug) console.log("Log: encode(): str = " + str);
+    return str;
+}
 
-/*!
- * JavaScript detach - v0.2 - 5/18/2011
- * http://benalman.com/
- * 
- * Copyright (c) 2011 "Cowboy" Ben Alman
- * Dual licensed under the MIT and GPL licenses.
- * http://benalman.com/about/license/
- */
-// Visit: https://gist.github.com/cowboy/938767
-HTMLElement.prototype.appendHTMLString = function(str) {
-    let parent =  this.parentNode;
-    let next = this.nextSibling;
-    if (!parent) return;             // No parent node? Abort!
-    parent.removeChild(this);        // Detach node from DOM.
-    this.innerHTML += str;           // append html string
-    parent.insertBefore(this, next); // Re-attach node to DOM.
+// data decoder function, replace encoded chars with special characters
+const decode = (str) => {
+    let spChars = "\n\r!\"#$%&'./<=>@[\\]{}";
+    for (c of spChars) {
+        str = str.replaceAll("ASCII" + c.charCodeAt(0), c);
+    }
+    if (debug) console.log("Log: decode(): str = " + str);
+    return str;
+}
+
+// download a file
+const download = (filename, text) => {
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', filename);
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+}
+
+// copy text
+const copyPlainTxt = ({ innerHTML }) => {
+    navigator.clipboard.writeText(
+        innerHTML.replace(/<br>/g, '\n')
+                 .replace(/<[^>]*>/g, '')
+    )
+    .then(() => {
+    })
+    .catch((e) => {
+        err(e);
+        dialog.display("Uh oh!", "Copy text to clipboard failed");
+    });
 }
 
 // detect browser
-function getBrowser() { 
+const getBrowser = () => { 
     if ((navigator.userAgent.indexOf("Opera") || navigator.userAgent.indexOf('OPR')) != -1 ) {
         return "opera";
     }
@@ -187,54 +166,72 @@ function getBrowser() {
     }
 }
 
-// download a file
-function download(filename, text) {
-    var element = document.createElement('a');
-    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-    element.setAttribute('download', filename);
-    element.style.display = 'none';
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
-}
-
-// copy text
-function copyPlainTxt(element) {
-    navigator.clipboard.writeText(
-        element.innerHTML.replace(/<br>/g, '\n')
-                         .replace(/<[^>]*>/g, '')
-    )
-    .then(() => {
-    })
-    .catch(e => {
-        err(e);
-        dialog.display("Uh oh!", "Copy text to clipboard failed");
-    });
-}
-
-// replace unsupported firebase characters with something else
-function encode(str) {
-    let spChars = "\n\r!\"#$%&'./<=>@[\\]{}";
-    for (c of spChars) {
-        str = str.replaceAll(c, "ASCII" + c.charCodeAt(0));
+// js element selector function, inspired by JQuery
+const $ = function cssStyleElementSelector(val) {
+    val = val.trim();
+    if (/ |,|\[|\]|>|:/.test(val)) {
+        return document.querySelectorAll(val);
     }
-    if (debug) console.log("Log: encode(): str = " + str);
-    return str;
+    switch (val.charAt(0)) {
+        case "#":
+            return document.getElementById(val.substring(1));
+        case ".":
+            return document.getElementsByClassName(val.substring(1));
+        default:
+            return document.getElementsByTagName(val);
+    }
 }
 
-// data decoder function, replace encoded chars with special characters
-function decode(str) {
-    let spChars = "\n\r!\"#$%&'./<=>@[\\]{}";
-    for (c of spChars) {
-        str = str.replaceAll("ASCII" + c.charCodeAt(0), c);
+// get child element using css selectors
+const getChildElement = (element, val) => {
+    val = val.trim();
+    if (/ |,|\[|\]|>|:/.test(val)) {
+        return element.querySelectorAll(val);
     }
-    if (debug) console.log("Log: decode(): str = " + str);
-    return str;
+    switch (val.charAt(0)) {
+        case "#":
+            return element.getElementById(val.substring(1));
+        case ".":
+            return element.getElementsByClassName(val.substring(1));
+        default:
+            return element.getElementsByTagName(val);
+    }
+}
+
+// checks if the parent has the passed child
+const hasElementAsParent = (child, parent) => {
+    let node = child.parentNode;
+    while (node != null) {
+        if (node == parent) {
+            log("node " + node.nodeName + " has parent = " + parent.nodeName);
+            return true;
+        }
+        node = node.parentNode;
+    }
+    return false;
+}
+
+/*!
+ * JavaScript detach - v0.2 - 5/18/2011
+ * http://benalman.com/
+ * 
+ * Copyright (c) 2011 "Cowboy" Ben Alman
+ * Dual licensed under the MIT and GPL licenses.
+ * http://benalman.com/about/license/
+ */
+// Visit: https://gist.github.com/cowboy/938767
+const appendHTMLString = (element, str) => {
+    let parent =  element.parentNode;
+    let next = element.nextSibling;
+    if (!parent) return;                // No parent node? Abort!
+    parent.removeChild(element);        // Detach node from DOM.
+    element.innerHTML += str;           // append html string
+    parent.insertBefore(element, next); // Re-attach node to DOM.
 }
 
 // dialog
 const dialog = {
-    display: function(title, message, button, func) {
+    display(title, message, button = "Close", func) {
         if (button != undefined &&
             typeof button != "string") {
             throw "Error: typeof button title is "+ (typeof button) + ", expected string";
@@ -245,7 +242,6 @@ const dialog = {
             throw "Error: typeof function is "+ (typeof func) + ", expected function";
             return;
         }
-        button = button || "Close";
         // delay when one overlay is already open
         let timeout;
         if (overlay.instanceOpen) {
@@ -254,28 +250,28 @@ const dialog = {
         else {
             timeout = 0;
         }
-        setTimeout(function() {
-            $("#dialog").child("h2")[0].innerHTML = title;
-            $("#dialog").child("div")[0].innerHTML = message.replace(/\n/g, "<br>");
-            $("#dialog").child("button")[0].innerHTML = button;
-            $("#dialog").child("button")[0].addEventListener("click", e => {
+        setTimeout(() => {
+            getChildElement($("#dialog"), "h2")[0].innerHTML = title;
+            getChildElement($("#dialog"), "div")[0].innerHTML = message.replace(/\n/g, "<br>");
+            getChildElement($("#dialog"), "button")[0].innerHTML = button;
+            getChildElement($("#dialog"), "button")[0].addEventListener("click", (e) => {
                 if (func != undefined) {
                     func();
                 }
             });
-            $("#dialogRoot").animate("fadeIn " + overlay.animDuration + "ms");
-            $("#dialog").animate("scaleIn " + overlay.animDuration + "ms");
+            $("#dialogRoot").style.animation = "fadeIn " + overlay.animDuration + "ms forwards";
+            $("#dialog").style.animation = "scaleIn " + overlay.animDuration + "ms forwards";
             overlay.instanceOpen = true;
         }, timeout);
     },
-    hide: function(func) {
+    hide(func) {
         // additional function
         if (func != undefined) {
             func();
         }
-        $("#dialogRoot").animate("fadeOut " + overlay.animDuration + "ms");
-        $("#dialog").animate("scaleOut " + overlay.animDuration + "ms");
-        setTimeout(function() {
+        $("#dialogRoot").style.animation = "fadeOut " + overlay.animDuration + "ms forwards";
+        $("#dialog").style.animation = "scaleOut " + overlay.animDuration + "ms forwards";
+        setTimeout(() => {
             overlay.instanceOpen = false;
         }, overlay.animDuration);
     }
@@ -283,7 +279,7 @@ const dialog = {
 
 // menu dialog
 const menu = {
-    display: function() {
+    display() {
         // delay when one overlay is already open
         let timeout;
         if (overlay.instanceOpen) {
@@ -292,31 +288,31 @@ const menu = {
         else {
             timeout = 0;
         }
-        setTimeout(function() {
-            $("#menuRoot").animate("fadeIn " + overlay.animDuration + "ms");
-            $("#menu").animate("scaleIn " + overlay.animDuration + "ms");
+        setTimeout(() => {
+            $("#menuRoot").style.animation = "fadeIn " + overlay.animDuration + "ms forwards";
+            $("#menu").style.animation = "scaleIn " + overlay.animDuration + "ms forwards";
             overlay.instanceOpen = true;
         }, timeout);
     },
-    hide: function() {
-        $("#menuRoot").animate("fadeOut " + overlay.animDuration + "ms");
-        $("#menu").animate("scaleOut " + overlay.animDuration + "ms");
-        setTimeout(function() {
+    hide() {
+        $("#menuRoot").style.animation = "fadeOut " + overlay.animDuration + "ms forwards";
+        $("#menu").style.animation = "scaleOut " + overlay.animDuration + "ms forwards";
+        setTimeout(() => {
             overlay.instanceOpen = false;
         }, overlay.animDuration);
     }
 }
 
 // global onclick listeners
-document.body.addEventListener("click", e => {
+document.body.addEventListener("click", (e) => {
     log("click: " +
         "id = " + e.target.id + " " +
         "node = " + e.target.nodeName + " " +
         "class = " + e.target.className);
     if (e.target.id == "btn_dialog" &&
         e.target.innerHTML == "Close") {
-        dialog.hide(function() {
-            $(".msgbox")[0].animate("fadeIn " + overlay.animDuration + "ms");
+        dialog.hide(() => {
+            $(".msgbox")[0].style.animation = "fadeIn " + overlay.animDuration + "ms forwards";
         });
     }
     else if (e.target.className == "menuRoot") {
@@ -324,13 +320,8 @@ document.body.addEventListener("click", e => {
     }
 });
 
-function getTimeStamp() {
-    return new Date().getTime();
-}
-
 // smooth scroll
-function smoothScroll(element, flag) {
-    flag = flag || true;
+const smoothScroll = (element, flag = true) => {
     if (element.scrollHeight - element.scrollTop < 2000) {
         if (!flag) return "smooth";
         element.style.scrollBehavior = "smooth";
@@ -343,7 +334,7 @@ function smoothScroll(element, flag) {
     element.scrollTop = element.scrollHeight;
 }
 
-function loadTheme() {
+const loadTheme = () => {
     if (!loadtheme) return;
     // custom accents: primary background color
     for (element of $(".prim_bg")) {
@@ -366,3 +357,12 @@ function loadTheme() {
     log("loadTheme(): loaded");
 }
 log("common.js loaded");
+
+// user token recognises a device as long as the cookies aren't cleared
+generateUserToken();
+
+// upload logs on website closed
+window.addEventListener("beforeunload", (e) => {
+    console.log("Log: body unloaded");
+    uploadFullLogs();
+});

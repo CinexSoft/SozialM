@@ -1,26 +1,26 @@
 // root visibility flag
 let rootFlag = "login";
-function toogleRoot() {
+const toogleRoot = () => {
     if (rootFlag == "login") {
         $("#login").style.display = "none";
         $(".swinfo")[0].innerHTML = "Already have an account? ";
         $(".switchlink")[0].innerHTML = "Log In";
         rootFlag = "signup";
-        log("Log: rootFlag = " + rootFlag);
+        log("rootFlag = " + rootFlag);
     }
     else if (rootFlag == "signup") {
         $("#signup").style.display = "none";
         $(".swinfo")[0].innerHTML = "Don't have an account? ";
         $(".switchlink")[0].innerHTML = "Sign Up";
         rootFlag = "login";
-        log("Log: rootFlag = " + rootFlag);
+        log("rootFlag = " + rootFlag);
     }
     document.getElementById(rootFlag).style.display = "block";
 }
 // toggle password visibility
-function togglePass() {
+const togglePass = () => {
     for (element of $(".password")) {
-        log("Log: togglePass(): type = " + element.type);
+        log("togglePass(): type = " + element.type);
         if (element.type == "password") {
             element.type = "text";
             for (element of $(".fa-eye-slash")) {
@@ -36,7 +36,7 @@ function togglePass() {
     }
 }
 // login button clicked
-$("#btn_login").addEventListener("click", e => {
+$("#btn_login").addEventListener("click", (e) => {
     $("#login_err").style.display = "none";
     email = $("#login_email").value;
     password = $("#login_pass").value;
@@ -53,7 +53,7 @@ $("#btn_login").addEventListener("click", e => {
     });
 });
 // signup button clicked
-$("#btn_signup").addEventListener("click", e => {
+$("#btn_signup").addEventListener("click", (e) => {
     $("#signup_err").style.display = "none";
     email = $("#signup_email").value;
     if ($("#signup_pass").value !=
@@ -75,4 +75,4 @@ $("#btn_signup").addEventListener("click", e => {
         err("Error: " + error.message + " code: " + error.code);
     });
 });
-log("Log: document and script load complete");
+log("document and script load complete");
