@@ -322,7 +322,8 @@ document.body.addEventListener("click", (e) => {
 
 // smooth scroll
 const smoothScroll = (element, flag = true) => {
-    if (element.scrollHeight - element.scrollTop < 2000) {
+    // check if down scrollable part of element is < 720 px
+    if (element.scrollHeight - (document.body.clientHeight - 110) - element.scrollTop < 720) {
         if (!flag) return "smooth";
         element.style.scrollBehavior = "smooth";
     }

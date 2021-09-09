@@ -5,6 +5,7 @@ mdtohtml.setFlavor("github");
 // other variables
 let prevHeight = document.body.clientHeight;
 let prevWidth = document.body.clientWidth;
+let chatScrollHeight = $("#chatarea").scrollHeight;
 let preText = "";
 let longPressed;
 let softboardOpen = false;
@@ -60,14 +61,14 @@ const startDBListener = () => {
                 if (debug) console.log("Log: that: timestamp = " + timestamp);
                 if (debug) console.log("Log: that: html = " + $("#chatarea").innerHTML);
             }
+            setTimeout(() => {
+                smoothScroll($("#chatarea"));
+            }, 20);
         });
         if ($("#chatarea").innerHTML.match(/pre/i) &&
             $("#chatarea").innerHTML.match(/code/i)) {
             hljs.highlightAll();
         }
-        setTimeout(() => {
-            smoothScroll($("#chatarea"));
-        }, 20);
         dialog.hide(() => {
             $(".msgbox")[0].style.animation = "fadeIn " + overlay.animDuration + "ms forwards";
         });
@@ -109,6 +110,9 @@ window.addEventListener("resize", (e) => {
         softboardOpen = !softboardOpen;
         log("keyboard switch? height diff = " + (document.body.clientHeight - prevHeight));
     }
+    if (document.body.clientHeight - prevHeight < 0) {
+        $("#chatarea").scrollTop += Math.abs(document.body.clientHeight - prevHeight);
+    }
     prevWidth = document.body.clientWidth;
     prevHeight = document.body.clientHeight;
     // switches visibility of msgpreview
@@ -127,7 +131,8 @@ window.addEventListener("resize", (e) => {
 });
 // on send button clicked
 $("#btnsend").addEventListener("click", (e) => {
-    let msg = $("#txtmsg").value.trim();
+    let msgbackup = "";
+    let msg = (msgbackup = $("#txtmsg").value).trim();
     if (msg == "") {
         $("#txtmsg").value = "";
         $("#txtmsg").focus();
@@ -135,6 +140,7 @@ $("#btnsend").addEventListener("click", (e) => {
     else {
         msg = preText + $("#txtmsg").value.trim();
         preText = "";
+        $("#txtmsg").value = "";
         $("#msgpreview").innerHTML = "<font class=\"header\" color=\"#7d7d7d\">Markdown preview</font>";
         $("#msgpreview").style.display = "none";
         $("#txtmsg").style.borderRadius = "20px";
@@ -149,16 +155,13 @@ $("#btnsend").addEventListener("click", (e) => {
             token: userToken
         })
         .then(() => {
-            $("#txtmsg").value = "";
             log("data pushed");
         },
         (e) => {
             err(e);
+            $("#txtmsg").value = msgbackup;
         });
     }
-    setTimeout(() => {
-        smoothScroll($("#chatarea"));
-    }, 20);
     loadTheme();
 });
 // onclick listeners
