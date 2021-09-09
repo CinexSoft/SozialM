@@ -82,15 +82,19 @@ document.addEventListener("keyup", (e) => {
     let HTML = preText + mdtohtml.makeHtml($("#txtmsg").value.trim());
     if (HTML != "") {
         $("#msgpreview").style.display = "block";
+        $("#txtmsg").style.borderRadius = "0 0 20px 20px";
         $("#msgpreview").innerHTML = "<font class=\"header\" color=\"#7d7d7d\">Markdown preview</font>" + HTML;
+        smoothScroll($("#msgpreview"));
     }
     else {
         $("#msgpreview").style.display = "none";
+        $("#txtmsg").style.borderRadius = "20px";
         $("#msgpreview").innerHTML = "<font class=\"header\" color=\"#7d7d7d\">Markdown preview</font>" + "<font color=\"#7d7d7d\">Preview appears here</font>";
     }
     if ((key == 8 || key == 46) && $("#txtmsg").value.trim() == "") {
         preText = "";
         $("#msgpreview").style.display = "none";
+        $("#txtmsg").style.borderRadius = "20px";
         $("#msgpreview").innerHTML = "<font class=\"header\" color=\"#7d7d7d\">Markdown preview</font>" + "<font color=\"#7d7d7d\">Preview appears here</font>";
     }
     // if html contains code, run highlighter
@@ -100,9 +104,6 @@ document.addEventListener("keyup", (e) => {
 });
 // soft keyboard launch triggers window resize event
 window.addEventListener("resize", (e) => {
-    setTimeout(() => {
-        smoothScroll($("#chatarea"));
-    }, 10);
     // detects soft keyboard switch
     if (prevHeight != document.body.clientHeight && prevWidth == document.body.clientWidth) {
         softboardOpen = !softboardOpen;
@@ -115,10 +116,13 @@ window.addEventListener("resize", (e) => {
     if (HTML != "" && softboardOpen) {
         $("#msgpreview").innerHTML = "<font class=\"header\" color=\"#7d7d7d\">Markdown preview</font>" + HTML;
         $("#msgpreview").style.display = "block";
+        $("#txtmsg").style.borderRadius = "0 0 20px 20px";
+        smoothScroll($("#msgpreview"));
     }
     else {
         $("#msgpreview").innerHTML = "<font class=\"header\" color=\"#7d7d7d\">Markdown preview</font>" + "<font color=\"#7d7d7d\">Preview appears here</font>";
         $("#msgpreview").style.display = "none";
+        $("#txtmsg").style.borderRadius = "20px";
     }
 });
 // on send button clicked
@@ -133,6 +137,7 @@ $("#btnsend").addEventListener("click", (e) => {
         preText = "";
         $("#msgpreview").innerHTML = "<font class=\"header\" color=\"#7d7d7d\">Markdown preview</font>";
         $("#msgpreview").style.display = "none";
+        $("#txtmsg").style.borderRadius = "20px";
         if (msg.length > 1024 * 2) {
             dialog.display("Warning", "Text exceeds limit of 2KB");
             $(".msgbox")[0].style.animation = "fadeOut " + overlay.animDuration + "ms forwards";
