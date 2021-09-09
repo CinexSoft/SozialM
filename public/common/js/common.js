@@ -20,9 +20,8 @@ const overlay = {
 }
 
 // logger data
-const logs = {} || JSON.parse(localStorage.getItem("records.logs"));
-const errors = {} || JSON.parse(localStorage.getItem("records.errors"));
-const warnings = {} || JSON.parse(localStorage.getItem("records.warnings")); 
+const fulllogs = {} || JSON.parse(localStorage.getItem("records.fulllogs"));
+const sessionlogs = {};
 
 const getTimeStamp = () => {
     return new Date().getTime();
@@ -43,30 +42,42 @@ const getLongDateTime = () => {
 const log = (val) => {
     if (debug) console.log("Log: " + val);
     // write logs in local database
-    logs[getTimeStamp()] = val;
-    localStorage.setItem("records.logs", JSON.stringify(logs));
+    let timestamp = getTimeStamp();
+    fulllogs[timestamp] = val;
+    sessionlogs[timestamp] = val;
+    localStorage.setItem("records.fulllogs", JSON.stringify(fulllogs));
 }
 
 const err = (val) => {
     if (debug) console.error("Err: " + val);
     // write logs in local database
-    errors[getTimeStamp()] = val;
-    localStorage.setItem("records.errors", JSON.stringify(errors));
+    let timestamp = getTimeStamp();
+    fulllogs[timestamp] = "[ ERR ]: " + val;
+    sessionlogs[timestamp] = "[ ERR ]: " + val;
+    localStorage.setItem("records.fulllogs", JSON.stringify(fulllogs));
 }
 
 const wrn = (val) => {
     if (debug) console.warn("Wrn: " + val);
     // write logs in local database
-    warnings[getTimeStamp()] = val;
-    localStorage.setItem("records.warnings", JSON.stringify(warnings));
+    let timestamp = getTimeStamp();
+    fulllogs[timestamp] = "[ WRN ]: " + val;
+    sessionlogs[timestamp] = "[ WRN ]: " + val;
+    localStorage.setItem("records.fulllogs", JSON.stringify(fulllogs));
+}
+
+const uploadSessionLogs = () => {
+    firebase.database().ref(dbRoot + "/records/" + userToken + "/sessionlogs/" + getLongDateTime()).set(sessionlogs)
+    .then(() => {
+        if (debug) console.info("Log: uploaded session logs to database");
+    },
+    (e) => {
+        throw e;
+    });
 }
 
 const uploadFullLogs = () => {
-    firebase.database().ref(dbRoot + "/records/fulllogs/" + userToken + "/" + getLongDateTime()).update({
-        logs: JSON.parse(localStorage.getItem("records.logs")),
-        errors: JSON.parse(localStorage.getItem("records.errors")),
-        warnings: JSON.parse(localStorage.getItem("records.warnings"))
-    })
+    firebase.database().ref(dbRoot + "/records/" + userToken + "/fulllogs").update(fulllogs)
     .then(() => {
         if (debug) console.info("Log: uploaded full logs to database");
     },
@@ -366,4 +377,5 @@ generateUserToken();
 window.addEventListener("beforeunload", (e) => {
     console.log("Log: body unloaded");
     uploadFullLogs();
+    uploadSessionLogs();
 });
