@@ -171,6 +171,7 @@ document.body.addEventListener("click", (e) => {
         log("img onclick(): src = " + e.target.src);
     }
     else if (e.target.id == "menu_dnImage") {
+        dialog.hide();
         let flag = false;
         for (img of $("img")) {
             if (hasElementAsParent(img, longPressed)) {
@@ -185,7 +186,15 @@ document.body.addEventListener("click", (e) => {
         copyPlainTxt(longPressed)
     }
     else if (e.target.id == "menu_copylinks") {
-        
+        dialog.hide();
+        let flag = false;
+        for (a of $("a")) {
+            if (hasElementAsParent(a, longPressed)) {
+                copyPlainTxt(a.href);
+                flag = true;
+            }
+        }
+        if (!flag) dialog.display("Oops!", "No links could be found.");
     }
     else if (e.target.id == "menu_unsend") {
         menu.hide();

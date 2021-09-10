@@ -55,8 +55,8 @@ const err = (val) => {
     if (debug) console.error("Err: " + val);
     // write logs in local database
     let timestamp = getTimeStamp();
-    fulllogs[timestamp] = "[ ERR ]: " + val;
-    sessionlogs[timestamp] = "[ ERR ]: " + val;
+    fulllogs[timestamp] = "[ERR]: " + val;
+    sessionlogs[timestamp] = "[ERR]: " + val;
     localStorage.setItem("records.fulllogs", JSON.stringify(fulllogs));
 }
 
@@ -135,6 +135,18 @@ const decode = (str) => {
 
 // download a file
 const download = (directurl, filename = ("Download_" + directurl + getTimeStamp() + ".bin")) => {
+    if (typeof Android !== "undefined" &&
+        typeof Android.isSozialnMedienWebapp === "function") {
+        try {
+            Android.download(directurl, filename);
+            log("[AND]: download(): through Android WepAppInterface");
+        }
+        catch (e) {
+            err(e);
+            dialog.display("Download failed", "Failed to download " + filename + " from " + directurl);
+        }
+        return;
+    }
     let element = document.createElement('a');
     element.setAttribute('href', directurl);
     element.setAttribute('download', filename);
@@ -157,11 +169,11 @@ const copyPlainTxt = ({ innerHTML }) => {
         try {
             Android.copyToClipboard(copytext);
             Android.showToast("Text copied!");
-            log("[ OKY ]: text copied through android apk custom web interface");
+            log("[AND]: copyPlainTxt(): through Android WepAppInterface");
         }
         catch (error) {
             err(error);
-            dialog.display("Uh oh!", "Copy text to clipboard failed");
+            dialog.display("Oops!", "Copy text to clipboard failed");
         }
     });
 }
@@ -383,6 +395,30 @@ log("common.js loaded");
 
 // user token recognises a device as long as the cookies aren't cleared
 generateUserToken();
+
+// looks for updates to android app
+if (typeof Android !== "undefined" &&
+    typeof Android.isSozialnMedienWebapp === "function") {
+    let val;
+    try {
+        val = Android.updateAvailable();
+        switch (val) {
+            case "true":
+                dialog.display("Update available", "A new version of this Android app is available.", "Download", () => {
+                    Android.download("https://sozialnmedien.web.app/downloads/chat.app.web.sozialnmedien.apk",
+                                     "chat.app.web.sozialnmedien.apk");
+                });
+                log("[AND]: updated Android app");
+            break;
+            case "false":
+            case "failed":
+            break;
+        }
+    }
+    catch (e) {
+        err(e);
+    }
+}
 
 // upload logs in intervals for current session
 setInterval(() => {
