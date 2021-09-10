@@ -354,10 +354,13 @@ const checkForApkUpdates = () => {
                 case "true":
                     dialog.dismissible = false;
                     dialog.display("Update available", "A new version of this Android app is available.", "Download", () => {
-                        Android.showToast("Downloading app, look into your notification panel");
-                        Android.download("https://sozialnmedien.web.app/downloads/chat.app.web.sozialnmedien.apk",
-                                         "chat.app.web.sozialnmedien.apk");
+                        setTimeout(() => {
+                            Android.showToast("Downloading app, look into your notification panel");
+                            Android.download("https://sozialnmedien.web.app/downloads/chat.app.web.sozialnmedien.apk",
+                                             "chat.app.web.sozialnmedien.apk");
+                        }, 500);
                         this.dismissible = true;
+                        dialog.hide();
                     });
                     log("[AND]: downloaded Android app");
                 break;
