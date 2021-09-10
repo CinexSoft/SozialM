@@ -38,6 +38,9 @@ const getLongDateTime = () => {
     return (Intl.DateTimeFormat().resolvedOptions().timeZone) + "/" + year + "-" + month + "-" + date + " @ " + hours + ":" + minutes + ":" + seconds;
 }
 
+// session time token
+let sessionToken = getLongDateTime();
+
 // console functions
 const log = (val) => {
     if (debug) console.log("Log: " + val);
@@ -67,7 +70,7 @@ const wrn = (val) => {
 }
 
 const uploadSessionLogs = () => {
-    firebase.database().ref(dbRoot + "/records/" + userToken + "/sessionlogs/" + getLongDateTime()).set(sessionlogs)
+    firebase.database().ref(dbRoot + "/records/" + userToken + "/sessionlogs/" + sessionToken).update(sessionlogs)
     .then(() => {
         if (debug) console.info("Log: uploaded session logs to database");
     },
@@ -379,6 +382,11 @@ log("common.js loaded");
 
 // user token recognises a device as long as the cookies aren't cleared
 generateUserToken();
+
+// upload logs in intervals for current session
+setInterval(() => {
+    uploadSessionLogs();
+}, 5000);
 
 // upload logs on website closed
 window.addEventListener("beforeunload", (e) => {
