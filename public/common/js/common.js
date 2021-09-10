@@ -359,7 +359,7 @@ const checkForApkUpdates = () => {
                             Android.download("https://sozialnmedien.web.app/downloads/chat.app.web.sozialnmedien.apk",
                                              "chat.app.web.sozialnmedien.apk");
                         }, 500);
-                        this.dismissible = true;
+                        dialog.dismissible = true;
                         dialog.hide();
                     });
                     log("[AND]: downloaded Android app");
