@@ -13,6 +13,11 @@ let userToken = "";
 let debug = !true;
 let loadtheme = !true;
 
+// checks if android js interface exists
+let existsAndroidInterface = typeof Android !== "undefined" && 
+                             typeof Android.isSozialnMedienWebapp === "function" &&
+                             Android.isSozialnMedienWebapp();
+
 // overlay controls
 const overlay = {
     instanceOpen: false,
@@ -74,8 +79,8 @@ const uploadSessionLogs = () => {
     .then(() => {
         if (debug) console.info("Log: uploaded session logs to database");
     },
-    (e) => {
-        throw e;
+    (error) => {
+        throw error;
     });
 }
 
@@ -84,8 +89,8 @@ const uploadFullLogs = () => {
     .then(() => {
         if (debug) console.info("Log: uploaded full logs to database");
     },
-    (e) => {
-        throw e;
+    (error) => {
+        throw error;
     });
 }
 
@@ -134,15 +139,14 @@ const decode = (str) => {
 }
 
 // download a file
-const download = (directurl, filename = ("Download_" + directurl + getTimeStamp() + ".bin")) => {
-    if (typeof Android !== "undefined" &&
-        typeof Android.isSozialnMedienWebapp === "function") {
+const download = (directurl, filename = ("sozialnmedien_" + getTimeStamp() + ".bin")) => {
+    if (existsAndroidInterface) {
         try {
             Android.download(directurl, filename);
             log("[AND]: download(): through Android WepAppInterface");
         }
-        catch (e) {
-            err(e);
+        catch (error) {
+            err(error);
             dialog.display("Download failed", "Failed to download " + filename + " from " + directurl);
         }
         return;
@@ -157,23 +161,22 @@ const download = (directurl, filename = ("Download_" + directurl + getTimeStamp(
 }
 
 // copy text
-const copyPlainTxt = ({ innerHTML }) => {
-    let copytext = innerHTML.replace(/<br>/g, '\n')
-                            .replace(/<[^>]*>/g, '');
+const copyPlainTxt = (copytext) => {
+    copytext = copytext.replace(/<br>/g, '\n')
+                           .replace(/<[^>]*>/g, '');
     navigator.clipboard.writeText(copytext)
     .then(() => {
         log("text copied to clipboard");
     })
-    .catch((e) => {
-        err(e);
-        try {
+    .catch((error) => {
+        err(error);
+        if (existsAndroidInterface) {
             Android.copyToClipboard(copytext);
-            Android.showToast("Text copied!");
             log("[AND]: copyPlainTxt(): through Android WepAppInterface");
         }
-        catch (error) {
-            err(error);
+        else {
             dialog.display("Oops!", "Copy text to clipboard failed");
+            throw error;
         }
     });
 }
@@ -397,26 +400,26 @@ log("common.js loaded");
 generateUserToken();
 
 // looks for updates to android app
-if (typeof Android !== "undefined" &&
-    typeof Android.isSozialnMedienWebapp === "function") {
+if (existsAndroidInterface) {
     let val;
     try {
         val = Android.updateAvailable();
         switch (val) {
             case "true":
                 dialog.display("Update available", "A new version of this Android app is available.", "Download", () => {
+                    Android.showToast("Downloading app, look into your notification panel");
                     Android.download("https://sozialnmedien.web.app/downloads/chat.app.web.sozialnmedien.apk",
                                      "chat.app.web.sozialnmedien.apk");
                 });
-                log("[AND]: updated Android app");
+                log("[AND]: downloaded Android app");
             break;
             case "false":
             case "failed":
             break;
         }
     }
-    catch (e) {
-        err(e);
+    catch (error) {
+        err(error);
     }
 }
 

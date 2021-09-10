@@ -157,8 +157,8 @@ $("#btnsend").addEventListener("click", (e) => {
         .then(() => {
             log("data pushed");
         },
-        (e) => {
-            err(e);
+        (error) => {
+            err(error);
             $("#txtmsg").value = msgbackup;
         });
     }
@@ -171,30 +171,46 @@ document.body.addEventListener("click", (e) => {
         log("img onclick(): src = " + e.target.src);
     }
     else if (e.target.id == "menu_dnImage") {
-        dialog.hide();
-        let flag = false;
-        for (img of $("img")) {
-            if (hasElementAsParent(img, longPressed)) {
-                download(img.src, img.alt.toLowerCase());
-                flag = true;
+        menu.hide();
+        setTimeout(() => {
+            let flag = false;
+            for (img of $("img")) {
+                if (hasElementAsParent(img, longPressed)) {
+                    download(img.src, img.alt.trim() + "_sozialnmedien_" + getTimeStamp() + ".png");
+                    flag = true;
+                }
             }
-        }
-        if (!flag) dialog.display("Oops!", "No image could be found.");
+            if (!flag) dialog.display("Oops!", "No image could be found.");
+            else if (existsAndroidInterface) Android.showToast("Look into your notification panel for download progress");
+        }, 500);
+        
     }
     else if (e.target.id == "menu_copy") {
         menu.hide();
-        copyPlainTxt(longPressed)
+        try {
+            copyPlainTxt(longPressed.innerHTML);
+        }
+        catch (error) {
+            return;
+        }
+        if (existsAndroidInterface) Android.showToast("Text copied!");
     }
     else if (e.target.id == "menu_copylinks") {
-        dialog.hide();
+        menu.hide();
         let flag = false;
         for (a of $("a")) {
             if (hasElementAsParent(a, longPressed)) {
-                copyPlainTxt(a.href);
+                try {
+                    copyPlainTxt(a.href);
+                }
+                catch (error) {
+                    return;
+                }
                 flag = true;
             }
         }
         if (!flag) dialog.display("Oops!", "No links could be found.");
+        else if (existsAndroidInterface) Android.showToast("Links copied!");
     }
     else if (e.target.id == "menu_unsend") {
         menu.hide();
@@ -206,8 +222,8 @@ document.body.addEventListener("click", (e) => {
                 .then(() => {
                     log("msg deleted, data updated");
                 },
-                (e) => {
-                    err(e);
+                (error) => {
+                    err(error);
                 });
             }
             else {
