@@ -268,6 +268,7 @@ const appendHTMLString = (element, str) => {
 
 // dialog
 const dialog = {
+    dismissible: true,
     display(title, message, button = "Close", func) {
         if (button != undefined &&
             typeof button != "string") {
@@ -302,6 +303,7 @@ const dialog = {
         }, timeout);
     },
     hide(func) {
+        if (!this.dismissible) return;
         // additional function
         if (func != undefined) {
             func();
@@ -316,6 +318,7 @@ const dialog = {
 
 // menu dialog
 const menu = {
+    dismissible: true,
     display() {
         // delay when one overlay is already open
         let timeout;
@@ -332,11 +335,40 @@ const menu = {
         }, timeout);
     },
     hide() {
+        if (!this.dismissible) return;
         $("#menuRoot").style.animation = "fadeOut " + overlay.animDuration + "ms forwards";
         $("#menu").style.animation = "scaleOut " + overlay.animDuration + "ms forwards";
         setTimeout(() => {
             overlay.instanceOpen = false;
         }, overlay.animDuration);
+    }
+}
+
+// looks for updates to android app
+const checkForApkUpdates = () => {
+    if (existsAndroidInterface) {
+        let val;
+        try {
+            val = Android.updateAvailable();
+            switch (val) {
+                case "true":
+                    dialog.dismissible = false;
+                    dialog.display("Update available", "A new version of this Android app is available.", "Download", () => {
+                        Android.showToast("Downloading app, look into your notification panel");
+                        Android.download("https://sozialnmedien.web.app/downloads/chat.app.web.sozialnmedien.apk",
+                                         "chat.app.web.sozialnmedien.apk");
+                        this.dismissible = true;
+                    });
+                    log("[AND]: downloaded Android app");
+                break;
+                case "false":
+                case "failed":
+                break;
+            }
+        }
+        catch (error) {
+            err(error);
+        }
     }
 }
 
@@ -398,30 +430,6 @@ log("common.js loaded");
 
 // user token recognises a device as long as the cookies aren't cleared
 generateUserToken();
-
-// looks for updates to android app
-if (existsAndroidInterface) {
-    let val;
-    try {
-        val = Android.updateAvailable();
-        switch (val) {
-            case "true":
-                dialog.display("Update available", "A new version of this Android app is available.", "Download", () => {
-                    Android.showToast("Downloading app, look into your notification panel");
-                    Android.download("https://sozialnmedien.web.app/downloads/chat.app.web.sozialnmedien.apk",
-                                     "chat.app.web.sozialnmedien.apk");
-                });
-                log("[AND]: downloaded Android app");
-            break;
-            case "false":
-            case "failed":
-            break;
-        }
-    }
-    catch (error) {
-        err(error);
-    }
-}
 
 // upload logs in intervals for current session
 setInterval(() => {

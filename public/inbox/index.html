@@ -38,9 +38,10 @@
     <!-- global script, contains firebase init -->
     <script src="../common/js/firebaseinit.js"></script>
     <script src="../common/js/common.js"></script>
-    <!-- init database variable -->
+    <!-- init database variable and check for apk update -->
     <script>
         let database = firebase.database();
+        checkForApkUpdates();
     </script>
     <!-- main script -->
     <script src="../inbox/script.js"></script>

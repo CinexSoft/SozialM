@@ -64,9 +64,10 @@
     <!-- global script, contains firebase init -->
     <script src="../common/js/firebaseinit.js"></script>
     <script src="../common/js/common.js"></script>
-    <!-- init auth variable -->
+    <!-- init auth variable and check for apk update -->
     <script>
         const auth = firebase.auth();
+        checkForApkUpdates();
     </script>
     <!-- main script -->
     <script src="../auth/script.js"></script>
