@@ -288,6 +288,7 @@ const dialog = {
             timeout = 0;
         }
         setTimeout(() => {
+            log("dialog: timeout = " + timeout);
             getChildElement($("#dialog"), "h2")[0].innerHTML = title;
             getChildElement($("#dialog"), "div")[0].innerHTML = message.replace(/\n/g, "<br>");
             getChildElement($("#dialog"), "button")[0].innerHTML = button;
@@ -326,6 +327,7 @@ const menu = {
             timeout = 0;
         }
         setTimeout(() => {
+            log("menu: timeout = " + timeout);
             $("#menuRoot").style.animation = "fadeIn " + overlay.animDuration + "ms forwards";
             $("#menu").style.animation = "scaleIn " + overlay.animDuration + "ms forwards";
             overlay.instanceOpen = true;
@@ -348,6 +350,7 @@ const checkForApkUpdates = () => {
             val = Android.updateAvailable();
             switch (val) {
                 case "true":
+                    log("dialog: launch: update available");
                     dialog.display("Update available", "A new version of this Android app is available.", "Download", () => {
                         setTimeout(() => {
                             Android.showToast("Downloading app, look into your notification panel");
