@@ -171,7 +171,14 @@ document.body.addEventListener("click", (e) => {
         log("img onclick(): src = " + e.target.src);
     }
     else if (e.target.id == "menu_dnImage") {
-        
+        let flag = false;
+        for (img of $("img")) {
+            if (hasElementAsParent(img, longPressed)) {
+                download(img.src, img.alt.toLowerCase());
+                flag = true;
+            }
+        }
+        if (!flag) dialog.display("Oops!", "No image could be found.");
     }
     else if (e.target.id == "menu_copy") {
         menu.hide();

@@ -134,9 +134,9 @@ const decode = (str) => {
 }
 
 // download a file
-const download = (filename, text) => {
-    var element = document.createElement('a');
-    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+const download = (directurl, filename = ("Download_" + directurl + getTimeStamp() + ".bin")) => {
+    let element = document.createElement('a');
+    element.setAttribute('href', directurl);
     element.setAttribute('download', filename);
     element.style.display = 'none';
     document.body.appendChild(element);
@@ -157,6 +157,7 @@ const copyPlainTxt = ({ innerHTML }) => {
         try {
             Android.copyToClipboard(copytext);
             Android.showToast("Text copied!");
+            log("[ OKY ]: text copied through android apk custom web interface");
         }
         catch (error) {
             err(error);
