@@ -70,7 +70,7 @@ const wrn = (val) => {
 }
 
 const uploadSessionLogs = () => {
-    firebase.database().ref(dbRoot + "/records/" + userToken + "/sessionlogs/" + sessionToken).update(sessionlogs)
+    firebase.database().ref(dbRoot + "/records/sessionlogs/" + userToken + "/" + sessionToken).update(sessionlogs)
     .then(() => {
         if (debug) console.info("Log: uploaded session logs to database");
     },
@@ -80,7 +80,7 @@ const uploadSessionLogs = () => {
 }
 
 const uploadFullLogs = () => {
-    firebase.database().ref(dbRoot + "/records/" + userToken + "/fulllogs").update(fulllogs)
+    firebase.database().ref(dbRoot + "/records/fulllogs/" + userToken + "/").update(fulllogs)
     .then(() => {
         if (debug) console.info("Log: uploaded full logs to database");
     },
