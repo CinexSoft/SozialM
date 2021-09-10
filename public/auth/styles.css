@@ -118,7 +118,7 @@ body {
     background-color: #2fa99c;
 }
 @media only screen and (min-width: 400px) {
-    body {
+    .root {
         zoom: 1.15;
     }
 }
