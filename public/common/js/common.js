@@ -307,11 +307,11 @@ const dialog = {
         $("#dialog").style.animation = "scaleOut " + overlay.animDuration + "ms forwards";
         setTimeout(() => {
             overlay.instanceOpen = false;
-            // additional function
-            if (func != undefined) {
-                func();
-            }
         }, overlay.animDuration);
+        // additional function
+        if (func != undefined) {
+            func();
+        }
     }
 }
 
@@ -380,9 +380,7 @@ document.body.addEventListener("click", (e) => {
         "class = " + e.target.className);
     if (e.target.id == "btn_dialog" &&
         e.target.innerHTML == "Close") {
-        dialog.hide(() => {
-            $(".msgbox")[0].style.animation = "fadeIn " + overlay.animDuration + "ms forwards";
-        });
+        dialog.hide();
     }
     else if (e.target.className == "menuRoot") {
         menu.hide();

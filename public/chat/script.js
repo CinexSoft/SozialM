@@ -70,7 +70,6 @@ const startDBListener = () => {
             hljs.highlightAll();
         }
         dialog.hide(() => {
-            $(".msgbox")[0].style.animation = "fadeIn " + overlay.animDuration + "ms forwards";
             checkForApkUpdates();
         });
         loadTheme();
@@ -147,7 +146,7 @@ $("#btnsend").addEventListener("click", (e) => {
         $("#txtmsg").style.borderRadius = "40px";
         if (msg.length > 1024 * 2) {
             dialog.display("Warning", "Text exceeds limit of 2KB");
-            $(".msgbox")[0].style.animation = "fadeOut " + overlay.animDuration + "ms forwards";
+            $("#txtmsg").value = msgbackup;
             return;
         }
         $("#txtmsg").focus();

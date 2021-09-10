@@ -120,7 +120,6 @@ body {
     padding: 0 10px 0;
     display: flex;
     flex-direction: row;
-    visibility: hidden;
 }
 .msgbox textarea {
     margin: 8px 0 0;
