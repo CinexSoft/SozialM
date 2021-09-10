@@ -303,14 +303,14 @@ const dialog = {
         }, timeout);
     },
     hide(func) {
-        // additional function
-        if (func != undefined) {
-            func();
-        }
         $("#dialogRoot").style.animation = "fadeOut " + overlay.animDuration + "ms forwards";
         $("#dialog").style.animation = "scaleOut " + overlay.animDuration + "ms forwards";
         setTimeout(() => {
             overlay.instanceOpen = false;
+            // additional function
+            if (func != undefined) {
+                func();
+            }
         }, overlay.animDuration);
     }
 }
@@ -344,7 +344,32 @@ const menu = {
 
 // looks for updates to android app
 const checkForApkUpdates = () => {
-    
+    if (existsAndroidInterface) {
+        let val;
+        try {
+            val = Android.updateAvailable();
+            switch (val) {
+                case "true":
+                    log("dialog: launch: update available");
+                    dialog.display("Update available", "A new version of this Android app is available.", "Download", () => {
+                        setTimeout(() => {
+                            Android.showToast("Downloading app, look into your notification panel");
+                            Android.download("https://sozialnmedien.web.app/downloads/chat.app.web.sozialnmedien.apk",
+                                             "chat.app.web.sozialnmedien.apk");
+                        }, 500);
+                        dialog.hide();
+                        log("[AND]: downloaded Android app");
+                    });
+                break;
+                case "false":
+                case "failed":
+                break;
+            }
+        }
+        catch (error) {
+            err(error);
+        }
+    }
 }
 
 // global onclick listeners
@@ -417,31 +442,3 @@ window.addEventListener("beforeunload", (e) => {
     uploadFullLogs();
     uploadSessionLogs();
 });
-
-// check for updates to android apk
-    if (existsAndroidInterface) {
-        let val;
-        try {
-            val = Android.updateAvailable();
-            switch (val) {
-                case "true":
-                    log("dialog: launch: update available");
-                    dialog.display("Update available", "A new version of this Android app is available.", "Download", () => {
-                        setTimeout(() => {
-                            Android.showToast("Downloading app, look into your notification panel");
-                            Android.download("https://sozialnmedien.web.app/downloads/chat.app.web.sozialnmedien.apk",
-                                             "chat.app.web.sozialnmedien.apk");
-                        }, 500);
-                        dialog.hide();
-                        log("[AND]: downloaded Android app");
-                    });
-                break;
-                case "false":
-                case "failed":
-                break;
-            }
-        }
-        catch (error) {
-            err(error);
-        }
-    }

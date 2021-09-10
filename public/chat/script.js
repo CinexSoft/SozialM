@@ -71,6 +71,7 @@ const startDBListener = () => {
         }
         dialog.hide(() => {
             $(".msgbox")[0].style.animation = "fadeIn " + overlay.animDuration + "ms forwards";
+            checkForApkUpdates();
         });
         loadTheme();
         log("db update fetched");
@@ -311,4 +312,5 @@ document.body.addEventListener("touchmove", (e) => {
     clearTimeout(longPressTimeout);
 });
 
+overlay.instanceOpen = true;
 startDBListener();
