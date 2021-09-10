@@ -268,7 +268,6 @@ const appendHTMLString = (element, str) => {
 
 // dialog
 const dialog = {
-    dismissible: true,
     display(title, message, button = "Close", func) {
         if (button != undefined &&
             typeof button != "string") {
@@ -303,22 +302,20 @@ const dialog = {
         }, timeout);
     },
     hide(func) {
-        if (!this.dismissible) return;
+        // additional function
+        if (func != undefined) {
+            func();
+        }
         $("#dialogRoot").style.animation = "fadeOut " + overlay.animDuration + "ms forwards";
         $("#dialog").style.animation = "scaleOut " + overlay.animDuration + "ms forwards";
         setTimeout(() => {
             overlay.instanceOpen = false;
-            // additional function
-            if (func != undefined) {
-                func();
-            }
         }, overlay.animDuration);
     }
 }
 
 // menu dialog
 const menu = {
-    dismissible: true,
     display() {
         // delay when one overlay is already open
         let timeout;
@@ -335,7 +332,6 @@ const menu = {
         }, timeout);
     },
     hide() {
-        if (!this.dismissible) return;
         $("#menuRoot").style.animation = "fadeOut " + overlay.animDuration + "ms forwards";
         $("#menu").style.animation = "scaleOut " + overlay.animDuration + "ms forwards";
         setTimeout(() => {
@@ -352,17 +348,15 @@ const checkForApkUpdates = () => {
             val = Android.updateAvailable();
             switch (val) {
                 case "true":
-                    dialog.dismissible = false;
                     dialog.display("Update available", "A new version of this Android app is available.", "Download", () => {
                         setTimeout(() => {
                             Android.showToast("Downloading app, look into your notification panel");
                             Android.download("https://sozialnmedien.web.app/downloads/chat.app.web.sozialnmedien.apk",
                                              "chat.app.web.sozialnmedien.apk");
                         }, 500);
-                        dialog.dismissible = true;
                         dialog.hide();
+                        log("[AND]: downloaded Android app");
                     });
-                    log("[AND]: downloaded Android app");
                 break;
                 case "false":
                 case "failed":
