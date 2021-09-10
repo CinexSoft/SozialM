@@ -89,7 +89,7 @@ body {
 .root h {
     margin: 10px auto 5px;
     width: 100%;
-    color: red;
+    color: #555;
     font-size: 0.8rem;
     display: none;
     text-align: center;
