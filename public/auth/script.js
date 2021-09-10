@@ -46,8 +46,10 @@ $("#btn_login").addEventListener("click", (e) => {
         localStorage.setItem("userdata.uid", user.uid);
     })
     .catch((error) => {
-        $("#login_err").innerHTML = (error.code != "auth/invalid-argument" && error.code != "auth/internal-error") ?
-                                     error.message : "An error occurred, try again later";
+        $("#login_err").innerHTML = ((error.code != "auth/operation-not-allowed" &&
+                                      error.code != "auth/invalid-argument" &&
+                                      error.code != "auth/internal-error") ?
+                                      error.message : "An error occurred, try again later").slice(0, 64) + "...";
         $("#login_err").style.display = "block";
         err("Error: " + error.message + " code: " + error.code);
     });
@@ -69,7 +71,7 @@ $("#btn_signup").addEventListener("click", (e) => {
         localStorage.setItem("userdata.uid", user.uid);
     })
     .catch((error) => {
-        $("#signup_err").innerHTML = (error.code != "auth/invalid-argument" && error.code != "auth/internal-error") ?
+        $("#signup_err").innerHTML = (error.code != "auth/operation-not-allowed" error.code != "auth/invalid-argument" && error.code != "auth/internal-error") ?
                                       error.message : "An error occurred, try again later";
         $("#signup_err").style.display = "block";
         err("Error: " + error.message + " code: " + error.code);
