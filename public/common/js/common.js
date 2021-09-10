@@ -304,14 +304,14 @@ const dialog = {
     },
     hide(func) {
         if (!this.dismissible) return;
-        // additional function
-        if (func != undefined) {
-            func();
-        }
         $("#dialogRoot").style.animation = "fadeOut " + overlay.animDuration + "ms forwards";
         $("#dialog").style.animation = "scaleOut " + overlay.animDuration + "ms forwards";
         setTimeout(() => {
             overlay.instanceOpen = false;
+            // additional function
+            if (func != undefined) {
+                func();
+            }
         }, overlay.animDuration);
     }
 }
