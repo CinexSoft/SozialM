@@ -143,15 +143,22 @@ const download = (filename, text) => {
 
 // copy text
 const copyPlainTxt = ({ innerHTML }) => {
-    navigator.clipboard.writeText(
-        innerHTML.replace(/<br>/g, '\n')
-                 .replace(/<[^>]*>/g, '')
-    )
+    let copytext = innerHTML.replace(/<br>/g, '\n')
+                            .replace(/<[^>]*>/g, '');
+    navigator.clipboard.writeText(copytext)
     .then(() => {
+        log("text copied to clipboard");
     })
     .catch((e) => {
         err(e);
-        dialog.display("Uh oh!", "Copy text to clipboard failed");
+        try {
+            Android.copyToClipboard(copytext);
+            Android.showToast("Text copied!");
+        }
+        catch (error) {
+            err(error);
+            dialog.display("Uh oh!", "Copy text to clipboard failed");
+        }
     });
 }
 
