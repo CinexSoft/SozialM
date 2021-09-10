@@ -52,11 +52,14 @@ $("#btn_login").addEventListener("click", (e) => {
     })
     .catch((error) => {
         $("#login_info").style.color = "red";
-        $("#login_info").innerHTML = ((error.code != "auth/operation-not-allowed" &&
-                                      error.code != "auth/invalid-argument" &&
-                                      error.code != "auth/internal-error") ?
-                                      error.message : "An error occurred, try again later").slice(0, 65) +
-                                     (error.message.length > 64 ? "..." : "");
+        let outputmsg = error.code != "auth/operation-not-allowed" &&
+                        error.code != "auth/invalid-argument" &&
+                        error.code != "auth/internal-error" ?
+                        error.message : "An error occurred, try again later";
+        if (outputmsg.length > 64) {
+            outputmsg = outputmsg.slice(0, 65) + "...";
+        }
+        $("#login_info").innerHTML = outputmsg;
         $("#login_info").style.display = "block";
         err("Code: " + error.code + " msg: " + error.message);
     });
@@ -82,11 +85,14 @@ $("#btn_signup").addEventListener("click", (e) => {
     })
     .catch((error) => {
         $("#signup_info").style.color = "red";
-        $("#signup_info").innerHTML = ((error.code != "auth/operation-not-allowed" &&
-                                      error.code != "auth/invalid-argument" &&
-                                      error.code != "auth/internal-error") ?
-                                      error.message : "An error occurred, try again later").slice(0, 65) +
-                                     (error.message.length > 64 ? "..." : "");
+        let outputmsg = error.code != "auth/operation-not-allowed" &&
+                        error.code != "auth/invalid-argument" &&
+                        error.code != "auth/internal-error" ?
+                        error.message : "An error occurred, try again later";
+        if (outputmsg.length > 64) {
+            outputmsg = outputmsg.slice(0, 65) + "...";
+        }
+        $("#signup_info").innerHTML = outputmsg;
         $("#signup_info").style.display = "block";
         err("Code: " + error.code + " msg: " + error.message);
     });
