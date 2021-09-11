@@ -69,7 +69,7 @@ const startDBListener = () => {
             $("#chatarea").innerHTML.match(/code/i)) {
             hljs.highlightAll();
         }
-        dialog.hide(() => {
+        dialog.hide("alert", () => {
             checkForApkUpdates();
         });
         loadTheme();
@@ -145,7 +145,7 @@ $("#btnsend").addEventListener("click", (e) => {
         $("#msgpreview").style.display = "none";
         $("#txtmsg").style.borderRadius = "40px";
         if (msg.length > 1024 * 2) {
-            dialog.display("Warning", "Text exceeds limit of 2KB");
+            dialog.display("alert", "Warning", "Text exceeds limit of 2KB");
             $("#txtmsg").value = msgbackup;
             return;
         }
@@ -180,10 +180,9 @@ document.body.addEventListener("click", (e) => {
                     flag = true;
                 }
             }
-            if (!flag) dialog.display("Oops!", "No image could be found.");
+            if (!flag) dialog.display("alert", "Oops!", "No image could be found.");
             else if (existsAndroidInterface) Android.showToast("Look into your notification panel for download progress");
         }, 500);
-        
     }
     else if (e.target.id == "menu_copy") {
         menu.hide();
@@ -209,7 +208,7 @@ document.body.addEventListener("click", (e) => {
                 flag = true;
             }
         }
-        if (!flag) dialog.display("Oops!", "No links could be found.");
+        if (!flag) dialog.display("alert", "Oops!", "No links could be found.");
         else if (existsAndroidInterface) Android.showToast("Links copied!");
     }
     else if (e.target.id == "menu_unsend") {
@@ -227,11 +226,11 @@ document.body.addEventListener("click", (e) => {
                 });
             }
             else {
-                dialog.display("Not allowed", "You can only unsend a message within 1 hour of sending it.");
+                dialog.display("alert", "Not allowed", "You can only unsend a message within 1 hour of sending it.");
             }
         }
         else {
-            dialog.display("Not allowed", "You can unsend a message only if you have sent it.");
+            dialog.display("alert", "Not allowed", "You can unsend a message only if you have sent it.");
         }
     }
     else if (e.target.id == "menu_reply") {
@@ -297,7 +296,6 @@ document.body.addEventListener("pointerup", (e) => {
     e.target.style.userSelect = "auto";
     clearTimeout(longPressTimer);
     clearTimeout(longPressTimeout);
-    
 });
 // swipe gesture listener
 document.body.addEventListener("touchmove", (e) => {

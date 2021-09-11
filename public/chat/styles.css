@@ -1,17 +1,12 @@
 body {
     background-color: #ece5dd;
 }
-.dialogRoot {
+.alertDialogRoot {
     visibility: visible;
 }
-.menuRoot {
-    visibility: hidden;
-}
-.menuRoot .menu div button:last-child {
-    border-radius: 0 0 10px 10px;
-}
-.dialogRoot .dialog,
-.menuRoot .menu {
+.alertDialog,
+.actionDialog,
+.menu {
     top: 10px;
 }
 .titlebar {
@@ -65,7 +60,7 @@ body {
     width: calc(100% - 20px);
     transition-duration: 250ms;
 }
-.chatarea .bubbles > div {
+.chatarea .bubbles div {
     border: 0;
     border-radius: 10px;
     padding: 5px;

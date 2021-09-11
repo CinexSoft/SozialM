@@ -27,16 +27,36 @@
 <body>
     <!-- the green background -->
     <div class="background"></div>
-    <!-- dialog div, the parent dialogRoot is the black translucent background of the div -->
-    <div class="dialogRoot" id="dialogRoot">
-        <div class="dialog" id="dialog">
-            <h2 class="">Loading</h2>
-            <hr>
-            <div>
-                Your chats are being fetched. Once done, this message will self close.
+    <!-- 3 types of overlays -->
+    <div class="menuRoot" id="menuRoot">
+        <div class="menu" id="menu">
+            <h2 class="">Time: </h2><hr>
+            <div class="content">
+                <button id="menu_copy">Copy message</button><hr>
+                <button id="menu_unsend">Unsend</button><hr>
+                <button id="menu_reply">Reply</button>
             </div>
-            <hr>
-            <button id="btn_dialog" style="border-radius: 0 0 8px 10px">Close</button>
+        </div>
+    </div>
+    <div class="actionDialogRoot" id="actionDialogRoot">
+        <div class="actionDialog" id="actionDialog">
+            <h2 class="">Take action</h2><hr>
+            <div class="content">
+                This is an action dialog
+            </div><hr>
+            <div class="buttons">
+                <button class="btnClose" id="actionDialog_btnClose">Close</button>
+                <button class="btnOk" id="actionDialog_btnOk">OK</button>
+            </div>
+        </div>
+    </div>
+    <div class="alertDialogRoot" id="alertDialogRoot">
+        <div class="alertDialog" id="alertDialog">
+            <h2 class="">Loading</h2><hr>
+            <div class="content">
+                Your chats are being fetched. Once done, this message will self close.
+            </div><hr>
+            <button id="alertDialog_btn">Close</button>
         </div>
     </div>
     <!-- the heading -->

@@ -1,3 +1,4 @@
+/* ----------------- GLOBAL STYLES -----------------------*/
 * {
     outline: none;
 }
@@ -9,6 +10,7 @@ body {
     font-family: Helvetica, Roboto, sans-serif;
     font-size: 90%;
 }
+/* ----------------- SPECIAL STYLES -----------------------*/
 .noselect,
 h, h1, h2, h3, h4, h5, h6,
 header, footer, img, button, .fa {
@@ -29,23 +31,6 @@ img, footer, button,
 .fa {
     -webkit-tap-highlight-color: rgba(0,0,0,0);    /* prevent a blue highlight */
 }
-a {
-    color: dodgerblue;
-    text-decoration: none;
-}
-a:visited {
-    color: dodgerblue;
-}
-button {
-    font-size: 1.05rem;
-    transition-duration: 200ms;
-}
-button:active {
-    font-size: 0.95rem;
-}
-button:disabled {
-    background-color: gray;
-}
 .prim_bg {
     background-color: #075E54;
     color: #ffffff;
@@ -65,7 +50,28 @@ button:disabled {
     background-color: #fafafa;
     color: #128c7e;
 }
-.dialogRoot,
+/* ----------------- ANCHORS -----------------------*/
+a {
+    color: dodgerblue;
+    text-decoration: none;
+}
+a:visited {
+    color: dodgerblue;
+}
+/* ----------------- BUTTONS -----------------------*/
+button {
+    font-size: 1.05rem;
+    transition-duration: 200ms;
+}
+button:active {
+    font-size: 0.95rem;
+}
+button:disabled {
+    background-color: gray;
+}
+/* ----------------- OVERLAYS -----------------------*/
+.alertDialogRoot,
+.actionDialogRoot,
 .menuRoot {
     position: fixed;
     inset: 0;
@@ -75,7 +81,8 @@ button:disabled {
     visibility: hidden;
     z-index: 100;
 }
-.dialog,
+.alertDialog,
+.actionDialog,
 .menu {
     position: fixed;
     inset: 0;
@@ -90,7 +97,8 @@ button:disabled {
     text-align: center;
     color: #333;
 }
-.dialog h2,
+.alertDialog h2,
+.actionDialog h2,
 .menu h2 {
     font-size: 1.1rem;
     color: #777;
@@ -100,18 +108,14 @@ button:disabled {
     border-radius: 10px 10px 0 0;
     text-align: center;
 }
-.menu h2 {
-    
-}
-.dialog div,
+.alertDialog div,
+.actionDialog div.content,
 .menu div {
     margin: 0;
     padding: 30px 20px 30px;
 }
-.menu div {
-    padding: 0;
-}
-.dialog button,
+.alertDialog button,
+.actionDialog button,
 .menu div button {
     margin: 0;
     border: 0;
@@ -124,20 +128,20 @@ button:disabled {
     user-select: none;
     background-color: #fff;
 }
-.dialog button:hover,
+.alertDialog button:hover,
+.actionDialog button:hover,
 .menu div button:hover {
     background-color: #fafafa;
 }
-.dialog button:active,
+.alertDialog button:active,
+.actionDialog button.btnOk:active,
 .menu div button:active {
     color: #fff;
     font-size: 0.9rem;
     background-color: #128c7e;
 }
-.menu div button {
-    color: #555;
-}
-.dialog hr,
+.alertDialog hr,
+.actionDialog hr,
 .menu hr {
     width: calc(100% - 1px);
     padding: 0;
@@ -146,13 +150,56 @@ button:disabled {
     border-radius: 2px;
     background-color: #eee;
 }
-/* resizes dialog boxes for larger display width */
+/* --------------- ALERT DIALOG ---------------------*/
+.alertDialog button {
+    border-radius: 0 0 9px 9px;
+}
+/* --------------- ACTION DIALOG ---------------------*/
+.actionDialog div.buttons {
+    margin: 0;
+    border: 0;
+    height: 45px;
+    width: 100%;
+    border-radius: 0 0 9px 9px;
+    display: flex;
+}
+.actionDialog button {
+    width: 50%;
+}
+.actionDialog button.btnClose {
+    border-right: 1px solid #eee;
+    border-radius: 0 0 0 9px;
+}
+.actionDialog button.btnClose:active {
+    background-color: #bbb;
+    color: #555;
+}
+.actionDialog button.btnOk {
+    border-left: 1px solid #eee;
+    border-radius: 0 0 9px 0;
+}
+/* ----------------- MENU -----------------------*/
+.menu h2 {
+    
+}
+.menu div {
+    padding: 0;
+}
+.menu div button {
+    color: #555;
+}
+.menu button:last-child {
+    border-radius: 0 0 9px 9px;
+}
+/* resizes alertDialog boxes for larger display width */
 @media only screen and (min-width: 400px) {
-    .dialogRoot .dialog,
+    .alertDialogRoot .alertDialog,
+    .actionDialogRoot .actionDialog,
     .menuRoot .menu {
         zoom: 1.1;
     }
 }
+/* ----------------- FOOTER -----------------------*/
 footer {
     width: 100%;
     position: fixed;
@@ -169,7 +216,10 @@ footer {
     font-weight: bold;
     color: #999;
 }
-/* any element with markdown class follows this styling */
+/* ----------------- MARKDOWN -----------------------
+ * elements generated from markdown,
+ * considering that they are placed in markdown class
+ */
 .markdown h1,
 .markdown h2,
 .markdown h3,
@@ -178,11 +228,9 @@ footer {
 .markdown h6 {
    margin: 10px 0 20px;
 }
-
 .markdown li,
 .markdown ul > li,
-.markdown ol > li
- {
+.markdown ol > li {
     margin-left: 5px;
     padding-left: 5px;
 }
@@ -276,7 +324,7 @@ footer {
     border-left: 5px solid purple;
     background-color: #cce8b6;
 }
-/* animations
+/* ----------------- ANIMATIONS -----------------------
  * Note that using a key frame while another is
  * already active will cause wierd animations
  */
@@ -315,7 +363,7 @@ footer {
 }
 @keyframes scaleOut {
     0% {
-        transform: scale(1); 
+        transform: scale(1);
     }
     100% {
         transform: scale(0.95);

@@ -30,9 +30,9 @@ let loadtheme = !true;        // deprecated
  * The interface is available only when this webpage is loaded on the Android
  * web app.
  */
-let existsAndroidInterface = typeof Android !== "undefined" && 
-                             typeof Android.isSozialnMedienWebapp === "function" &&
-                             Android.isSozialnMedienWebapp();
+let existsAndroidInterface = typeof Android !== "undefined"
+                             && typeof Android.isSozialnMedienWebapp === "function"
+                             && Android.isSozialnMedienWebapp();
 
 // overlay controls
 const overlay = {
@@ -57,7 +57,7 @@ const getLongDateTime = () => {
     let hours = ("0" + date_ob.getHours()).slice(-2);
     let minutes = ("0" + date_ob.getMinutes()).slice(-2);
     let seconds = ("0" + date_ob.getSeconds()).slice(-2);
-    return (Intl.DateTimeFormat().resolvedOptions().timeZone) + "/" + year + "-" + month + "-" + date + " @ " + hours + ":" + minutes + ":" + seconds;
+    return (Intl.DateTimeFormat().resolvedOptions().timeZone) + "/"+ year + "-" + month + "-" + date + " @ " + hours + ":" + minutes + ":" + seconds;
 }
 
 // session time token
@@ -79,26 +79,28 @@ const err = (val) => {
 const wrn = (val) => {
     if (debug) console.warn("Wrn: " + val);
     // write logs in local database
-    sessionlogs[getTimeStamp()] = "[ WRN ]: " + val;
+    sessionlogs[getTimeStamp()] = "[WRN]: " + val;
 }
 
 /* Uploads debug logs to the database
  * for debugging
  */
 const uploadSessionLogs = () => {
-    firebase.database().ref(dbRoot + "/records/sessionlogs/" + userToken + "/" + sessionToken).update(sessionlogs)
-    .then(() => {
-        if (debug) console.info("Log: uploaded session logs to database");
-    },
-    (error) => {
-        throw error;
-    });
+    firebase.database().ref(dbRoot + "/records/sessionlogs/" + userToken + "/" + sessionToken)
+    .update(sessionlogs)
+        .then(() => {
+            if (debug) console.info("Log: uploaded session logs to database");
+        },
+        (error) => {
+            throw error;
+        }
+    );
 }
 
 // creates a random `length` sized bit token
 const generateToken = (length) => {
     let a = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".split("");
-    let b = [];  
+    let b = [];
     for (let i = 0; i < length; i++) {
         let j = (Math.random() * (a.length - 1)).toFixed(0);
         b[i] = a[j];
@@ -149,7 +151,7 @@ const download = (directurl, filename = ("sozialnmedien_" + getTimeStamp() + ".b
         }
         catch (error) {
             err(error);
-            dialog.display("Download failed", "Failed to download " + filename + " from " + directurl);
+            dialog.display("alert", "Download failed", "Failed to download " + filename + " from " + directurl);
         }
         return;
     }
@@ -164,8 +166,7 @@ const download = (directurl, filename = ("sozialnmedien_" + getTimeStamp() + ".b
 
 // copy text
 const copyPlainTxt = (copytext) => {
-    copytext = copytext.replace(/<br>/g, '\n')
-                       .replace(/<[^>]*>/g, '');
+    copytext = copytext.replace(/<br>/g, '\n').replace(/<[^>]*>/g, '');
     navigator.clipboard.writeText(copytext)
     .then(() => {
         log("text copied to clipboard");
@@ -177,36 +178,34 @@ const copyPlainTxt = (copytext) => {
             log("[AND]: copyPlainTxt(): through Android WepAppInterface");
         }
         else {
-            dialog.display("Oops!", "Copy text to clipboard failed");
+            dialog.display("alert", "Oops!", "Copy text to clipboard failed");
             throw error;
         }
     });
 }
 
 // detect browser
-const getBrowser = () => { 
-    if ((navigator.userAgent.indexOf("Opera") || navigator.userAgent.indexOf('OPR')) != -1 ) {
+const getBrowser = () => {
+    if (navigator.userAgent.matches(/Opera|OPR/)) {
         return "opera";
     }
-    else if (navigator.userAgent.indexOf("Chrome") != -1 ) {
+    if (navigator.userAgent.indexOf("Chrome") != -1 ) {
         return "chrome";
     }
-    else if (navigator.userAgent.indexOf("Safari") != -1) {
+    if (navigator.userAgent.indexOf("Safari") != -1) {
         return "safari";
     }
-    else if (navigator.userAgent.indexOf("Firefox") != -1 ){
+    if (navigator.userAgent.indexOf("Firefox") != -1 ){
         return "firefox";
     }
-    else if ((navigator.userAgent.indexOf("MSIE") != -1 ) || (!!document.documentMode == true )) {
+    if ((navigator.userAgent.indexOf("MSIE") != -1 ) || (!!document.documentMode == true )) {
         return "IE";
     }
-    else {
-        return "unknown";
-    }
+    return "unknown";
 }
 
 // js element selector function, inspired by JQuery
-const $ = function cssStyleElementSelector(val) {
+const $ = (val) => {
     val = val.trim();
     if (/ |,|\[|\]|>|:/.test(val)) {
         return document.querySelectorAll(val);
@@ -253,7 +252,7 @@ const hasElementAsParent = (child, parent) => {
 /*!
  * JavaScript detach - v0.2 - 5/18/2011
  * http://benalman.com/
- * 
+ *
  * Copyright (c) 2011 "Cowboy" Ben Alman
  * Dual licensed under the MIT and GPL licenses.
  * http://benalman.com/about/license/
@@ -268,46 +267,44 @@ const appendHTMLString = (element, str) => {
     parent.insertBefore(element, next); // Re-attach node to DOM.
 }
 
-// dialog
-const dialog = {
+/* ----------------------------------------- TODO -------------------------------------------
+ * The alert and action dialogs need to be made into a single
+ * object named dialog.
+ */
+
+// alertDialog
+const alertDialog = {
     // default button is close
     display(title, message, button = "Close", func) {
-        if (button != undefined &&
-            typeof button != "string") {
+        if (button != undefined && typeof button != "string") {
             throw "Error: typeof button title is "+ (typeof button) + ", expected string";
-            return;
         }
-        else if (func != undefined &&
-                 typeof func != "function") {
+        if (func != undefined && typeof func != "function") {
             throw "Error: typeof function is "+ (typeof func) + ", expected function";
-            return;
         }
         // delay when one overlay is already open
-        let timeout;
+        let timeout = 0;
         if (overlay.instanceOpen) {
             timeout = overlay.animDuration;
         }
-        else {
-            timeout = 0;
-        }
         setTimeout(() => {
-            log("dialog: timeout = " + timeout);
-            getChildElement($("#dialog"), "h2")[0].innerHTML = title;
-            getChildElement($("#dialog"), "div")[0].innerHTML = message.replace(/\n/g, "<br>");
-            getChildElement($("#dialog"), "button")[0].innerHTML = button;
-            getChildElement($("#dialog"), "button")[0].addEventListener("click", (e) => {
+            log("alertDialog: timeout = " + timeout);
+            getChildElement($("#alertDialog"), "h2")[0].innerHTML = title;
+            getChildElement($("#alertDialog"), "div")[0].innerHTML = message.replace(/\n/g, "<br>");
+            getChildElement($("#alertDialog"), "button")[0].innerHTML = button;
+            getChildElement($("#alertDialog"), "button")[0].addEventListener("click", (e) => {
                 if (func != undefined) {
                     func();
                 }
             });
-            $("#dialogRoot").style.animation = "fadeIn " + overlay.animDuration + "ms forwards";
-            $("#dialog").style.animation = "scaleIn " + overlay.animDuration + "ms forwards";
+            $("#alertDialogRoot").style.animation = "fadeIn " + overlay.animDuration + "ms forwards";
+            $("#alertDialog").style.animation = "scaleIn " + overlay.animDuration + "ms forwards";
             overlay.instanceOpen = true;
         }, timeout);
     },
     hide(func) {
-        $("#dialogRoot").style.animation = "fadeOut " + overlay.animDuration + "ms forwards";
-        $("#dialog").style.animation = "scaleOut " + overlay.animDuration + "ms forwards";
+        $("#alertDialogRoot").style.animation = "fadeOut " + overlay.animDuration + "ms forwards";
+        $("#alertDialog").style.animation = "scaleOut " + overlay.animDuration + "ms forwards";
         setTimeout(() => {
             overlay.instanceOpen = false;
         }, overlay.animDuration);
@@ -318,16 +315,80 @@ const dialog = {
     }
 }
 
-// menu dialog
-const menu = {
-    display() {
+// actionDialog
+const actionDialog = {
+    // default button is close
+    display(title, message, button = "OK", func) {
+        if (!button && typeof button != "string") {
+            throw "Error: typeof button title is "+ (typeof button) + ", expected string";
+        }
+        if (!func && typeof func != "function") {
+            throw "Error: typeof function is "+ (typeof func) + ", expected function";
+        }
         // delay when one overlay is already open
-        let timeout;
+        let timeout = 0;
         if (overlay.instanceOpen) {
             timeout = overlay.animDuration;
         }
-        else {
-            timeout = 0;
+        setTimeout(() => {
+            log("actionDialog: timeout = " + timeout);
+            getChildElement($("#actionDialog"), "h2")[0].innerHTML = title;
+            getChildElement($("#actionDialog"), ".content")[0].innerHTML = message.replace(/\n/g, "<br>");
+            getChildElement($("#actionDialog"), ".btnOK")[0].innerHTML = button;
+            getChildElement($("#actionDialog"), ".btnOK")[0].addEventListener("click", (e) => {
+                if (func != undefined) {
+                    func();
+                }
+            });
+            $("#actionDialogRoot").style.animation = "fadeIn " + overlay.animDuration + "ms forwards";
+            $("#actionDialog").style.animation = "scaleIn " + overlay.animDuration + "ms forwards";
+            overlay.instanceOpen = true;
+        }, timeout);
+    },
+    hide(func) {
+        $("#actionDialogRoot").style.animation = "fadeOut " + overlay.animDuration + "ms forwards";
+        $("#actionDialog").style.animation = "scaleOut " + overlay.animDuration + "ms forwards";
+        setTimeout(() => {
+            overlay.instanceOpen = false;
+        }, overlay.animDuration);
+        // additional function
+        if (func != undefined) {
+            func();
+        }
+    }
+}
+
+/*--------------------------------------- TODO START -------------------------------------------*/
+
+// dialog
+const dialog = {
+    display(category, title, message, button, func) {
+        if (category == "alert") {
+            alertDialog.display(title, message, button, func);
+        }
+        else if (category == "action") {
+            actionDialog.display(title, message, button, func);
+        }
+    },
+    hide(category, func) {
+        if (category == "alert") {
+            alertDialog.hide(func);
+        }
+        else if (category == "action") {
+            actionDialog.hide(func);
+        }
+    }
+}
+
+/*--------------------------------------- TODO END --------------------------------------------*/
+
+// menu alertDialog
+const menu = {
+    display() {
+        // delay when one overlay is already open
+        let timeout = 0;
+        if (overlay.instanceOpen) {
+            timeout = overlay.animDuration;
         }
         setTimeout(() => {
             log("menu: timeout = " + timeout);
@@ -353,19 +414,18 @@ const checkForApkUpdates = () => {
             val = Android.updateAvailable();
             switch (val) {
                 case "true":
-                    log("dialog: launch: update available");
-                    dialog.display("Update available", "A new version of this Android app is available.", "Download", () => {
+                    log("alertDialog: launch: update available");
+                    dialog.display("alert", "Update available", "A new version of this Android app is available.", "Download", () => {
                         setTimeout(() => {
                             Android.showToast("Downloading app, look into your notification panel");
-                            Android.download("https://sozialnmedien.web.app/downloads/chat.app.web.sozialnmedien.apk",
-                                             "chat.app.web.sozialnmedien.apk");
+                            Android.download("https://sozialnmedien.web.app/downloads/chat.app.web.sozialnmedien.apk", "chat.app.web.sozialnmedien.apk");
                         }, 500);
-                        dialog.hide();
+                        dialog.hide("alert");
                         log("[AND]: downloaded Android app");
                     });
                 break;
-                case "false":
                 case "failed":
+                    err("update check failed");
                 break;
             }
         }
@@ -377,13 +437,9 @@ const checkForApkUpdates = () => {
 
 // global onclick listeners
 document.body.addEventListener("click", (e) => {
-    log("click: " +
-        "id = " + e.target.id + " " +
-        "node = " + e.target.nodeName + " " +
-        "class = " + e.target.className);
-    if (e.target.id == "btn_dialog" &&
-        e.target.innerHTML == "Close") {
-        dialog.hide();
+    log("click: " + "id = " + e.target.id + " " + "node = " + e.target.nodeName + " " + "class = " + e.target.className);
+    if (["alertDialog_btn", "actionDialog_btnClose"].includes(e.target.id) && e.target.innerHTML == "Close") {
+        e.target.id.slice(0, 5) == "alert" ? dialog.hide("alert") : dialog.hide("action");
     }
     else if (e.target.className == "menuRoot") {
         menu.hide();
