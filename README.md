@@ -64,3 +64,6 @@ tested, and then merged to `MAIN`.
 - Important functions can be found in `public/common/js/common.js`.
 - Important styles can be found in `public/common/css/common.css`.
 - Keep `HTML`, `CSS` and `JavaScript` files seperate for faster page loading.
+- All `events` should have identifier `e` or `event`.
+- All errors and exceptions should have identifier `error`.
+- Avoid using single alphabet identifiers.
