@@ -1,8 +1,14 @@
 // root visibility flag
 let rootFlag = "login";
+// called when the eye-slash icon is pressed
 const toogleRoot = () => {
+    /* hide login and signup info, $ is a css style selector function
+     * Thi isn't jQuery, it's my custom function, see common.js
+     * for definition
+     */
     $("#signup_info").style.display = "none";
     $("#login_info").style.display = "none";
+    // if root of login visibile
     if (rootFlag == "login") {
         $("#login").style.display = "none";
         $(".swinfo")[0].innerHTML = "Already have an account? ";
@@ -10,6 +16,7 @@ const toogleRoot = () => {
         rootFlag = "signup";
         log("rootFlag = " + rootFlag);
     }
+    // if root of signup visibile
     else if (rootFlag == "signup") {
         $("#signup").style.display = "none";
         $(".swinfo")[0].innerHTML = "Don't have an account? ";
@@ -46,8 +53,8 @@ $("#btn_login").addEventListener("click", (e) => {
     password = $("#login_pass").value;
     auth.signInWithEmailAndPassword(email, password).then((userCredential) => {
         let user = userCredential.user;
-        localStorage.setItem("User.isLoggedIn", "true");
-        localStorage.setItem("user.credentials", JSON.stringify(user));
+        localStorage.setItem("Auth.isLoggedIn", "true");
+        localStorage.setItem("Auth.user", JSON.stringify(user));
         location.href = "/";
     })
     .catch((error) => {
@@ -70,8 +77,8 @@ $("#btn_signup").addEventListener("click", (e) => {
     $("#signup_info").innerHTML = "Signing you up, please wait...";
     $("#signup_info").style.display = "block";
     email = $("#signup_email").value;
-    if ($("#signup_pass").value !=
-        $("#signup_pass_c").value) {
+    if ($("#signup_pass").value != $("#signup_pass_c").value) {
+        $("#signup_info").style.color = "red";
         $("#signup_info").style.display = "block";
         $("#signup_info").innerHTML = "Password don't match";
         return;
@@ -79,8 +86,8 @@ $("#btn_signup").addEventListener("click", (e) => {
     password = $("#signup_pass").value;
     auth.createUserWithEmailAndPassword(email, password).then((userCredential) => {
         let user = userCredential.user;
-        localStorage.setItem("User.isLoggedIn", "true");
-        localStorage.setItem("user.credentials", JSON.stringify(user));
+        localStorage.setItem("Auth.isLoggedIn", "true");
+        localStorage.setItem("Auth.user", JSON.stringify(user));
         location.href = "/";
     })
     .catch((error) => {

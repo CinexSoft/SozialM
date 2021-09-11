@@ -7,7 +7,7 @@ body {
     inset: 0;
     bottom: 40%;
     color: white;
-    transform: rotate(0);
+    transform: rotate(0);    /* initially I wanted to give the background a slant */
     background: #075E54;
 }
 .backhead {
@@ -17,7 +17,6 @@ body {
     top: 20px;
     font-size: 2.5rem;
     text-align: center;
-    user-select: none;
 }
 .root {
     margin: auto;
@@ -34,12 +33,16 @@ body {
 .root h3 {
     margin: 10px auto 10px;
 }
+/* initially login root is visible
+ */
 .login {
     // display: none;
 }
 .signup {
     display: none;
 }
+/* same as .root > input, meaning input tag inside root
+ */
 .root input {
     outline: none;
     font-size: 1rem;
@@ -74,7 +77,6 @@ body {
 .root i.fa-eye-slash {
     margin-left: 10px;
     color: #128c7e;
-    cursor: pointer;
 }
 .root h,
 .root a {
@@ -117,11 +119,17 @@ body {
 .root button:hover {
     background-color: #2fa99c;
 }
+/* if screen width is over 400px, zoom the root slightly
+ * They'll zoom out if width decreases below 400px
+ */
 @media only screen and (min-width: 400px) {
     .root {
         zoom: 1.15;
     }
 }
+/* if height is below 480px, which is too short, hide the footer and heading
+ * They'll reappear if height increases over 480px
+ */
 @media only screen and (max-height: 480px) {
     .root {
        top: 10%;

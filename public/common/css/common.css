@@ -1,6 +1,5 @@
 * {
     outline: none;
-    -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
 html {
     scroll-behavior: smooth;
@@ -10,33 +9,42 @@ body {
     font-family: Helvetica, Roboto, sans-serif;
     font-size: 90%;
 }
+.noselect,
+h, h1, h2, h3, h4, h5, h6,
+header, footer, img, button, .fa {
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none;  /* Safari */
+    -khtml-user-select: none;  /* Konqueror HTML */
+    -moz-user-select: none;   /* Old versions of Firefox */
+    -ms-user-select: none;   /* Internet Explorer/Edge */
+    user-select: none;      /* Non-prefixed version, currently
+                               supported by Chrome, Edge, Opera and Firefox */
+}
+.pointer,
+button, a, .fa {
+    cursor: pointer;
+}
+.nohighlight
+img, footer, button,
+.fa {
+    -webkit-tap-highlight-color: rgba(0,0,0,0);    /* prevent a blue highlight */
+}
 a {
     color: dodgerblue;
     text-decoration: none;
 }
 a:visited {
     color: dodgerblue;
-    cursor: pointer;
 }
 button {
     font-size: 1.05rem;
     transition-duration: 200ms;
-    cursor: pointer;
 }
 button:active {
     font-size: 0.95rem;
 }
 button:disabled {
     background-color: gray;
-}
-.noselect {
-    -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
-    -khtml-user-select: none; /* Konqueror HTML */
-    -moz-user-select: none; /* Old versions of Firefox */
-    -ms-user-select: none; /* Internet Explorer/Edge */
-    user-select: none; /* Non-prefixed version, currently
-                          supported by Chrome, Edge, Opera and Firefox */
 }
 .prim_bg {
     background-color: #075E54;
@@ -118,7 +126,7 @@ button:disabled {
 }
 .dialog button:hover,
 .menu div button:hover {
-    background-color: #eee;
+    background-color: #fafafa;
 }
 .dialog button:active,
 .menu div button:active {
@@ -138,6 +146,7 @@ button:disabled {
     border-radius: 2px;
     background-color: #eee;
 }
+/* resizes dialog boxes for larger display width */
 @media only screen and (min-width: 400px) {
     .dialogRoot .dialog,
     .menuRoot .menu {
@@ -160,7 +169,7 @@ footer {
     font-weight: bold;
     color: #999;
 }
-/* md styling inside a bubble */
+/* any element with markdown class follows this styling */
 .markdown h1,
 .markdown h2,
 .markdown h3,
@@ -195,7 +204,6 @@ footer {
     border: 0px;
     border-radius: 5px;
     display: block;
-    cursor: pointer;
 }
 .markdown hr {
     color: #aaa;
@@ -268,7 +276,10 @@ footer {
     border-left: 5px solid purple;
     background-color: #cce8b6;
 }
-/* animations */
+/* animations
+ * Note that using a key frame while another is
+ * already active will cause wierd animations
+ */
 @keyframes fadeIn {
     0% {
         z-index: 100;

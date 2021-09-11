@@ -1,4 +1,13 @@
-// common.js
+/* common.js
+ * WARNING:
+ * Before making modifications to this file, make absolutely sure that
+ * you've used the functions and their respective flags (if any) properly.
+ * These functions work for almost every webpage, so there are more chances
+ * you've used something incorrectly.
+ *
+ * When making modifications, you also need to test out if the modified code
+ * works for each and every webpage.
+ */
 
 // global theme colors
 let accent_primary_bgcolor = "#075E54";
@@ -10,10 +19,17 @@ let accent_fg_color = "#ffffff";
 let userToken = "";
 
 // flags
-let debug = !true;
-let loadtheme = !true;
+let debug = !true;            // prints debug logs in console
+let loadtheme = !true;        // deprecated
 
-// checks if android js interface exists
+/* checks if android interface exists
+ * The `Android` WebAppInterface is a class available
+ * in the Android web app of this project. The interface allows the
+ * website to use Android features through javascript without requiring
+ * a complete Android app to be developed.
+ * The interface is available only when this webpage is loaded on the Android
+ * web app.
+ */
 let existsAndroidInterface = typeof Android !== "undefined" && 
                              typeof Android.isSozialnMedienWebapp === "function" &&
                              Android.isSozialnMedienWebapp();
@@ -25,13 +41,14 @@ const overlay = {
 }
 
 // logger data
-const fulllogs = {} || JSON.parse(localStorage.getItem("records.fulllogs"));
 const sessionlogs = {};
 
+// returns time passed in ms since Unix epoch
 const getTimeStamp = () => {
     return new Date().getTime();
 }
 
+// gets current time zone, date time in Continent/City YYYY-MM-DD @ HH:MM:SS format
 const getLongDateTime = () => {
     let date_ob = new Date();
     let date = ("0" + date_ob.getDate()).slice(-2);
@@ -50,30 +67,24 @@ let sessionToken = getLongDateTime();
 const log = (val) => {
     if (debug) console.log("Log: " + val);
     // write logs in local database
-    let timestamp = getTimeStamp();
-    fulllogs[timestamp] = val;
-    sessionlogs[timestamp] = val;
-    localStorage.setItem("records.fulllogs", JSON.stringify(fulllogs));
+    sessionlogs[getTimeStamp()] = val;
 }
 
 const err = (val) => {
     if (debug) console.error("Err: " + val);
     // write logs in local database
-    let timestamp = getTimeStamp();
-    fulllogs[timestamp] = "[ERR]: " + val;
-    sessionlogs[timestamp] = "[ERR]: " + val;
-    localStorage.setItem("records.fulllogs", JSON.stringify(fulllogs));
+    sessionlogs[getTimeStamp()] = "[ERR]: " + val;
 }
 
 const wrn = (val) => {
     if (debug) console.warn("Wrn: " + val);
     // write logs in local database
-    let timestamp = getTimeStamp();
-    fulllogs[timestamp] = "[ WRN ]: " + val;
-    sessionlogs[timestamp] = "[ WRN ]: " + val;
-    localStorage.setItem("records.fulllogs", JSON.stringify(fulllogs));
+    sessionlogs[getTimeStamp()] = "[ WRN ]: " + val;
 }
 
+/* Uploads debug logs to the database
+ * for debugging
+ */
 const uploadSessionLogs = () => {
     firebase.database().ref(dbRoot + "/records/sessionlogs/" + userToken + "/" + sessionToken).update(sessionlogs)
     .then(() => {
@@ -84,16 +95,7 @@ const uploadSessionLogs = () => {
     });
 }
 
-const uploadFullLogs = () => {
-    firebase.database().ref(dbRoot + "/records/fulllogs/" + userToken + "/").update(fulllogs)
-    .then(() => {
-        if (debug) console.info("Log: uploaded full logs to database");
-    },
-    (error) => {
-        throw error;
-    });
-}
-
+// creates a random `length` sized bit token
 const generateToken = (length) => {
     let a = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".split("");
     let b = [];  
@@ -163,7 +165,7 @@ const download = (directurl, filename = ("sozialnmedien_" + getTimeStamp() + ".b
 // copy text
 const copyPlainTxt = (copytext) => {
     copytext = copytext.replace(/<br>/g, '\n')
-                           .replace(/<[^>]*>/g, '');
+                       .replace(/<[^>]*>/g, '');
     navigator.clipboard.writeText(copytext)
     .then(() => {
         log("text copied to clipboard");
@@ -268,6 +270,7 @@ const appendHTMLString = (element, str) => {
 
 // dialog
 const dialog = {
+    // default button is close
     display(title, message, button = "Close", func) {
         if (button != undefined &&
             typeof button != "string") {
@@ -402,6 +405,11 @@ const smoothScroll = (element, flag = true) => {
     element.scrollTop = element.scrollHeight;
 }
 
+/* @deprecated
+ * This function was supposed to reload the dynamic accent colors
+ * of the newly added chat bubbles. But currently we're using
+ * a all teal accent (WhatsApp theme). So this won't be needed.
+ */
 const loadTheme = () => {
     if (!loadtheme) return;
     // custom accents: primary background color
@@ -433,10 +441,3 @@ generateUserToken();
 setInterval(() => {
     uploadSessionLogs();
 }, 5000);
-
-// upload logs on website closed
-window.addEventListener("beforeunload", (e) => {
-    console.log("Log: body unloaded");
-    uploadFullLogs();
-    uploadSessionLogs();
-});

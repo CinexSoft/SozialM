@@ -10,8 +10,8 @@
     <link rel="icon" type="image/x-icon" href="https://sozialnmedien.web.app/favicon.ico"/>
     <title>Login or Sign Up</title>
     <script>
-        // checking if user is logged in
-        if (localStorage.getItem("User.isLoggedIn") == "true") {
+        // checking if user is logged in, local storage does exactly what it says
+        if (localStorage.getItem("Auth.isLoggedIn") == "true") {
             console.log("Log: already signed in");
             location.href = "/inbox";
             location.href = "../inbox";
@@ -25,7 +25,9 @@
     <link rel="stylesheet" href="../auth/styles.css">
 </head>
 <body>
+    <!-- the green background -->
     <div class="background"></div>
+    <!-- dialog div, the parent dialogRoot is the black translucent background of the div -->
     <div class="dialogRoot" id="dialogRoot">
         <div class="dialog" id="dialog">
             <h2 class="">Loading</h2>
@@ -36,8 +38,10 @@
             <hr>
             <button id="btn_dialog" style="border-radius: 0 0 8px 10px">Close</button>
         </div>
-    </div> 
+    </div>
+    <!-- the heading -->
     <h1 class="backhead">sozialnmedien</h1>
+    <!-- login div -->
     <div class="root login" id="login">
         <h3>Login</h3>
         <input type="email" id="login_email" placeholder="E-Mail">
@@ -48,6 +52,7 @@
         <a id="pass_reset" href="resetpassword">Reset password</a>
         <button id="btn_login">Login</button>
     </div>
+    <!-- signup div -->
     <div class="root signup" id="signup">
         <h3>Sign Up</h3>
         <input type="email" class="email" id="signup_email" placeholder="E-Mail">
@@ -60,9 +65,10 @@
         <h id="signup_info">An error occurred</h>
         <button id="btn_signup">Sign Up</button>
     </div>
+    <!-- footer -->
     <footer>
         <div class="footer" style="font-size: 0.8rem; color: #333">
-            <font class="swinfo noselect">Don't have an account? </font><font class="switchlink noselect" style="font-weight: bold; color: #128c7e; cursor: pointer;" onclick="toogleRoot()">Sign Up</font>!
+            <font class="swinfo">Don't have an account? </font><font class="switchlink" style="font-weight: bold; color: #128c7e; cursor: pointer;" onclick="toogleRoot()">Sign Up</font>!
         </div>
     </footer>
     <!-- The core Firebase JS SDK is always required and must be listed first -->
