@@ -349,7 +349,7 @@ document.body.addEventListener("pointerdown", (e) => {
 document.body.addEventListener("pointerup", (e) => {
     log("pointer up");
     e.target.style.transform = "scale(1)";
-    e.target.style.userSelect = "auto";
+    e.target.style.userSelect = "initial";
     clearTimeout(LONGPRESSTIMER);
     clearTimeout(LONGPRESSTIMEOUT);
 });
@@ -361,7 +361,7 @@ document.body.addEventListener("touchmove", (e) => {
          "class = " + e.target.className);
     LONGPRESSED.style.transform = "scale(1)";
     e.target.style.transform = "scale(1)";
-    e.target.style.userSelect = "auto";
+    e.target.style.userSelect = "initial";
     clearTimeout(LONGPRESSTIMER);
     clearTimeout(LONGPRESSTIMEOUT);
 });

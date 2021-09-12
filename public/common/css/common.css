@@ -4,6 +4,7 @@
 }
 html {
     scroll-behavior: smooth;
+    -webkit-tap-highlight-color: rgba(100, 100, 100, 0.1);
 }
 body {
     margin: 0;
@@ -12,7 +13,7 @@ body {
 }
 /* ----------------- SPECIAL STYLES -----------------------*/
 .noselect,
-h, h1, h2, h3, h4, h5, h6,
+h, h1, h2, h3, h4, h5, h6, blockquote,
 header, footer, img, button, .fa {
     -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none;  /* Safari */
@@ -26,8 +27,8 @@ header, footer, img, button, .fa {
 button, a, .fa {
     cursor: pointer;
 }
-.nohighlight
-img, footer, button,
+.nohighlight,
+img, button,
 .fa {
     -webkit-tap-highlight-color: rgba(0,0,0,0);    /* prevent a blue highlight */
 }
@@ -54,6 +55,7 @@ img, footer, button,
 a {
     color: dodgerblue;
     text-decoration: none;
+    -webkit-tap-highlight-color: initial;
 }
 a:visited {
     color: dodgerblue;
