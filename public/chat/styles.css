@@ -79,6 +79,9 @@ body {
 .chatarea .bubbles blockquote {
     cursor: pointer;
 }
+.markdown img {
+    transition-duration: 250ms;
+}
 .msgpreview {
     position: fixed;
     left: 10px;

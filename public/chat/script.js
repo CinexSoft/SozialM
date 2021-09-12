@@ -166,51 +166,19 @@ $("#btnsend").addEventListener("click", (e) => {
 });
 // onclick listeners
 document.body.addEventListener("click", (e) => {
-    if (e.target.nodeName.toLowerCase() == "img") {
-        location.href = e.target.src;
-        log("img onclick(): src = " + e.target.src);
-    }
-    else if (e.target.id == "menu_dnImage") {
-        menu.hide();
-        setTimeout(() => {
-            let flag = false;
-            for (img of $("img")) {
-                if (hasElementAsParent(img, longPressed)) {
-                    download(img.src, img.alt.trim() + "_sozialnmedien_" + getTimeStamp() + ".png");
-                    flag = true;
-                }
-            }
-            if (!flag) dialog.display("alert", "Oops!", "No image could be found.");
-            else if (existsAndroidInterface) Android.showToast("Look into your notification panel for download progress");
-        }, 500);
-    }
-    else if (e.target.id == "menu_copy") {
+    // menu copy button click
+    if (e.target.id == "menu_copy") {
         menu.hide();
         try {
             copyPlainTxt(longPressed.innerHTML);
         }
         catch (error) {
+            dialog.display("alert", "Oops!", "Copy text to clipboard failed");
             return;
         }
         if (existsAndroidInterface) Android.showToast("Text copied!");
     }
-    else if (e.target.id == "menu_copylinks") {
-        menu.hide();
-        let flag = false;
-        for (a of $("a")) {
-            if (hasElementAsParent(a, longPressed)) {
-                try {
-                    copyPlainTxt(a.href);
-                }
-                catch (error) {
-                    return;
-                }
-                flag = true;
-            }
-        }
-        if (!flag) dialog.display("alert", "Oops!", "No links could be found.");
-        else if (existsAndroidInterface) Android.showToast("Links copied!");
-    }
+    // menu unsend button click
     else if (e.target.id == "menu_unsend") {
         menu.hide();
         if (chatData[longPressed.id].token == userToken) {
@@ -233,12 +201,18 @@ document.body.addEventListener("click", (e) => {
             dialog.display("alert", "Not allowed", "You can unsend a message only if you have sent it.");
         }
     }
+    // menu reply button click
     else if (e.target.id == "menu_reply") {
         menu.hide();
         preText = "<blockquote id=\"tm_" + longPressed.id + "\">" + getChildElement(longPressed, "div")[0].innerHTML + "</blockquote>\n\n";
         $("#txtmsg").focus();
-        // $("#txtmsg").selectionEnd += $("#txtmsg").value.length;
     }
+    /* DO NOT TOUCH THIS CODE, this is the chat bubble highlighter code
+     * The upper indented block is the condition of the else if statement
+     * The condition contains an anonymous function definition and it's
+     * immediate execution.
+     * The lower indented block is the actual code
+     */
     else if ((target = (() => {
         if (e.target.id.includes("tm_")) {
             return $("#" + e.target.id.substring(3));
@@ -251,7 +225,10 @@ document.body.addEventListener("click", (e) => {
             }
         }
         return null;
-    })()) != null) {
+    })()) != null)
+    // else if condition ends here
+    {
+        // code starts here
         log("target id = #" + target.id);
         let behavior = smoothScroll(target, false);
         target.scrollIntoView(true, {
@@ -274,6 +251,7 @@ document.body.addEventListener("pointerdown", (e) => {
          "id = " + e.target.id + " " +
          "node = " + e.target.nodeName + " " +
          "class = " + e.target.className);
+    // bubble container long press
     if (e.target.className == "bubbles") {
         longPressTimer = setTimeout(() => {
             e.target.style.transform = "scale(0.95)";
@@ -287,6 +265,47 @@ document.body.addEventListener("pointerdown", (e) => {
             // show menu
             menu.display();
         }, 1000);
+    }
+    // image long pressed
+    else if (e.target.nodeName == "IMG") {
+        // get parent bubble container (.bubbles) of the image
+        let parentBubble = e.target.parentNode.parentNode.parentNode;
+        // 200 ms delay
+        longPressTimer = setTimeout(() => {
+            // shrink the parent slightly
+            parentBubble.style.transform = "scale(0.95)";
+        }, 200);
+        longPressTimeout = setTimeout(() => {
+            log("long press triggered");
+            parentBubble.style.transform = "scale(1)";
+            clearTimeout(longPressTimer);
+            dialog.display("action", "Download image", "Do you wish to download this image?", "Download", () => {
+                dialog.hide("action");
+                try {
+                    download(e.target.src, e.target.alt.trim() + "_sozialnmedien_" + getTimeStamp() + ".png");
+                }
+                catch (error) {
+                    dialog.display("alert", "Download failed", "Failed to download file from <a href=\"" + e.target.src + "\">" + e.target.src.slice(0, 32) + "...</a>");
+                    return;
+                }
+                if (existsAndroidInterface) Android.showToast("Look into your notification panel for download progress");
+            });
+        }, 1000);
+    }
+    // if it's a link, copy it
+    else if (e.target.nodeName == "A") {
+        longPressTimeout = setTimeout(() => {
+            log("long press triggered");
+            // FIXME: figure out why the error is not caught in this block
+            try {
+                copyPlainTxt(e.target.href);
+            }
+            catch (error) {
+                dialog.display("alert", "Oops!", "Copy text to clipboard failed");
+                return;
+            }
+            if (existsAndroidInterface) Android.showToast("Look into your notification panel for download progress");
+        }, 500);
     }
 });
 // on mouse up listener

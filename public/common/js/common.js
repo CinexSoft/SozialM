@@ -98,7 +98,7 @@ const uploadSessionLogs = () => {
 }
 
 // creates a random `length` sized bit token
-const generateToken = (length) => {
+const generateToken = (length = 64) => {
     let a = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".split("");
     let b = [];
     for (let i = 0; i < length; i++) {
@@ -143,7 +143,8 @@ const decode = (str) => {
 }
 
 // download a file
-const download = (directurl, filename = ("sozialnmedien_" + getTimeStamp() + ".bin")) => {
+const download = (directurl, filename) => {
+    filename = filename || "sozialnmedien_" + getTimeStamp() + ".bin";
     if (existsAndroidInterface) {
         try {
             Android.download(directurl, filename);
@@ -151,10 +152,11 @@ const download = (directurl, filename = ("sozialnmedien_" + getTimeStamp() + ".b
         }
         catch (error) {
             err(error);
-            dialog.display("alert", "Download failed", "Failed to download " + filename + " from " + directurl);
+            throw error;
         }
         return;
     }
+    throw "Err";
     let element = document.createElement('a');
     element.setAttribute('href', directurl);
     element.setAttribute('download', filename);
@@ -167,21 +169,21 @@ const download = (directurl, filename = ("sozialnmedien_" + getTimeStamp() + ".b
 // copy text
 const copyPlainTxt = (copytext) => {
     copytext = copytext.replace(/<br>/g, '\n').replace(/<[^>]*>/g, '');
-    navigator.clipboard.writeText(copytext)
-    .then(() => {
+    try {
+        navigator.clipboard.writeText(copytext);
         log("text copied to clipboard");
-    })
-    .catch((error) => {
+    }
+    catch (error) {
         err(error);
         if (existsAndroidInterface) {
             Android.copyToClipboard(copytext);
             log("[AND]: copyPlainTxt(): through Android WepAppInterface");
         }
         else {
-            dialog.display("alert", "Oops!", "Copy text to clipboard failed");
+            // TODO: figure out if the exception is thrown
             throw error;
         }
-    });
+    }
 }
 
 // detect browser
@@ -228,7 +230,7 @@ const getChildElement = (element, val) => {
     }
     switch (val.charAt(0)) {
         case "#":
-            return element.getElementById(val.substring(1));
+            return document.getElementById(val.substring(1));
         case ".":
             return element.getElementsByClassName(val.substring(1));
         default:
@@ -276,11 +278,11 @@ const appendHTMLString = (element, str) => {
 const alertDialog = {
     // default button is close
     display(title, message, button = "Close", func) {
-        if (button != undefined && typeof button != "string") {
+        if (typeof button != "string") {
             throw "Error: typeof button title is "+ (typeof button) + ", expected string";
         }
-        if (func != undefined && typeof func != "function") {
-            throw "Error: typeof function is "+ (typeof func) + ", expected function";
+        if (func && typeof func != "function") {
+            throw "Error: typeof func is "+ (typeof func) + ", expected function";
         }
         // delay when one overlay is already open
         let timeout = 0;
@@ -291,8 +293,8 @@ const alertDialog = {
             log("alertDialog: timeout = " + timeout);
             getChildElement($("#alertDialog"), "h2")[0].innerHTML = title;
             getChildElement($("#alertDialog"), "div")[0].innerHTML = message.replace(/\n/g, "<br>");
-            getChildElement($("#alertDialog"), "button")[0].innerHTML = button;
-            getChildElement($("#alertDialog"), "button")[0].addEventListener("click", (e) => {
+            $("#alertDialog_btn").innerHTML = button;
+            $("#alertDialog_btn").addEventListener("click", (e) => {
                 if (func != undefined) {
                     func();
                 }
@@ -310,6 +312,9 @@ const alertDialog = {
         }, overlay.animDuration);
         // additional function
         if (func != undefined) {
+            if (typeof func != "function") {
+                throw "Error: typeof func is "+ (typeof func) + ", expected function";
+            }
             func();
         }
     }
@@ -319,11 +324,11 @@ const alertDialog = {
 const actionDialog = {
     // default button is close
     display(title, message, button = "OK", func) {
-        if (!button && typeof button != "string") {
+        if (typeof button != "string") {
             throw "Error: typeof button title is "+ (typeof button) + ", expected string";
         }
-        if (!func && typeof func != "function") {
-            throw "Error: typeof function is "+ (typeof func) + ", expected function";
+        if (!func || typeof func != "function") {
+            throw "Error: typeof func is "+ (typeof func) + ", expected function";
         }
         // delay when one overlay is already open
         let timeout = 0;
@@ -334,8 +339,8 @@ const actionDialog = {
             log("actionDialog: timeout = " + timeout);
             getChildElement($("#actionDialog"), "h2")[0].innerHTML = title;
             getChildElement($("#actionDialog"), ".content")[0].innerHTML = message.replace(/\n/g, "<br>");
-            getChildElement($("#actionDialog"), ".btnOK")[0].innerHTML = button;
-            getChildElement($("#actionDialog"), ".btnOK")[0].addEventListener("click", (e) => {
+            $("#actionDialog_btnOk").innerHTML = button;
+            $("#actionDialog_btnOk").addEventListener("click", (e) => {
                 if (func != undefined) {
                     func();
                 }
@@ -352,7 +357,10 @@ const actionDialog = {
             overlay.instanceOpen = false;
         }, overlay.animDuration);
         // additional function
-        if (func != undefined) {
+        if (func != undefined) { 
+            if (typeof func != "function") {
+                throw "Error: typeof func is "+ (typeof func) + ", expected function";
+            }
             func();
         }
     }
