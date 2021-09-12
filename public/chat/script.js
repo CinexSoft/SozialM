@@ -244,8 +244,10 @@ document.body.addEventListener("click", (e) => {
         menu.hide();
         let time = CHATDATA[LONGPRESSED.id].time;
         // display dialog
-        dialog.display("alert", "Message details", "<pre style=\"text-align: left\">Time: " + JSON.stringify(time, null, 4) + "</pre>"/* +
-                                                   "Date" + + "\n" + ""*/)
+        dialog.display("alert", "Message details", "<pre style=\"text-align: left\">" +
+                                                   "Sender: " + (CHATDATA[LONGPRESSED.id].token == USERTOKEN ? "You" : CHATDATA[LONGPRESSED.id].token) + "\n" +
+                                                   "Time: " + JSON.stringify(time, null, 4) +
+                                                   "</pre>");
     }
     /* DO NOT TOUCH THIS CODE, this is the chat bubble highlighter code
      * The upper indented block is the condition of the else if statement
@@ -325,7 +327,7 @@ document.body.addEventListener("pointerdown", (e) => {
                     download(e.target.src, e.target.alt.trim() + "_sozialnmedien_" + getTimeStamp() + ".png");
                 }
                 catch (error) {
-                    dialog.display("alert", "Download failed", "Failed to download file from <a href=\"" + e.target.src + "\">" + e.target.src.slice(0, 32) + "...</a>");
+                    dialog.display("alert", "Download failed", "Failed to download file. Click <a href=\"" + e.target.src + "\">here</a> to visit file in browser.");
                     return;
                 }
                 if (EXISTSANDROIDINTERFACE) Android.showToast("Look into your notification panel for download progress");
