@@ -49,7 +49,7 @@ const getTimeStamp = () => {
 }
 
 // gets current time zone, date time in Continent/City YYYY-MM-DD @ HH:MM:SS format
-const getLongDateTime = () => {
+const getLongDateTime = (flag = true) => {
     let date_ob = new Date();
     let date = ("0" + date_ob.getDate()).slice(-2);
     let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
@@ -57,7 +57,7 @@ const getLongDateTime = () => {
     let hours = ("0" + date_ob.getHours()).slice(-2);
     let minutes = ("0" + date_ob.getMinutes()).slice(-2);
     let seconds = ("0" + date_ob.getSeconds()).slice(-2);
-    return (Intl.DateTimeFormat().resolvedOptions().timeZone) + "/"+ year + "-" + month + "-" + date + " @ " + hours + ":" + minutes + ":" + seconds;
+    return (flag ? Intl.DateTimeFormat().resolvedOptions().timeZone + "/" : "") + year + "-" + month + "-" + date + " @ " + hours + ":" + minutes + ":" + seconds;
 }
 
 // session time token
@@ -88,13 +88,9 @@ const wrn = (val) => {
 const uploadSessionLogs = () => {
     firebase.database().ref(dbRoot + "/records/sessionlogs/" + userToken + "/" + sessionToken)
     .update(sessionlogs)
-        .then(() => {
-            if (debug) console.info("Log: uploaded session logs to database");
-        },
-        (error) => {
-            throw error;
-        }
-    );
+    .catch((error) => {
+        err(error);
+    });
 }
 
 // creates a random `length` sized bit token
@@ -169,21 +165,22 @@ const download = (directurl, filename) => {
 // copy text
 const copyPlainTxt = (copytext) => {
     copytext = copytext.replace(/<br>/g, '\n').replace(/<[^>]*>/g, '');
-    try {
-        navigator.clipboard.writeText(copytext);
+    navigator.clipboard.writeText(copytext)
+    .then(() => {
         log("text copied to clipboard");
-    }
-    catch (error) {
+    })
+    .catch((error) => {
         err(error);
         if (existsAndroidInterface) {
             Android.copyToClipboard(copytext);
             log("[AND]: copyPlainTxt(): through Android WepAppInterface");
+            Android.showToast("Text copied!");
         }
         else {
-            // TODO: figure out if the exception is thrown
-            throw error;
+            err("android interface doesn't exist");
+            dialog.display("alert", "Oops!", "Copy text to clipboard failed");
         }
-    }
+    });
 }
 
 // detect browser
@@ -392,7 +389,7 @@ const dialog = {
 
 // menu alertDialog
 const menu = {
-    display() {
+    display(title = "Menu") {
         // delay when one overlay is already open
         let timeout = 0;
         if (overlay.instanceOpen) {
@@ -400,6 +397,7 @@ const menu = {
         }
         setTimeout(() => {
             log("menu: timeout = " + timeout);
+            getChildElement($("#menu"), "h2")[0].innerHTML = title;
             $("#menuRoot").style.animation = "fadeIn " + overlay.animDuration + "ms forwards";
             $("#menu").style.animation = "scaleIn " + overlay.animDuration + "ms forwards";
             overlay.instanceOpen = true;
@@ -449,8 +447,8 @@ document.body.addEventListener("click", (e) => {
     if (["alertDialog_btn", "actionDialog_btnClose"].includes(e.target.id) && e.target.innerHTML == "Close") {
         e.target.id.slice(0, 5) == "alert" ? dialog.hide("alert") : dialog.hide("action");
     }
-    else if (e.target.className == "menuRoot") {
-        menu.hide();
+    else if (["menuRoot", "actionDialogRoot"].includes(e.target.className)) {
+        e.target.id.slice(0, 4) == "menu" ? menu.hide() : dialog.hide("action");
     }
 });
 

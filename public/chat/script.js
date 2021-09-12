@@ -12,7 +12,7 @@ let softboardOpen = false;
 
 // the entire chat is downloaded and stored here
 // the data has timestamps as keys
-const chatData = {} || JSON.parse(localStorage.getItem(chatRoot));
+const chatData = JSON.parse(localStorage.getItem(chatRoot));
 
 // database listener
 const startDBListener = () => {
@@ -32,8 +32,9 @@ const startDBListener = () => {
             let token = data.token;
             // store data in local variable
             chatData[timestamp] = {
-                token,
-                message: data.message
+                token: data.token,
+                message: data.message,
+                time: data.time
             };
             // cache chat in local storage
             localStorage.setItem(chatRoot, JSON.stringify(chatData));
@@ -149,10 +150,11 @@ $("#btnsend").addEventListener("click", (e) => {
             $("#txtmsg").value = msgbackup;
             return;
         }
-        $("#txtmsg").focus();
+        $("#txtmsg").focus(); 
         database.ref(dbRoot + chatRoot + getTimeStamp()).update({
             message: encode(mdtohtml.makeHtml(msg)),
-            token: userToken
+            token: userToken,
+            time: getLongDateTime(false)
         })
         .then(() => {
             log("data pushed");
@@ -169,14 +171,7 @@ document.body.addEventListener("click", (e) => {
     // menu copy button click
     if (e.target.id == "menu_copy") {
         menu.hide();
-        try {
-            copyPlainTxt(longPressed.innerHTML);
-        }
-        catch (error) {
-            dialog.display("alert", "Oops!", "Copy text to clipboard failed");
-            return;
-        }
-        if (existsAndroidInterface) Android.showToast("Text copied!");
+        copyPlainTxt(longPressed.innerHTML);
     }
     // menu unsend button click
     else if (e.target.id == "menu_unsend") {
@@ -188,8 +183,8 @@ document.body.addEventListener("click", (e) => {
                 })
                 .then(() => {
                     log("msg deleted, data updated");
-                },
-                (error) => {
+                })
+                .catch((error) => {
                     err(error);
                 });
             }
@@ -263,7 +258,7 @@ document.body.addEventListener("pointerdown", (e) => {
             e.target.style.transform = "scale(1)";
             clearTimeout(longPressTimer);
             // show menu
-            menu.display();
+            menu.display(chatData[e.target.id].time);
         }, 1000);
     }
     // image long pressed
@@ -297,14 +292,7 @@ document.body.addEventListener("pointerdown", (e) => {
         longPressTimeout = setTimeout(() => {
             log("long press triggered");
             // FIXME: figure out why the error is not caught in this block
-            try {
-                copyPlainTxt(e.target.href);
-            }
-            catch (error) {
-                dialog.display("alert", "Oops!", "Copy text to clipboard failed");
-                return;
-            }
-            if (existsAndroidInterface) Android.showToast("Look into your notification panel for download progress");
+            copyPlainTxt(e.target.href);
         }, 500);
     }
 });
