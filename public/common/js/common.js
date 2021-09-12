@@ -64,7 +64,7 @@ const getLongDateTime = (flag = true) => {
 }
 
 // session time token
-let sessionToken = getLongDateTime();
+let SESSIONTOKEN = getLongDateTime();
 
 // console functions
 const log = (val) => {
@@ -89,8 +89,11 @@ const wrn = (val) => {
  * for debugging
  */
 const uploadSessionLogs = () => {
-    firebase.database().ref(DBROOT + "/records/SESSIONLOGS/" + USERTOKEN + "/" + sessionToken)
+    firebase.database().ref(DBROOT + "/records/sessionlogs/" + USERTOKEN + "/" + SESSIONTOKEN)
     .update(SESSIONLOGS)
+    .then(() => {
+        if (DEBUG) console.log("Log: logs written to database");
+    })
     .catch((error) => {
         err(error);
     });
@@ -154,7 +157,8 @@ const download = (directurl, filename) => {
         }
         return;
     }
-    throw "Err";
+    err("android interface doesn't exist");
+    throw "android interface doesn't exist";
     let element = document.createElement('a');
     element.setAttribute('href', directurl);
     element.setAttribute('download', filename);

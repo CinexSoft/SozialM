@@ -195,8 +195,8 @@ $("#btnsend").addEventListener("click", (e) => {
         })
         .then(() => {
             log("data pushed");
-        },
-        (error) => {
+        })
+        .catch((error) => {
             err(error);
             $("#txtmsg").value = msgbackup;
         });
@@ -316,6 +316,7 @@ document.body.addEventListener("pointerdown", (e) => {
         LONGPRESSTIMER = setTimeout(() => {
             // shrink the parent slightly
             parent_bubble.style.transform = "scale(0.95)";
+            LONGPRESSED = parent_bubble;
         }, 200);
         LONGPRESSTIMEOUT = setTimeout(() => {
             log("long press triggered");
@@ -357,6 +358,7 @@ document.body.addEventListener("touchmove", (e) => {
          "id = " + e.target.id + " " +
          "node = " + e.target.nodeName + " " +
          "class = " + e.target.className);
+    LONGPRESSED.style.transform = "scale(1)";
     e.target.style.transform = "scale(1)";
     e.target.style.userSelect = "auto";
     clearTimeout(LONGPRESSTIMER);
