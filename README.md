@@ -58,8 +58,11 @@ tested, and then merged to `MAIN`.
 - Webpage root at `public/`
 - Webview based APK [download](https://sozialnmedien.web.app/downloads/chat.app.web.sozialnmedien.apk)
 
-## Contributing
+## Code Style
 - Follow `Airbnb` JavaScript style guide - [https://github.com/airbnb/javascript](https://github.com/airbnb/javascript).
+
+## Our style
+```
 - All and only global variables must be capitalised.
 - Functions identifiers should have this format: `foo()` or `fooBar()` or `fooBarFoo()`.
 - Local variables should not have the format of functions identifiers.
@@ -73,3 +76,4 @@ tested, and then merged to `MAIN`.
 - All `events` should have identifier `e` or `event`.
 - All errors and exceptions should have identifier `error`.
 - Avoid using single alphabet identifiers.
+```
