@@ -1,5 +1,6 @@
 ## Contributing
 - Follow `Airbnb` JavaScript style guide - [https://github.com/airbnb/javascript](https://github.com/airbnb/javascript).
+- `Airbnb` guide is overruled by the following.
 - All and only global variables must be capitalised.
 - Functions identifiers should have this format: `foo()` or `fooBar()` or `fooBarFoo()`.
 - Local variables should not have the format of functions identifiers.
