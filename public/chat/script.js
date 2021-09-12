@@ -244,7 +244,7 @@ document.body.addEventListener("click", (e) => {
         menu.hide();
         let time = CHATDATA[LONGPRESSED.id].time;
         // display dialog
-        dialog.display("alert", "Message details", "<pre style=\"text-align: left\">" +
+        dialog.display("alert", "Message details", "<pre style=\"text-align:left; overflow:auto\">" +
                                                    "Sender: " + (CHATDATA[LONGPRESSED.id].token == USERTOKEN ? "You" : CHATDATA[LONGPRESSED.id].token) + "\n" +
                                                    "Time: " + JSON.stringify(time, null, 4) +
                                                    "</pre>");
