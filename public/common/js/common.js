@@ -510,4 +510,4 @@ setInterval(() => {
 }, 5000);
 
 log("common.js loaded");
-log("[AND]: WebAppInterface: " + HASANDROIDINTERFACE);
+log("[AND]: WebAppInterface: " + EXISTSANDROIDINTERFACE);

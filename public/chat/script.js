@@ -322,7 +322,7 @@ document.body.addEventListener("pointerdown", (e) => {
             log("long press triggered");
             parent_bubble.style.transform = "scale(1)";
             clearTimeout(LONGPRESSTIMER);
-            dialog.display("action", "Download image", "Do you wish to download this image?", "Download", () => {
+            if (EXISTSANDROIDINTERFACE) dialog.display("action", "Download image", "Do you wish to download this image?", "Download", () => {
                 dialog.hide("action");
                 try {
                     download(e.target.src, e.target.alt.trim() + "_sozialnmedien_" + getTimeStamp() + ".png");
@@ -337,9 +337,8 @@ document.body.addEventListener("pointerdown", (e) => {
     }
     // if it's a link, copy it
     else if (e.target.nodeName == "A") {
-        LONGPRESSTIMEOUT = setTimeout(() => {
+        if (EXISTSANDROIDINTERFACE) LONGPRESSTIMEOUT = setTimeout(() => {
             log("long press triggered");
-            // FIXME: figure out why the error is not caught in this block
             copyPlainTxt(e.target.href);
         }, 500);
     }
