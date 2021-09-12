@@ -325,7 +325,9 @@ document.body.addEventListener("pointerdown", (e) => {
             if (EXISTSANDROIDINTERFACE) dialog.display("action", "Download image", "Do you wish to download this image?", "Download", () => {
                 dialog.hide("action");
                 try {
-                    download(e.target.src, e.target.alt.trim() + "_sozialnmedien_" + getTimeStamp() + ".png");
+                    setTimeout(() => {
+                        download(e.target.src, e.target.alt.trim() + "_sozialnmedien_" + getTimeStamp() + ".png");
+                    }, 500);
                 }
                 catch (error) {
                     dialog.display("alert", "Download failed", "Failed to download file. Click <a href=\"" + e.target.src + "\">here</a> to visit file in browser.");
