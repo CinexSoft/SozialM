@@ -307,7 +307,7 @@ document.body.addEventListener("pointerdown", (e) => {
         }, 1000);
     }
     // image long pressed
-    else if (e.target.nodeName == "IMG") {
+    else if (e.target.nodeName == "IMG" && e.target.parentNode.parentNode.parentNode.className == "bubbles") {
         // get parent bubble container (.bubbles) of the image
         let parent_bubble = e.target.parentNode.parentNode.parentNode;
         // 200 ms delay
