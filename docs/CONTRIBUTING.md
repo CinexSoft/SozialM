@@ -1,0 +1,15 @@
+## Contributing
+- Follow `Airbnb` JavaScript style guide - [https://github.com/airbnb/javascript](https://github.com/airbnb/javascript).
+- All and only global variables must be capitalised.
+- Functions identifiers should have this format: `foo()` or `fooBar()` or `fooBarFoo()`.
+- Local variables should not have the format of functions identifiers.
+- Instead they should've this format: `foo` or `foo_bar`.
+- Object identifiers are allowed to have format of function identifiers.
+- Only class names and special object identifiers can have format: `Foo`.
+- Please don't hardcode.
+- Important functions can be found in `public/common/js/common.js`.
+- Important styles can be found in `public/common/css/common.css`.
+- Keep `HTML`, `CSS` and `JavaScript` files seperate for faster page loading.
+- All `events` should have identifier `e` or `event`.
+- All errors and exceptions should have identifier `error`.
+- Avoid using single alphabet identifiers.
