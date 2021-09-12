@@ -12,7 +12,7 @@ let SOFTBOARDOPEN = false;
 
 // the entire chat is downloaded and stored here
 // the data has timestamps as keys
-const CHATDATA = {};
+const CHATDATA = JSON.parse(localStorage.getItem(CHATROOT)) || {};
 
 // database listener
 const startDBListener = () => {
