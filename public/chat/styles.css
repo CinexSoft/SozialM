@@ -81,6 +81,7 @@ body {
 }
 .markdown img {
     transition-duration: 250ms;
+    cursor: pointer;
 }
 .msgpreview {
     position: fixed;
@@ -121,9 +122,10 @@ body {
 }
 .msgbox textarea {
     margin: 8px 0 0;
-    width: calc(100% - 95px);
-    height: calc(50px - 20px);
-    max-height: 100px;
+    min-width: calc(100% - 95px);
+    max-width: calc(100% - 95px);
+    min-height: calc(50px - 20px);
+    max-height: calc(50px - 20px);
     margin-right: auto;
     padding: 12px 20px 0;
     border: 1px solid transparent;
@@ -154,7 +156,10 @@ body {
 .msgbox button:active {
     font-size: 20px;
 }
-@media only screen and (orientation: landscape) and (min-height: 420px) {
+@media only screen and (orientation: landscape) {
+    body {
+        
+    }
     .root,
     .titlebar,
     .msgpreview,
@@ -163,8 +168,8 @@ body {
         width: 400px;
     }
     .msgpreview {
-        right: calc(10px + 50px);
-        width: calc(400px - 20px - 70px);
+        right: calc(10px + 50px + 3px);
+        width: calc(400px - 20px - 70px - 3px);
     }
     .msgbox {
         width: calc(400px - 20px);
