@@ -500,7 +500,6 @@ const loadTheme = () => {
     }
     log("loadTheme(): loaded");
 }
-log("common.js loaded");
 
 // user token recognises a device as long as the cookies aren't cleared
 generateUserToken();
@@ -509,3 +508,6 @@ generateUserToken();
 setInterval(() => {
     uploadSessionLogs();
 }, 5000);
+
+log("common.js loaded");
+log("[AND]: WebAppInterface: " + HASANDROIDINTERFACE);
