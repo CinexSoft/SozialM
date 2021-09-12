@@ -12,7 +12,7 @@
     <link rel="icon" type="image/x-icon" href="https://sozialnmedien.web.app/favicon.ico"/>
     <title>Chat</title>
     <script>
-        const chatRoot = "/chat/ejs993ejiei3/";
+        const CHATROOT = "/chat/ejs993ejiei3/";
     </script>
     <script type="none">
         // checking if chat root exists
@@ -24,7 +24,7 @@
         else if (localStorage.getItem("Chat.root") != undefined) {
             console.log("Log: chat root found");
             // chat root
-            chatRoot = "/chat/" + localStorage.getItem("Chat.root") + "/";
+            CHATROOT = "/chat/" + localStorage.getItem("Chat.root") + "/";
         }
         else {
             console.log("Log: chat root not found");
@@ -49,7 +49,8 @@
             <div class="content">
                 <button id="menu_copy">Copy message</button><hr>
                 <button id="menu_unsend">Unsend</button><hr>
-                <button id="menu_reply">Reply</button>
+                <button id="menu_reply">Reply</button><hr>
+                <button id="menu_details">Details</button>
             </div>
         </div>
     </div>
@@ -107,7 +108,7 @@
     <script src="../common/js/common.js"></script>
     <!-- init database variable -->
     <script>
-        const database = firebase.database();
+        const DATABASE = firebase.database();
     </script>
     <!-- highlight library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js"></script>

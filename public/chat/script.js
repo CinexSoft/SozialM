@@ -1,23 +1,23 @@
 // Markdown converter
-const mdtohtml = new showdown.Converter();
-mdtohtml.setFlavor("github");
+const MDTOHTML = new showdown.Converter();
+MDTOHTML.setFlavor("github");
 
 // other variables
-let prevHeight = document.body.clientHeight;
-let prevWidth = document.body.clientWidth;
-let chatScrollHeight = $("#chatarea").scrollHeight;
-let preText = "";
-let longPressed;
-let softboardOpen = false;
+let PREVHEIGHT = document.body.clientHeight;
+let PREVWIDTH = document.body.clientWidth;
+let CHATSCROLLHEIGHT = $("#chatarea").scrollHeight;
+let PRETEXT = "";
+let LONGPRESSED;
+let SOFTBOARDOPEN = false;
 
 // the entire chat is downloaded and stored here
 // the data has timestamps as keys
-const chatData = JSON.parse(localStorage.getItem(chatRoot));
+const CHATDATA = JSON.parse(localStorage.getItem(CHATROOT));
 
 // database listener
 const startDBListener = () => {
     // db listener, fetches new msg on update
-    database.ref(dbRoot + chatRoot).on('value', (snapshot) => {
+    DATABASE.ref(DBROOT + CHATROOT).on('value', (snapshot) => {
         // setting up html
         let getHTML = "";
         $("#chatarea").innerHTML = "";
@@ -31,16 +31,16 @@ const startDBListener = () => {
             let data = snapshot.child(timestamp).val();
             let token = data.token;
             // store data in local variable
-            chatData[timestamp] = {
+            CHATDATA[timestamp] = {
                 token: data.token,
                 message: data.message,
                 time: data.time
             };
             // cache chat in local storage
-            localStorage.setItem(chatRoot, JSON.stringify(chatData));
+            localStorage.setItem(CHATROOT, JSON.stringify(CHATDATA));
             // get html from msg
             getHTML = decode(data.message);
-            if (token == userToken) {
+            if (token == USERTOKEN) {
                 appendHTMLString($("#chatarea"),
                     "<div class=\"bubbles\" id=\"" + timestamp + "\">" +
                     "<div class=\"this sec_bg\">" +
@@ -48,8 +48,8 @@ const startDBListener = () => {
                     "</div>" +
                     "</div>"
                 );
-                if (debug) console.log("Log: this: timestamp = " + timestamp);
-                if (debug) console.log("Log: this: html = " + $("#chatarea").innerHTML);
+                if (DEBUG) console.log("Log: this: timestamp = " + timestamp);
+                if (DEBUG) console.log("Log: this: html = " + $("#chatarea").innerHTML);
             }
             else {
                 appendHTMLString($("#chatarea"),
@@ -59,8 +59,8 @@ const startDBListener = () => {
                     "</div>" +
                     "</div>"
                 );
-                if (debug) console.log("Log: that: timestamp = " + timestamp);
-                if (debug) console.log("Log: that: html = " + $("#chatarea").innerHTML);
+                if (DEBUG) console.log("Log: that: timestamp = " + timestamp);
+                if (DEBUG) console.log("Log: that: html = " + $("#chatarea").innerHTML);
             }
             setTimeout(() => {
                 smoothScroll($("#chatarea"));
@@ -81,7 +81,7 @@ const startDBListener = () => {
 document.addEventListener("keyup", (e) => {
     let key = e.keyCode || e.charCode
     log("keypress: key = " + key);
-    let HTML = preText + mdtohtml.makeHtml($("#txtmsg").value.trim());
+    let HTML = PRETEXT + MDTOHTML.makeHtml($("#txtmsg").value.trim());
     if (HTML != "") {
         $("#msgpreview").style.display = "block";
         $("#txtmsg").style.borderRadius = "0 0 10px 10px";
@@ -94,7 +94,7 @@ document.addEventListener("keyup", (e) => {
         $("#msgpreview").innerHTML = "<font class=\"header\" color=\"#7d7d7d\">Markdown preview</font>" + "<font color=\"#7d7d7d\">Preview appears here</font>";
     }
     if ((key == 8 || key == 46) && $("#txtmsg").value.trim() == "") {
-        preText = "";
+        PRETEXT = "";
         $("#msgpreview").style.display = "none";
         $("#txtmsg").style.borderRadius = "40px";
         $("#msgpreview").innerHTML = "<font class=\"header\" color=\"#7d7d7d\">Markdown preview</font>" + "<font color=\"#7d7d7d\">Preview appears here</font>";
@@ -107,18 +107,18 @@ document.addEventListener("keyup", (e) => {
 // soft keyboard launch triggers window resize event
 window.addEventListener("resize", (e) => {
     // detects soft keyboard switch
-    if (prevHeight != document.body.clientHeight && prevWidth == document.body.clientWidth) {
-        softboardOpen = !softboardOpen;
-        log("keyboard switch? height diff = " + (document.body.clientHeight - prevHeight));
+    if (PREVHEIGHT != document.body.clientHeight && PREVWIDTH == document.body.clientWidth) {
+        SOFTBOARDOPEN = !SOFTBOARDOPEN;
+        log("keyboard switch? height diff = " + (document.body.clientHeight - PREVHEIGHT));
     }
-    if (document.body.clientHeight - prevHeight < 0) {
-        $("#chatarea").scrollTop += Math.abs(document.body.clientHeight - prevHeight);
+    if (document.body.clientHeight - PREVHEIGHT < 0) {
+        $("#chatarea").scrollTop += Math.abs(document.body.clientHeight - PREVHEIGHT);
     }
-    prevWidth = document.body.clientWidth;
-    prevHeight = document.body.clientHeight;
+    PREVWIDTH = document.body.clientWidth;
+    PREVHEIGHT = document.body.clientHeight;
     // switches visibility of msgpreview
-    let HTML = preText + mdtohtml.makeHtml($("#txtmsg").value.trim());
-    if (HTML != "" && softboardOpen) {
+    let HTML = PRETEXT + MDTOHTML.makeHtml($("#txtmsg").value.trim());
+    if (HTML != "" && SOFTBOARDOPEN) {
         $("#msgpreview").innerHTML = "<font class=\"header\" color=\"#7d7d7d\">Markdown preview</font>" + HTML;
         $("#msgpreview").style.display = "block";
         $("#txtmsg").style.borderRadius = "0 0 10px 10px";
@@ -139,8 +139,8 @@ $("#btnsend").addEventListener("click", (e) => {
         $("#txtmsg").focus();
     }
     else {
-        msg = preText + $("#txtmsg").value.trim();
-        preText = "";
+        msg = PRETEXT + $("#txtmsg").value.trim();
+        PRETEXT = "";
         $("#txtmsg").value = "";
         $("#msgpreview").innerHTML = "<font class=\"header\" color=\"#7d7d7d\">Markdown preview</font>";
         $("#msgpreview").style.display = "none";
@@ -150,11 +150,48 @@ $("#btnsend").addEventListener("click", (e) => {
             $("#txtmsg").value = msgbackup;
             return;
         }
-        $("#txtmsg").focus(); 
-        database.ref(dbRoot + chatRoot + getTimeStamp()).update({
-            message: encode(mdtohtml.makeHtml(msg)),
-            token: userToken,
-            time: getLongDateTime(false)
+        $("#txtmsg").focus();
+        // months array
+        let months = [
+            "January", 
+            "February", 
+            "March", 
+            "April", 
+            "May", 
+            "June", 
+            "July", 
+            "August", 
+            "September", 
+            "October", 
+            "November", 
+            "December"
+        ];
+        // Days array
+        let weekdays = [
+            "Sunday",
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday"
+        ];
+        let Date = getLongDateTime(false)
+        let time = {
+            year: Date.getFullYear(),
+            month: Date.getMonth() + 1,
+            month_name: months[Date.getMonth()],
+            date: Date.getDate(),
+            day: Date.getDay(),
+            day_name: weekdays[Date.getDay()],
+            hours: Date.getHours(),
+            minutes: Date.getMinutes(),
+            seconds: Date.getSeconds()
+        }
+        DATABASE.ref(DBROOT + CHATROOT + getTimeStamp()).update({
+            time,
+            message: encode(MDTOHTML.makeHtml(msg)),
+            token: USERTOKEN
         })
         .then(() => {
             log("data pushed");
@@ -171,15 +208,15 @@ document.body.addEventListener("click", (e) => {
     // menu copy button click
     if (e.target.id == "menu_copy") {
         menu.hide();
-        copyPlainTxt(longPressed.innerHTML);
+        copyPlainTxt(LONGPRESSED.innerHTML);
     }
     // menu unsend button click
     else if (e.target.id == "menu_unsend") {
         menu.hide();
-        if (chatData[longPressed.id].token == userToken) {
-            if (getTimeStamp() - parseInt(longPressed.id) < 3600000) {
-                database.ref(dbRoot + chatRoot).update({
-                    [longPressed.id]: null
+        if (CHATDATA[LONGPRESSED.id].token == USERTOKEN) {
+            if (getTimeStamp() - parseInt(LONGPRESSED.id) < 3600000) {
+                DATABASE.ref(DBROOT + CHATROOT).update({
+                    [LONGPRESSED.id]: null
                 })
                 .then(() => {
                     log("msg deleted, data updated");
@@ -199,8 +236,16 @@ document.body.addEventListener("click", (e) => {
     // menu reply button click
     else if (e.target.id == "menu_reply") {
         menu.hide();
-        preText = "<blockquote id=\"tm_" + longPressed.id + "\">" + getChildElement(longPressed, "div")[0].innerHTML + "</blockquote>\n\n";
+        PRETEXT = "<blockquote id=\"tm_" + LONGPRESSED.id + "\">" + getChildElement(LONGPRESSED, "div")[0].innerHTML + "</blockquote>\n\n";
         $("#txtmsg").focus();
+    }
+    // menu details button click
+    else if (e.target.id == "menu_details") {
+        menu.hide();
+        let time = CHATDATA[LONGPRESSED.id].time;
+        // display dialog
+        dialog.display("alert", "Message details", "<pre style=\"text-align: left\">Time: " + JSON.stringify(time, null, 4) + "</pre>"/* +
+                                                   "Date" + + "\n" + ""*/)
     }
     /* DO NOT TOUCH THIS CODE, this is the chat bubble highlighter code
      * The upper indented block is the condition of the else if statement
@@ -238,8 +283,8 @@ document.body.addEventListener("click", (e) => {
     }
 });
 // timer variable
-let longPressTimer;
-let longPressTimeout;
+let LONGPRESSTIMER;
+let LONGPRESSTIMEOUT;
 // on mouse down listener
 document.body.addEventListener("pointerdown", (e) => {
     log("pointerdown: " +
@@ -248,32 +293,32 @@ document.body.addEventListener("pointerdown", (e) => {
          "class = " + e.target.className);
     // bubble container long press
     if (e.target.className == "bubbles") {
-        longPressTimer = setTimeout(() => {
+        LONGPRESSTIMER = setTimeout(() => {
             e.target.style.transform = "scale(0.95)";
             e.target.style.userSelect = "none";
         }, 200);
-        longPressTimeout = setTimeout(() => {
+        LONGPRESSTIMEOUT = setTimeout(() => {
             log("long press triggered");
-            longPressed = e.target;
+            LONGPRESSED = e.target;
             e.target.style.transform = "scale(1)";
-            clearTimeout(longPressTimer);
+            clearTimeout(LONGPRESSTIMER);
             // show menu
-            menu.display(chatData[e.target.id].time);
+            menu.display();
         }, 1000);
     }
     // image long pressed
     else if (e.target.nodeName == "IMG") {
         // get parent bubble container (.bubbles) of the image
-        let parentBubble = e.target.parentNode.parentNode.parentNode;
+        let parent_bubble = e.target.parentNode.parentNode.parentNode;
         // 200 ms delay
-        longPressTimer = setTimeout(() => {
+        LONGPRESSTIMER = setTimeout(() => {
             // shrink the parent slightly
-            parentBubble.style.transform = "scale(0.95)";
+            parent_bubble.style.transform = "scale(0.95)";
         }, 200);
-        longPressTimeout = setTimeout(() => {
+        LONGPRESSTIMEOUT = setTimeout(() => {
             log("long press triggered");
-            parentBubble.style.transform = "scale(1)";
-            clearTimeout(longPressTimer);
+            parent_bubble.style.transform = "scale(1)";
+            clearTimeout(LONGPRESSTIMER);
             dialog.display("action", "Download image", "Do you wish to download this image?", "Download", () => {
                 dialog.hide("action");
                 try {
@@ -283,13 +328,13 @@ document.body.addEventListener("pointerdown", (e) => {
                     dialog.display("alert", "Download failed", "Failed to download file from <a href=\"" + e.target.src + "\">" + e.target.src.slice(0, 32) + "...</a>");
                     return;
                 }
-                if (existsAndroidInterface) Android.showToast("Look into your notification panel for download progress");
+                if (EXISTSANDROIDINTERFACE) Android.showToast("Look into your notification panel for download progress");
             });
         }, 1000);
     }
     // if it's a link, copy it
     else if (e.target.nodeName == "A") {
-        longPressTimeout = setTimeout(() => {
+        LONGPRESSTIMEOUT = setTimeout(() => {
             log("long press triggered");
             // FIXME: figure out why the error is not caught in this block
             copyPlainTxt(e.target.href);
@@ -301,8 +346,8 @@ document.body.addEventListener("pointerup", (e) => {
     log("pointer up");
     e.target.style.transform = "scale(1)";
     e.target.style.userSelect = "auto";
-    clearTimeout(longPressTimer);
-    clearTimeout(longPressTimeout);
+    clearTimeout(LONGPRESSTIMER);
+    clearTimeout(LONGPRESSTIMEOUT);
 });
 // swipe gesture listener
 document.body.addEventListener("touchmove", (e) => {
@@ -312,9 +357,9 @@ document.body.addEventListener("touchmove", (e) => {
          "class = " + e.target.className);
     e.target.style.transform = "scale(1)";
     e.target.style.userSelect = "auto";
-    clearTimeout(longPressTimer);
-    clearTimeout(longPressTimeout);
+    clearTimeout(LONGPRESSTIMER);
+    clearTimeout(LONGPRESSTIMEOUT);
 });
 
-overlay.instanceOpen = true;
+overlay.instance_open = true;
 startDBListener();

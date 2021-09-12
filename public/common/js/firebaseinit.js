@@ -17,5 +17,5 @@ const app = firebase.initializeApp(firebaseConfig);
 const analytics = firebase.analytics(app);
 
 // database root
-const dbRoot = "/Ci4j82hg96y36rfi96vfrwog7h85f4jh870bpgw52fekftt95hjo7d2i3jgie64k";
+const DBROOT = "/Ci4j82hg96y36rfi96vfrwog7h85f4jh870bpgw52fekftt95hjo7d2i3jgie64k";
 console.log("Log: firebase initialised");

@@ -10,17 +10,17 @@
  */
 
 // global theme colors
-let accent_primary_bgcolor = "#075E54";
-let accent_secondary_bgcolor = "#dcf8c6";
-let accent_tertiary_bgcolor = "#ece5dd";
-let accent_fg_color = "#ffffff";
+let ACCENT_PRIMARY_BGCOLOR = "#075E54";
+let ACCENT_SECONDARY_BGCOLOR = "#dcf8c6";
+let ACCENT_TERTIARY_BGCOLOR = "#ece5dd";
+let ACCENT_FG_COLOR = "#ffffff";
 
 // user token
-let userToken = "";
+let USERTOKEN = "";
 
 // flags
-let debug = !true;            // prints debug logs in console
-let loadtheme = !true;        // deprecated
+let DEBUG = !true;            // prints debug logs in console
+let LOADTHEME = !true;        // deprecated
 
 /* checks if android interface exists
  * The `Android` WebAppInterface is a class available
@@ -30,18 +30,18 @@ let loadtheme = !true;        // deprecated
  * The interface is available only when this webpage is loaded on the Android
  * web app.
  */
-let existsAndroidInterface = typeof Android !== "undefined"
+let EXISTSANDROIDINTERFACE = typeof Android !== "undefined"
                              && typeof Android.isSozialnMedienWebapp === "function"
                              && Android.isSozialnMedienWebapp();
 
 // overlay controls
 const overlay = {
-    instanceOpen: false,
-    animDuration: 250
+    instance_open: false,
+    animation_duration: 250
 }
 
 // logger data
-const sessionlogs = {};
+const SESSIONLOGS = {};
 
 // returns time passed in ms since Unix epoch
 const getTimeStamp = () => {
@@ -51,13 +51,16 @@ const getTimeStamp = () => {
 // gets current time zone, date time in Continent/City YYYY-MM-DD @ HH:MM:SS format
 const getLongDateTime = (flag = true) => {
     let date_ob = new Date();
+    if (!flag) {
+        return date_ob;
+    }
     let date = ("0" + date_ob.getDate()).slice(-2);
     let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
     let year = date_ob.getFullYear();
     let hours = ("0" + date_ob.getHours()).slice(-2);
     let minutes = ("0" + date_ob.getMinutes()).slice(-2);
     let seconds = ("0" + date_ob.getSeconds()).slice(-2);
-    return (flag ? Intl.DateTimeFormat().resolvedOptions().timeZone + "/" : "") + year + "-" + month + "-" + date + " @ " + hours + ":" + minutes + ":" + seconds;
+    return Intl.DateTimeFormat().resolvedOptions().timeZone + "/" + year + "-" + month + "-" + date + " @ " + hours + ":" + minutes + ":" + seconds;
 }
 
 // session time token
@@ -65,29 +68,29 @@ let sessionToken = getLongDateTime();
 
 // console functions
 const log = (val) => {
-    if (debug) console.log("Log: " + val);
+    if (DEBUG) console.log("Log: " + val);
     // write logs in local database
-    sessionlogs[getTimeStamp()] = val;
+    SESSIONLOGS[getTimeStamp()] = val;
 }
 
 const err = (val) => {
-    if (debug) console.error("Err: " + val);
+    if (DEBUG) console.error("Err: " + val);
     // write logs in local database
-    sessionlogs[getTimeStamp()] = "[ERR]: " + val;
+    SESSIONLOGS[getTimeStamp()] = "[ERR]: " + val;
 }
 
 const wrn = (val) => {
-    if (debug) console.warn("Wrn: " + val);
+    if (DEBUG) console.warn("Wrn: " + val);
     // write logs in local database
-    sessionlogs[getTimeStamp()] = "[WRN]: " + val;
+    SESSIONLOGS[getTimeStamp()] = "[WRN]: " + val;
 }
 
 /* Uploads debug logs to the database
  * for debugging
  */
 const uploadSessionLogs = () => {
-    firebase.database().ref(dbRoot + "/records/sessionlogs/" + userToken + "/" + sessionToken)
-    .update(sessionlogs)
+    firebase.database().ref(DBROOT + "/records/SESSIONLOGS/" + USERTOKEN + "/" + sessionToken)
+    .update(SESSIONLOGS)
     .catch((error) => {
         err(error);
     });
@@ -106,15 +109,14 @@ const generateToken = (length = 64) => {
 
 // user token is used to mark a message
 const generateUserToken = () => {
-    userToken = localStorage.getItem("User.token");
-    if (userToken == undefined) {
-        userToken = generateToken(64);
-        localStorage.setItem("User.token", userToken);
-        log("new token = " + userToken);
+    USERTOKEN = localStorage.getItem("User.token");
+    if (USERTOKEN == undefined) {
+        USERTOKEN = generateToken(64);
+        localStorage.setItem("User.token", USERTOKEN);
+        log("new token = " + USERTOKEN);
     }
     else {
-        userToken = userToken;
-        log("token = " + userToken);
+        log("token = " + USERTOKEN);
     }
 }
 
@@ -124,7 +126,7 @@ const encode = (str) => {
     for (c of spChars) {
         str = str.replaceAll(c, "ASCII" + c.charCodeAt(0));
     }
-    if (debug) console.log("Log: encode(): str = " + str);
+    if (DEBUG) console.log("Log: encode(): str = " + str);
     return str;
 }
 
@@ -134,14 +136,14 @@ const decode = (str) => {
     for (c of spChars) {
         str = str.replaceAll("ASCII" + c.charCodeAt(0), c);
     }
-    if (debug) console.log("Log: decode(): str = " + str);
+    if (DEBUG) console.log("Log: decode(): str = " + str);
     return str;
 }
 
 // download a file
 const download = (directurl, filename) => {
     filename = filename || "sozialnmedien_" + getTimeStamp() + ".bin";
-    if (existsAndroidInterface) {
+    if (EXISTSANDROIDINTERFACE) {
         try {
             Android.download(directurl, filename);
             log("[AND]: download(): through Android WepAppInterface");
@@ -171,7 +173,7 @@ const copyPlainTxt = (copytext) => {
     })
     .catch((error) => {
         err(error);
-        if (existsAndroidInterface) {
+        if (EXISTSANDROIDINTERFACE) {
             Android.copyToClipboard(copytext);
             log("[AND]: copyPlainTxt(): through Android WepAppInterface");
             Android.showToast("Text copied!");
@@ -283,12 +285,12 @@ const alertDialog = {
         }
         // delay when one overlay is already open
         let timeout = 0;
-        if (overlay.instanceOpen) {
-            timeout = overlay.animDuration;
+        if (overlay.instance_open) {
+            timeout = overlay.animation_duration;
         }
         setTimeout(() => {
             log("alertDialog: timeout = " + timeout);
-            getChildElement($("#alertDialog"), "h2")[0].innerHTML = title;
+            getChildElement($("#alertDialog"), "h2")[0].innerHTML = title.replace(/\n/g, "<br>");;
             getChildElement($("#alertDialog"), "div")[0].innerHTML = message.replace(/\n/g, "<br>");
             $("#alertDialog_btn").innerHTML = button;
             $("#alertDialog_btn").addEventListener("click", (e) => {
@@ -296,17 +298,17 @@ const alertDialog = {
                     func();
                 }
             });
-            $("#alertDialogRoot").style.animation = "fadeIn " + overlay.animDuration + "ms forwards";
-            $("#alertDialog").style.animation = "scaleIn " + overlay.animDuration + "ms forwards";
-            overlay.instanceOpen = true;
+            $("#alertDialogRoot").style.animation = "fadeIn " + overlay.animation_duration + "ms forwards";
+            $("#alertDialog").style.animation = "scaleIn " + overlay.animation_duration + "ms forwards";
+            overlay.instance_open = true;
         }, timeout);
     },
     hide(func) {
-        $("#alertDialogRoot").style.animation = "fadeOut " + overlay.animDuration + "ms forwards";
-        $("#alertDialog").style.animation = "scaleOut " + overlay.animDuration + "ms forwards";
+        $("#alertDialogRoot").style.animation = "fadeOut " + overlay.animation_duration + "ms forwards";
+        $("#alertDialog").style.animation = "scaleOut " + overlay.animation_duration + "ms forwards";
         setTimeout(() => {
-            overlay.instanceOpen = false;
-        }, overlay.animDuration);
+            overlay.instance_open = false;
+        }, overlay.animation_duration);
         // additional function
         if (func != undefined) {
             if (typeof func != "function") {
@@ -329,12 +331,12 @@ const actionDialog = {
         }
         // delay when one overlay is already open
         let timeout = 0;
-        if (overlay.instanceOpen) {
-            timeout = overlay.animDuration;
+        if (overlay.instance_open) {
+            timeout = overlay.animation_duration;
         }
         setTimeout(() => {
             log("actionDialog: timeout = " + timeout);
-            getChildElement($("#actionDialog"), "h2")[0].innerHTML = title;
+            getChildElement($("#actionDialog"), "h2")[0].innerHTML = title.replace(/\n/g, "<br>");;
             getChildElement($("#actionDialog"), ".content")[0].innerHTML = message.replace(/\n/g, "<br>");
             $("#actionDialog_btnOk").innerHTML = button;
             $("#actionDialog_btnOk").addEventListener("click", (e) => {
@@ -342,17 +344,17 @@ const actionDialog = {
                     func();
                 }
             });
-            $("#actionDialogRoot").style.animation = "fadeIn " + overlay.animDuration + "ms forwards";
-            $("#actionDialog").style.animation = "scaleIn " + overlay.animDuration + "ms forwards";
-            overlay.instanceOpen = true;
+            $("#actionDialogRoot").style.animation = "fadeIn " + overlay.animation_duration + "ms forwards";
+            $("#actionDialog").style.animation = "scaleIn " + overlay.animation_duration + "ms forwards";
+            overlay.instance_open = true;
         }, timeout);
     },
     hide(func) {
-        $("#actionDialogRoot").style.animation = "fadeOut " + overlay.animDuration + "ms forwards";
-        $("#actionDialog").style.animation = "scaleOut " + overlay.animDuration + "ms forwards";
+        $("#actionDialogRoot").style.animation = "fadeOut " + overlay.animation_duration + "ms forwards";
+        $("#actionDialog").style.animation = "scaleOut " + overlay.animation_duration + "ms forwards";
         setTimeout(() => {
-            overlay.instanceOpen = false;
-        }, overlay.animDuration);
+            overlay.instance_open = false;
+        }, overlay.animation_duration);
         // additional function
         if (func != undefined) { 
             if (typeof func != "function") {
@@ -392,29 +394,29 @@ const menu = {
     display(title = "Menu") {
         // delay when one overlay is already open
         let timeout = 0;
-        if (overlay.instanceOpen) {
-            timeout = overlay.animDuration;
+        if (overlay.instance_open) {
+            timeout = overlay.animation_duration;
         }
         setTimeout(() => {
             log("menu: timeout = " + timeout);
-            getChildElement($("#menu"), "h2")[0].innerHTML = title;
-            $("#menuRoot").style.animation = "fadeIn " + overlay.animDuration + "ms forwards";
-            $("#menu").style.animation = "scaleIn " + overlay.animDuration + "ms forwards";
-            overlay.instanceOpen = true;
+            getChildElement($("#menu"), "h2")[0].innerHTML = title.replace(/\n/g, "<br>");;
+            $("#menuRoot").style.animation = "fadeIn " + overlay.animation_duration + "ms forwards";
+            $("#menu").style.animation = "scaleIn " + overlay.animation_duration + "ms forwards";
+            overlay.instance_open = true;
         }, timeout);
     },
     hide() {
-        $("#menuRoot").style.animation = "fadeOut " + overlay.animDuration + "ms forwards";
-        $("#menu").style.animation = "scaleOut " + overlay.animDuration + "ms forwards";
+        $("#menuRoot").style.animation = "fadeOut " + overlay.animation_duration + "ms forwards";
+        $("#menu").style.animation = "scaleOut " + overlay.animation_duration + "ms forwards";
         setTimeout(() => {
-            overlay.instanceOpen = false;
-        }, overlay.animDuration);
+            overlay.instance_open = false;
+        }, overlay.animation_duration);
     }
 }
 
 // looks for updates to android app
 const checkForApkUpdates = () => {
-    if (existsAndroidInterface) {
+    if (EXISTSANDROIDINTERFACE) {
         let val;
         try {
             val = Android.updateAvailable();
@@ -473,23 +475,23 @@ const smoothScroll = (element, flag = true) => {
  * a all teal accent (WhatsApp theme). So this won't be needed.
  */
 const loadTheme = () => {
-    if (!loadtheme) return;
+    if (!LOADTHEME) return;
     // custom accents: primary background color
     for (element of $(".prim_bg")) {
-        element.style.backgroundColor = accent_primary_bgcolor;
-        element.style.borderColor = accent_primary_bgcolor;
-        element.style.color = accent_fg_color;
+        element.style.backgroundColor = ACCENT_PRIMARY_BGCOLOR;
+        element.style.borderColor = ACCENT_PRIMARY_BGCOLOR;
+        element.style.color = ACCENT_FG_COLOR;
     }
     // custom accents: secondary background color without alpha
     for (element of $(".sec_bg")) {
-        element.style.backgroundColor = accent_secondary_bgcolor;
-        element.style.borderColor = accent_secondary_bgcolor;
+        element.style.backgroundColor = ACCENT_SECONDARY_BGCOLOR;
+        element.style.borderColor = ACCENT_SECONDARY_BGCOLOR;
         element.style.color = "#222";
     }
     // custom accents: tertiary background color without alpha
     for (element of $(".tert_bg")) {
-        element.style.backgroundColor = accent_tertiary_bgcolor;
-        element.style.borderColor = accent_tertiary_bgcolor;
+        element.style.backgroundColor = ACCENT_TERTIARY_BGCOLOR;
+        element.style.borderColor = ACCENT_TERTIARY_BGCOLOR;
         element.style.color = "#222";
     }
     log("loadTheme(): loaded");

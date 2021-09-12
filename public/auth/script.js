@@ -1,5 +1,5 @@
 // root visibility flag
-let rootFlag = "login";
+let ROOTFLAG = "login";
 // called when the eye-slash icon is pressed
 const toogleRoot = () => {
     /* hide login and signup info, $ is a css style selector function
@@ -9,22 +9,22 @@ const toogleRoot = () => {
     $("#signup_info").style.display = "none";
     $("#login_info").style.display = "none";
     // if root of login visibile
-    if (rootFlag == "login") {
+    if (ROOTFLAG == "login") {
         $("#login").style.display = "none";
         $(".swinfo")[0].innerHTML = "Already have an account? ";
         $(".switchlink")[0].innerHTML = "Log In";
-        rootFlag = "signup";
-        log("rootFlag = " + rootFlag);
+        ROOTFLAG = "signup";
+        log("ROOTFLAG = " + ROOTFLAG);
     }
     // if root of signup visibile
-    else if (rootFlag == "signup") {
+    else if (ROOTFLAG == "signup") {
         $("#signup").style.display = "none";
         $(".swinfo")[0].innerHTML = "Don't have an account? ";
         $(".switchlink")[0].innerHTML = "Sign Up";
-        rootFlag = "login";
-        log("rootFlag = " + rootFlag);
+        ROOTFLAG = "login";
+        log("ROOTFLAG = " + ROOTFLAG);
     }
-    document.getElementById(rootFlag).style.display = "block";
+    document.getElementById(ROOTFLAG).style.display = "block";
 }
 // toggle password visibility
 const togglePass = () => {
@@ -51,7 +51,7 @@ $("#btn_login").addEventListener("click", (e) => {
     $("#login_info").style.display = "block";
     email = $("#login_email").value;
     password = $("#login_pass").value;
-    auth.signInWithEmailAndPassword(email, password).then((userCredential) => {
+    AUTH.signInWithEmailAndPassword(email, password).then((userCredential) => {
         let user = userCredential.user;
         localStorage.setItem("Auth.isLoggedIn", "true");
         localStorage.setItem("Auth.user", JSON.stringify(user));
@@ -84,7 +84,7 @@ $("#btn_signup").addEventListener("click", (e) => {
         return;
     }
     password = $("#signup_pass").value;
-    auth.createUserWithEmailAndPassword(email, password).then((userCredential) => {
+    AUTH.createUserWithEmailAndPassword(email, password).then((userCredential) => {
         let user = userCredential.user;
         localStorage.setItem("Auth.isLoggedIn", "true");
         localStorage.setItem("Auth.user", JSON.stringify(user));
