@@ -293,7 +293,7 @@ const alertDialog = {
             timeout = overlay.animation_duration;
         }
         setTimeout(() => {
-            log("alertDialog: timeout = " + timeout);
+            log("alertDialog display(): timeout = " + timeout);
             getChildElement($("#alertDialog"), "h2")[0].innerHTML = title.replace(/\n/g, "<br>");;
             getChildElement($("#alertDialog"), "div")[0].innerHTML = message.replace(/\n/g, "<br>");
             $("#alertDialog_btn").innerHTML = button;
@@ -339,7 +339,7 @@ const actionDialog = {
             timeout = overlay.animation_duration;
         }
         setTimeout(() => {
-            log("actionDialog: timeout = " + timeout);
+            log("actionDialog: display(): timeout = " + timeout);
             getChildElement($("#actionDialog"), "h2")[0].innerHTML = title.replace(/\n/g, "<br>");;
             getChildElement($("#actionDialog"), ".content")[0].innerHTML = message.replace(/\n/g, "<br>");
             $("#actionDialog_btnOk").innerHTML = button;

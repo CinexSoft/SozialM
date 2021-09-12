@@ -326,6 +326,7 @@ document.body.addEventListener("pointerdown", (e) => {
                 dialog.hide("action");
                 setTimeout(() => {
                     try {
+                        log("trying to download image");
                         Android.showToast("Look into your notification panel for download progress");
                         download(e.target.src, e.target.alt.trim() + "_sozialnmedien_" + getTimeStamp() + ".png");
                     }
