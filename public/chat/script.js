@@ -324,16 +324,16 @@ document.body.addEventListener("pointerdown", (e) => {
             clearTimeout(LONGPRESSTIMER);
             if (EXISTSANDROIDINTERFACE) dialog.display("action", "Download image", "Do you wish to download this image?", "Download", () => {
                 dialog.hide("action");
-                try {
-                    setTimeout(() => {
+                setTimeout(() => {
+                    try {
+                        Android.showToast("Look into your notification panel for download progress");
                         download(e.target.src, e.target.alt.trim() + "_sozialnmedien_" + getTimeStamp() + ".png");
-                    }, 500);
-                }
-                catch (error) {
-                    dialog.display("alert", "Download failed", "Failed to download file. Click <a href=\"" + e.target.src + "\">here</a> to visit file in browser.");
-                    return;
-                }
-                if (EXISTSANDROIDINTERFACE) Android.showToast("Look into your notification panel for download progress");
+                    }
+                    catch (error) {
+                        dialog.display("alert", "Download failed", "Failed to download file. Click <a href=\"" + e.target.src + "\">here</a> to visit file in browser.");
+                        return;
+                    }
+                }, 1000);
             });
         }, 1000);
     }
