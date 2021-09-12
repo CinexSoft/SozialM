@@ -326,6 +326,10 @@ document.body.addEventListener("pointerdown", (e) => {
                 dialog.hide("action");
                 setTimeout(() => {
                     try {
+                        /* FIXME: This block gets executed n times where n is the session number starting from 0
+                         * i.e. on first try, it's executed once, and on 2nd time, it's executed twice and so on,
+                         * causing multiple copies of the same file to be downloaded
+                         */
                         log("trying to download image");
                         Android.showToast("Look into your notification panel for download progress");
                         download(e.target.src, e.target.alt.trim() + "_sozialnmedien_" + getTimeStamp() + ".png");
