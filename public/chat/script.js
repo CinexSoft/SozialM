@@ -326,7 +326,7 @@ document.body.addEventListener("pointerdown", (e) => {
                 dialog.hide("action");
                 setTimeout(() => {
                     try {
-                        /* FIXME: This block gets executed n times where n is the session number starting from 0
+                        /* FIXME NO1: This block gets executed for n times for the nth launch of the actionDialog
                          * i.e. on first try, it's executed once, and on 2nd time, it's executed twice and so on,
                          * causing multiple copies of the same file to be downloaded
                          */
