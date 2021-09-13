@@ -152,7 +152,7 @@ $("#btnsend").addEventListener("click", (e) => {
         }
         $("#txtmsg").focus();
         // months array
-        let months = [
+        const months = [
             "January", 
             "February", 
             "March", 
@@ -167,7 +167,7 @@ $("#btnsend").addEventListener("click", (e) => {
             "December",
         ];
         // Days array
-        let weekdays = [
+        const weekdays = [
             "Sunday",
             "Monday",
             "Tuesday",
@@ -176,8 +176,8 @@ $("#btnsend").addEventListener("click", (e) => {
             "Friday",
             "Saturday",
         ];
-        let Date = getLongDateTime(false)
-        let time = {
+        const Date = getLongDateTime(false);
+        const time = {
             year: Date.getFullYear(),
             month: Date.getMonth() + 1,
             monthname: months[Date.getMonth()],
@@ -191,17 +191,17 @@ $("#btnsend").addEventListener("click", (e) => {
         DATABASE.ref(DBROOT + CHATROOT + getTimeStamp()).update({
             time,
             message: encode(MDTOHTML.makeHtml(msg)),
-            token: USERTOKEN
+            token: USERTOKEN,
         })
         .then(() => {
             log("data pushed");
+            loadTheme();
         })
         .catch((error) => {
             err(error);
             $("#txtmsg").value = msgbackup;
         });
     }
-    loadTheme();
 });
 // onclick listeners
 document.body.addEventListener("click", (e) => {
@@ -213,25 +213,27 @@ document.body.addEventListener("click", (e) => {
     // menu unsend button click
     else if (e.target.id == "menu_unsend") {
         menu.hide();
-        if (CHATDATA[LONGPRESSED.id].token == USERTOKEN) {
-            if (getTimeStamp() - parseInt(LONGPRESSED.id) < 3600000) {
-                DATABASE.ref(DBROOT + CHATROOT).update({
-                    [LONGPRESSED.id]: null
-                })
-                .then(() => {
-                    log("msg deleted, data updated");
-                })
-                .catch((error) => {
-                    err(error);
-                });
+        setTimeout(() => {  
+            if (CHATDATA[LONGPRESSED.id].token == USERTOKEN) {
+                if (getTimeStamp() - parseInt(LONGPRESSED.id) < 3600000) {
+                    DATABASE.ref(DBROOT + CHATROOT).update({
+                        [LONGPRESSED.id]: null
+                    })
+                    .then(() => {
+                        log("msg deleted, data updated");
+                    })
+                    .catch((error) => {
+                        err(error);
+                    });
+                }
+                else {
+                    dialog.display("alert", "Not allowed", "You can only unsend a message within 1 hour of sending it.");
+                }
             }
             else {
-                dialog.display("alert", "Not allowed", "You can only unsend a message within 1 hour of sending it.");
+                dialog.display("alert", "Not allowed", "You can unsend a message only if you have sent it.");
             }
-        }
-        else {
-            dialog.display("alert", "Not allowed", "You can unsend a message only if you have sent it.");
-        }
+        }, 300);
     }
     // menu reply button click
     else if (e.target.id == "menu_reply") {
@@ -330,7 +332,6 @@ document.body.addEventListener("pointerdown", (e) => {
                          * i.e. on first try, it's executed once, and on 2nd time, it's executed twice and so on,
                          * causing multiple copies of the same file to be downloaded
                          */
-                        log("trying to download image");
                         Android.showToast("Look into your notification panel for download progress");
                         download(e.target.src, e.target.alt.trim() + "_sozialnmedien_" + getTimeStamp() + ".png");
                     }

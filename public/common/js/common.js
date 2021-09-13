@@ -203,7 +203,7 @@ const getBrowser = () => {
     if (navigator.userAgent.indexOf("Firefox") != -1 ){
         return "firefox";
     }
-    if ((navigator.userAgent.indexOf("MSIE") != -1 ) || (!!document.documentMode == true )) {
+    if ((navigator.userAgent.indexOf("MSIE") != -1 ) || (!!document.documentMode == true)) {
         return "IE";
     }
     return "unknown";
@@ -301,7 +301,8 @@ const alertDialog = {
                 if (func != undefined) {
                     func();
                 }
-            });
+            // removes event listener once action is complete
+            }, { once: true });
             $("#alertDialogRoot").style.animation = "fadeIn " + overlay.animation_duration + "ms forwards";
             $("#alertDialog").style.animation = "scaleIn " + overlay.animation_duration + "ms forwards";
             overlay.instance_open = true;
@@ -347,7 +348,8 @@ const actionDialog = {
                 if (func != undefined) {
                     func();
                 }
-            });
+            // removes event listener once action is complete
+            }, { once: true });
             $("#actionDialogRoot").style.animation = "fadeIn " + overlay.animation_duration + "ms forwards";
             $("#actionDialog").style.animation = "scaleIn " + overlay.animation_duration + "ms forwards";
             overlay.instance_open = true;
