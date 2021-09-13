@@ -20,12 +20,9 @@ const startDBListener = () => {
     DATABASE.ref(DBROOT + CHATROOT).on('value', (snapshot) => {
         // setting up html
         let getHTML = "";
-        $("#chatarea").innerHTML = "";
-        appendHTMLString($("#chatarea"),
-            "<div class=\"info\">" +
-            "<p class=\"fa fa-info-circle\">&ensp;Messages in this chat are only server-to-end encrypted.</p>" +
-            "</div>"
-        );
+        $("#chatarea").innerHTML = "<div class=\"info\">" +
+                                   "<p class=\"fa fa-info-circle\">&ensp;Messages in this chat are only server-to-end encrypted.</p>" +
+                                   "</div>";
         snapshot.forEach(({ key }) => {
             let timestamp = key;
             let data = snapshot.child(timestamp).val();
@@ -46,7 +43,7 @@ const startDBListener = () => {
                     "<div class=\"this sec_bg\">" +
                     getHTML +
                     "</div>" +
-                    "</div>"
+                    "</div>",
                 );
                 if (DEBUG) console.log("Log: this: timestamp = " + timestamp);
                 if (DEBUG) console.log("Log: this: html = " + $("#chatarea").innerHTML);
@@ -62,9 +59,10 @@ const startDBListener = () => {
                 if (DEBUG) console.log("Log: that: timestamp = " + timestamp);
                 if (DEBUG) console.log("Log: that: html = " + $("#chatarea").innerHTML);
             }
-            setTimeout(() => {
-                smoothScroll($("#chatarea"));
-            }, 20);
+            /* this delay makes sure the entire chatarea is loaded before it's scrolled to place
+             * it's not smooth scrolled, that's the 3rd flag
+             */
+            smoothScroll($("#chatarea"), true, true);
         });
         if ($("#chatarea").innerHTML.match(/pre/i) &&
             $("#chatarea").innerHTML.match(/code/i)) {
@@ -176,31 +174,46 @@ $("#btnsend").addEventListener("click", (e) => {
             "Friday",
             "Saturday",
         ];
-        const Date = getLongDateTime(false);
-        const time = {
-            year: Date.getFullYear(),
-            month: Date.getMonth() + 1,
-            monthname: months[Date.getMonth()],
-            date: Date.getDate(),
-            day: Date.getDay(),
-            dayname: weekdays[Date.getDay()],
-            time: ("0" + Date.getHours()).slice(-2) + ":"
-                + ("0" + Date.getMinutes()).slice(-2) + ":"
-                + ("0" + Date.getSeconds()).slice(-2),
-        }
-        DATABASE.ref(DBROOT + CHATROOT + getTimeStamp()).update({
-            time,
-            message: encode(MDTOHTML.makeHtml(msg)),
-            token: USERTOKEN,
-        })
-        .then(() => {
-            log("data pushed");
-            loadTheme();
-        })
-        .catch((error) => {
-            err(error);
-            $("#txtmsg").value = msgbackup;
-        });
+        msg = MDTOHTML.makeHtml(msg);
+        /* this is temporary and is overwritten when db update is fetched
+         * which is why the class this has no timestamp id
+         */
+        appendHTMLString($("#chatarea"),
+            "<div class=\"bubbles\">" +
+            "<div class=\"this sec_bg\">" +
+            msg +
+            "</div>" +
+            "</div>"
+        );
+        smoothScroll($("#chatarea"), true, true);
+        // a small delay of 200ms to prevent a lag caused when writing to db
+        setTimeout(() => {
+            const Date = getLongDateTime(false);
+            const time = {
+                year: Date.getFullYear(),
+                month: Date.getMonth() + 1,
+                monthname: months[Date.getMonth()],
+                date: Date.getDate(),
+                day: Date.getDay(),
+                dayname: weekdays[Date.getDay()],
+                time: ("0" + Date.getHours()).slice(-2) + ":"
+                    + ("0" + Date.getMinutes()).slice(-2) + ":"
+                    + ("0" + Date.getSeconds()).slice(-2),
+            }
+            DATABASE.ref(DBROOT + CHATROOT + getTimeStamp()).update({
+                time,
+                message: encode(msg),
+                token: USERTOKEN,
+            })
+            .then(() => {
+                log("data pushed");
+                loadTheme();
+            })
+            .catch((error) => {
+                err(error);
+                $("#txtmsg").value = msgbackup;
+            });
+        }, 200);
     }
 });
 // onclick listeners
@@ -213,6 +226,7 @@ document.body.addEventListener("click", (e) => {
     // menu unsend button click
     else if (e.target.id == "menu_unsend") {
         menu.hide();
+        // this delay of 300ms is to prevent a lag that occurrs when writing to db
         setTimeout(() => {  
             if (CHATDATA[LONGPRESSED.id].token == USERTOKEN) {
                 if (getTimeStamp() - parseInt(LONGPRESSED.id) < 3600000) {

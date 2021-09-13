@@ -263,13 +263,14 @@ const hasElementAsParent = (child, parent) => {
  * http://benalman.com/about/license/
  */
 // Visit: https://gist.github.com/cowboy/938767
-const appendHTMLString = (element, str) => {
+const appendHTMLString = (element, str, reversed = false) => {
     let parent =  element.parentNode;
     let next = element.nextSibling;
-    if (!parent) return;                // No parent node? Abort!
-    parent.removeChild(element);        // Detach node from DOM.
-    element.innerHTML += str;           // append html string
-    parent.insertBefore(element, next); // Re-attach node to DOM.
+    if (!parent) return;                              // No parent node? Abort!
+    parent.removeChild(element);                      // Detach node from DOM.
+    if (!reversed) element.innerHTML += str;          // append html string
+    else element.innerHTML = str + element.innerHTML; // reversed append html
+    parent.insertBefore(element, next);               // Re-attach node to DOM.
 }
 
 /* ----------------------------------------- TODO -------------------------------------------
@@ -461,9 +462,9 @@ document.body.addEventListener("click", (e) => {
 });
 
 // smooth scroll
-const smoothScroll = (element, flag = true) => {
+const smoothScroll = (element, flag = true, notsmooth) => {
     // check if down scrollable part of element is < 720 px
-    if (element.scrollHeight - (document.body.clientHeight - 110) - element.scrollTop < 720) {
+    if (!notsmooth && element.scrollHeight - (document.body.clientHeight - 110) - element.scrollTop < 720) {
         if (!flag) return "smooth";
         element.style.scrollBehavior = "smooth";
     }
