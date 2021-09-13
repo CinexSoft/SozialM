@@ -56,7 +56,7 @@ tested, and then merged to `MAIN`.
 - Project is hosted at [https://sozialnmedien.web.app](https://sozialnmedien.web.app)
 - Hosting rules at `firebase.json`
 - Webpage root at `public/`
-- Webview based APK [download](https://sozialnmedien.web.app/downloads/chat.app.web.sozialnmedien.apk)
+- Webview based APK [download](https://github.com/CinexSoft/SozialnMedienApk/releases/download/v2021.09.10.20.20/chat.app.web.sozialnmedien.apk)
 
 ## Code Style
 - Follow `Airbnb` JavaScript style guide - [https://github.com/airbnb/javascript](https://github.com/airbnb/javascript).
