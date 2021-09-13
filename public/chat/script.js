@@ -353,6 +353,7 @@ document.body.addEventListener("pointerdown", (e) => {
 // on mouse up listener
 document.body.addEventListener("pointerup", (e) => {
     log("pointer up");
+    if (LONGPRESSED) LONGPRESSED.style.transform = "scale(1)";
     e.target.style.transform = "scale(1)";
     e.target.style.userSelect = "initial";
     clearTimeout(LONGPRESSTIMER);
@@ -364,7 +365,7 @@ document.body.addEventListener("touchmove", (e) => {
          "id = " + e.target.id + " " +
          "node = " + e.target.nodeName + " " +
          "class = " + e.target.className);
-    LONGPRESSED.style.transform = "scale(1)";
+    if (LONGPRESSED) LONGPRESSED.style.transform = "scale(1)";
     e.target.style.transform = "scale(1)";
     e.target.style.userSelect = "initial";
     clearTimeout(LONGPRESSTIMER);
