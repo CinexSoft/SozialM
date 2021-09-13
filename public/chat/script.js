@@ -34,7 +34,7 @@ const startDBListener = () => {
             CHATDATA[timestamp] = {
                 token: data.token,
                 message: data.message,
-                time: data.time
+                time: data.time,
             };
             // cache chat in local storage
             localStorage.setItem(CHATROOT, JSON.stringify(CHATDATA));
@@ -164,7 +164,7 @@ $("#btnsend").addEventListener("click", (e) => {
             "September", 
             "October", 
             "November", 
-            "December"
+            "December",
         ];
         // Days array
         let weekdays = [
@@ -174,19 +174,19 @@ $("#btnsend").addEventListener("click", (e) => {
             "Wednesday",
             "Thursday",
             "Friday",
-            "Saturday"
+            "Saturday",
         ];
         let Date = getLongDateTime(false)
         let time = {
             year: Date.getFullYear(),
             month: Date.getMonth() + 1,
-            month_name: months[Date.getMonth()],
+            monthname: months[Date.getMonth()],
             date: Date.getDate(),
             day: Date.getDay(),
-            day_name: weekdays[Date.getDay()],
-            hours: Date.getHours(),
-            minutes: Date.getMinutes(),
-            seconds: Date.getSeconds()
+            dayname: weekdays[Date.getDay()],
+            time: ("0" + Date.getHours()).slice(-2) + ":"
+                + ("0" + Date.getMinutes()).slice(-2) + ":"
+                + ("0" + Date.getSeconds()).slice(-2),
         }
         DATABASE.ref(DBROOT + CHATROOT + getTimeStamp()).update({
             time,
@@ -373,3 +373,5 @@ document.body.addEventListener("touchmove", (e) => {
 
 overlay.instance_open = true;
 startDBListener();
+
+log("Chat: document and script load complete");

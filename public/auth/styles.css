@@ -49,7 +49,7 @@ body {
     width: calc(100% - 20px);
     margin: 7px auto 7px;
     height: 15px;
-    border: 1px solid #ece5dd;
+    border: 1.5px solid #ece5dd;
     border-radius: 10px;
     padding: 10px;
     background-color: #f7f7f7 ;
@@ -62,7 +62,7 @@ body {
     padding: 10px;
     margin: 7px auto 7px;
     background-color: #f7f7f7 ;
-    border: 1px solid #ece5dd;
+    border: 1.5px solid #ece5dd;
     border-radius: 10px;
 }
 .root div .password {
@@ -71,7 +71,7 @@ body {
     display: inline;
     width: calc(100% -320px);
     border: 0;
-    background-color: #f7f7f7 ;
+    background-color: transparent;
     border-radius: 0px;
 }
 .root i.fa-eye-slash {
@@ -80,7 +80,7 @@ body {
 }
 .root h,
 .root a {
-    margin: 15px auto 7px;
+    margin: 10px auto 5px;
     margin-right: 0;
     padding: 0;
     font-weight: none;
@@ -89,7 +89,6 @@ body {
     display: block;
 }
 .root h {
-    margin: 10px auto 5px;
     width: 100%;
     color: #555;
     font-size: 0.8rem;
@@ -106,7 +105,7 @@ body {
     margin: 7px auto 7px;
     margin-right: 0;
     position: relative;
-    left: calc(100% - 120px);
+    left: calc(100% - 117px);
     width: 120px;
     height: 37px;
     background-color: #128c7e;

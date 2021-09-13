@@ -37,7 +37,7 @@ let EXISTSANDROIDINTERFACE = typeof Android !== "undefined"
 // overlay controls
 const overlay = {
     instance_open: false,
-    animation_duration: 250
+    animation_duration: 250,
 }
 
 // logger data
@@ -92,7 +92,7 @@ const uploadSessionLogs = () => {
     firebase.database().ref(DBROOT + "/records/sessionlogs/" + USERTOKEN + "/" + SESSIONTOKEN)
     .update(SESSIONLOGS)
     .then(() => {
-        if (DEBUG) console.log("Log: logs written to database");
+        if (false) console.log("Log: logs written to database");
     })
     .catch((error) => {
         err(error);

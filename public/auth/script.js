@@ -1,13 +1,32 @@
 // root visibility flag
 let ROOTFLAG = "login";
-// called when the eye-slash icon is pressed
-const toogleRoot = () => {
+
+// reset colors
+const resetColors = () => {
     /* hide login and signup info, $ is a css style selector function
      * Thi isn't jQuery, it's my custom function, see common.js
      * for definition
      */
     $("#signup_info").style.display = "none";
     $("#login_info").style.display = "none";
+    for (element of [
+        $("#login_email"),
+        $("#login_pass").parentNode,
+        $("#signup_email"),
+        $("#signup_pass").parentNode,
+        $("#signup_pass_c").parentNode,
+    ]) {
+        element.style.color = "#333";
+        element.style.borderColor = "#ece5dd";
+    }
+    for (element of [$("#login_pass"), $("#signup_pass"), $("#signup_pass_c")]) {
+        element.style.color = "#333";
+    }
+}
+
+// called when the eye-slash icon is pressed
+const toogleRoot = () => {
+    resetColors();
     // if root of login visibile
     if (ROOTFLAG == "login") {
         $("#login").style.display = "none";
@@ -26,6 +45,7 @@ const toogleRoot = () => {
     }
     document.getElementById(ROOTFLAG).style.display = "block";
 }
+
 // toggle password visibility
 const togglePass = () => {
     for (element of $(".password")) {
@@ -44,8 +64,17 @@ const togglePass = () => {
         }
     }
 }
+
+// on focus given to an input
+document.body.addEventListener("click", (event) => {
+    if (["INPUT", "DIV"].includes(event.target.nodeName)) {
+        resetColors();
+    }
+});
+
 // login button clicked
 $("#btn_login").addEventListener("click", (e) => {
+    resetColors();
     $("#login_info").style.color = "#555";
     $("#login_info").innerHTML = "Logging you in, please wait...";
     $("#login_info").style.display = "block";
@@ -58,29 +87,39 @@ $("#btn_login").addEventListener("click", (e) => {
         location.href = "/";
     })
     .catch((error) => {
-        $("#login_info").style.color = "red";
-        let outputmsg = error.code != "auth/operation-not-allowed" &&
-                        error.code != "auth/invalid-argument" &&
-                        error.code != "auth/internal-error" ?
-                        error.message : "An error occurred, try again later";
-        if (outputmsg.length > 64) {
-            outputmsg = outputmsg.slice(0, 65) + "...";
+        const nodes = [];
+        const innernodes = [];
+        if (error.code.includes("mail")) {
+            nodes.push($("#login_email"));
         }
-        $("#login_info").innerHTML = outputmsg;
-        $("#login_info").style.display = "block";
-        err("Code: " + error.code + " msg: " + error.message);
+        else if (error.code.includes("pass")) {
+            nodes.push($("#login_pass").parentNode);
+            innernodes.push($("#login_pass"));
+        }
+        handleError("login", error, nodes, innernodes);
     });
 });
+
 // signup button clicked
 $("#btn_signup").addEventListener("click", (e) => {
+    resetColors();
     $("#signup_info").style.color = "#555";
     $("#signup_info").innerHTML = "Signing you up, please wait...";
     $("#signup_info").style.display = "block";
     email = $("#signup_email").value;
     if ($("#signup_pass").value != $("#signup_pass_c").value) {
-        $("#signup_info").style.color = "red";
-        $("#signup_info").style.display = "block";
-        $("#signup_info").innerHTML = "Password don't match";
+        handleError("signup", {
+            message: "Passwords don't match",
+            code:"auth/password-mismatch",
+        },
+        [
+            $("#signup_pass").parentNode,
+            $("#signup_pass_c").parentNode,
+        ],
+        [
+            $("#signup_pass"),
+            $("#signup_pass_c"),
+        ]);
         return;
     }
     password = $("#signup_pass").value;
@@ -91,17 +130,41 @@ $("#btn_signup").addEventListener("click", (e) => {
         location.href = "/";
     })
     .catch((error) => {
-        $("#signup_info").style.color = "red";
-        let outputmsg = error.code != "auth/operation-not-allowed" &&
-                        error.code != "auth/invalid-argument" &&
-                        error.code != "auth/internal-error" ?
-                        error.message : "An error occurred, try again later";
-        if (outputmsg.length > 64) {
-            outputmsg = outputmsg.slice(0, 65) + "...";
+        const nodes = [];
+        const innernodes = [];
+        if (error.code.includes("mail")) {
+            nodes.push($("#signup_email"));
         }
-        $("#signup_info").innerHTML = outputmsg;
-        $("#signup_info").style.display = "block";
-        err("Code: " + error.code + " msg: " + error.message);
+        if (error.code.includes("pass")) {
+            nodes.push($("#signup_pass").parentNode);
+            nodes.push($("#signup_pass_c").parentNode);
+            innernodes.push($("#signup_pass"));
+            innernodes.push($("#signup_pass_c"));
+        }
+        handleError("signup", error, nodes, innernodes);
     });
 });
-log("document and script load complete");
+
+// login or signup error handler
+const handleError = (state, { code, message, }, nodes, innernodes) => {
+    log("nodes = " + nodes);
+    err(state + ": code: " + code + " msg: " + message);
+    $("#" + state + "_info").style.color = "red";
+    let outputmsg = code != "auth/invalid-argument"
+                    && code != "auth/internal-error"
+                    ? message : "Internal error. Please report this to support";
+    if (outputmsg.length > 64) {
+        outputmsg = outputmsg.slice(0, 65) + "...";
+    }
+    $("#" + state + "_info").innerHTML = outputmsg;
+    $("#" + state + "_info").style.display = "block";
+    for (element of nodes) {
+        element.style.color = "red";
+        element.style.borderColor = "tomato";
+    }
+    if (innernodes) for (element of innernodes) {
+        element.style.color = "red";
+    }
+}
+
+log("Auth: document and script load complete");
