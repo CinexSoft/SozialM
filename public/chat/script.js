@@ -345,10 +345,6 @@ document.body.addEventListener("pointerdown", (e) => {
                 dialog.hide("action");
                 setTimeout(() => {
                     try {
-                        /* FIXME NO1: This block gets executed for n times for the nth launch of the actionDialog
-                         * i.e. on first try, it's executed once, and on 2nd time, it's executed twice and so on,
-                         * causing multiple copies of the same file to be downloaded
-                         */
                         Android.showToast("Look into your notification panel for download progress");
                         download(e.target.src, e.target.alt.trim() + "_sozialnmedien_" + getTimeStamp() + ".png");
                     }
