@@ -26,9 +26,6 @@
     "rules": "database.rules.json"
   },
   "emulators": {
-    "auth": {
-      "port": 9099
-    },
     "database": {
       "port": 9000
     },
@@ -37,12 +34,6 @@
     },
     "ui": {
       "enabled": true
-    },
-    "functions": {
-      "port": 5001
     }
-  },
-  "functions": {
-    "source": "functions"
   }
 }
