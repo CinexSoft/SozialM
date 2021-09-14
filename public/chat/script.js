@@ -259,11 +259,14 @@ document.body.addEventListener("click", (e) => {
     else if (e.target.id == "menu_details") {
         menu.hide();
         let time = CHATDATA[LONGPRESSED.id].time;
+        // innerHTML of dialog
+        let infoHTML = "<table style=\"width:100%; text-align:left\">"
+                     +     "<tr><td>Sent by: </td><td><pre style=\"margin:0; padding:0; font-family:sans-serif; overflow:auto; width:180px;\">" + (CHATDATA[LONGPRESSED.id].token == USERTOKEN ? "You" : CHATDATA[LONGPRESSED.id].token) + "</pre></td></tr>"
+                     +     "<tr><td>Sent on: </td><td>" + time.dayname.slice(0, 3) + ", " + time.monthname.slice(0, 3) + " " + time.date + ", " + time.year + "</td></tr>"
+                     +     "<tr><td>Sent at: </td><td>" + time.time + "</td></tr>"
+                     + "</table>"
         // display dialog
-        dialog.display("alert", "Message details", "<pre style=\"text-align:left; overflow:auto\">" +
-                                                   "Sender: " + (CHATDATA[LONGPRESSED.id].token == USERTOKEN ? "You" : CHATDATA[LONGPRESSED.id].token) + "\n" +
-                                                   "Time: " + JSON.stringify(time, null, 4) +
-                                                   "</pre>");
+        dialog.display("alert", "Message details", infoHTML);
     }
     /* DO NOT TOUCH THIS CODE, this is the chat bubble highlighter code
      * The upper indented block is the condition of the else if statement
