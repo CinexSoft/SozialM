@@ -312,7 +312,7 @@ document.body.addEventListener("pointerdown", (e) => {
     // bubble container long press
     if (e.target.className == "bubbles") {
         LONGPRESSTIMER = setTimeout(() => {
-            e.target.style.transform = "scale(0.95)";
+            e.target.style.transform = "scale(0.93)";
             e.target.style.userSelect = "none";
         }, 200);
         LONGPRESSTIMEOUT = setTimeout(() => {
@@ -322,7 +322,7 @@ document.body.addEventListener("pointerdown", (e) => {
             clearTimeout(LONGPRESSTIMER);
             // show menu
             menu.display();
-        }, 1000);
+        }, 600);
     }
     // image long pressed
     else if (e.target.nodeName == "IMG" && e.target.parentNode.parentNode.parentNode.className == "bubbles") {
@@ -331,11 +331,11 @@ document.body.addEventListener("pointerdown", (e) => {
         // 200 ms delay
         LONGPRESSTIMER = setTimeout(() => {
             // shrink the parent slightly
-            parent_bubble.style.transform = "scale(0.95)";
-            LONGPRESSED = parent_bubble;
+            parent_bubble.style.transform = "scale(0.93)";
         }, 200);
         LONGPRESSTIMEOUT = setTimeout(() => {
             log("long press triggered");
+            LONGPRESSED = parent_bubble;
             parent_bubble.style.transform = "scale(1)";
             clearTimeout(LONGPRESSTIMER);
             if (EXISTSANDROIDINTERFACE) dialog.display("action", "Download image", "Do you wish to download this image?", "Download", () => {
@@ -355,7 +355,7 @@ document.body.addEventListener("pointerdown", (e) => {
                     }
                 }, 1000);
             });
-        }, 1000);
+        }, 600);
     }
     // if it's a link, copy it
     else if (e.target.nodeName == "A") {
