@@ -9,6 +9,10 @@ body {
 .menu {
     top: 10px;
 }
+.alertDialog pre::-webkit-scrollbar,
+textarea::-webkit-scrollbar {
+  width: 0;
+}
 .titlebar {
     height: 54px;
     display: flex;

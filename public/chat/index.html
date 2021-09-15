@@ -16,20 +16,25 @@
     <link rel="icon" type="image/x-icon" href="https://sozialnmedien.web.app/favicon.ico"/>
     <title>Chat</title>
     <script>
-        localStorage.setItem("Chat.root", "ejs993ejiei3");
-        let CHATROOT;
-        // checking if chat root exists
+        let CHATROOT, CHATROOMID;
+        // checks if user is logged in
         if (localStorage.getItem("Auth.isLoggedIn") != "true") {
-            console.log("Log: not signed in");
+            console.log("Log: not signed in, redirect to ../auth");
             location.href = "../auth";
         }
-        else if (localStorage.getItem("Chat.root") != undefined) {
-            console.log("Log: chat root found");
-            CHATROOT = "/chat/" + localStorage.getItem("Chat.root") + "/";
-        }
         else {
-            console.log("Log: chat root not found, it must be created first");
-            location.href = "../inbox";
+            // this prompt is a temporary code while the inbox is being built
+            CHATROOMID = prompt("Enter new or existing ID of the chat room", "default");
+            localStorage.setItem("Chat.root", CHATROOMID == "default" ? "ejs993ejiei3" : CHATROOMID);
+            // checking if chat root exists
+            if (localStorage.getItem("Chat.root") != undefined) {
+                console.log("Log: chat root found");
+                CHATROOT = "/chat/" + localStorage.getItem("Chat.root") + "/";
+            }
+            else {
+                console.log("Log: chat root not found, it must be created first, redirect to ../inbox");
+                location.href = "../inbox";
+            }
         }
     </script>
     <!-- font awesome icons -->
@@ -79,7 +84,12 @@
         <div class="titlebar prim_bg">
             <img class="backarrow" src="../common/res/backarrow100white.png">
             <img class="dp" src="../common/res/defaultdp.png">
-            <h class="title">Demo Chat</h>
+            <h class="title" id="roomid">Demo Chat</h>
+            <script>                
+                if (CHATROOMID != "default") {
+                    document.getElementById("#roomid").innerHTML = CHATROOMID.charAt(0).toUpperCase() + CHATROOMID.slice(1);
+                }
+            </script>
         </div>
         <div class="chatbg">
             <div class="chatarea markdown" id="chatarea">

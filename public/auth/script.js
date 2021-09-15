@@ -84,7 +84,7 @@ $("#btn_login").addEventListener("click", (e) => {
         let user = userCredential.user;
         localStorage.setItem("Auth.isLoggedIn", "true");
         localStorage.setItem("Auth.user", JSON.stringify(user));
-        location.href = "/";
+        location.href = LOGINREDIRECT;
     })
     .catch((error) => {
         const nodes = [];
@@ -127,7 +127,7 @@ $("#btn_signup").addEventListener("click", (e) => {
         let user = userCredential.user;
         localStorage.setItem("Auth.isLoggedIn", "true");
         localStorage.setItem("Auth.user", JSON.stringify(user));
-        location.href = "/";
+        location.href = LOGINREDIRECT;
     })
     .catch((error) => {
         const nodes = [];

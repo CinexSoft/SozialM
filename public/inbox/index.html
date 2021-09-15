@@ -18,7 +18,7 @@
     <script>
         // checking if user is logged in
         if (localStorage.getItem("Auth.isLoggedIn") != "true") {
-            console.log("Log: not signed in");
+            console.log("Log: not signed in, redirect to ../auth");
             location.href = "../auth";
         }
     </script>
