@@ -20,16 +20,16 @@ const startDBListener = () => {
     DATABASE.ref(DBROOT + CHATROOT).on('value', (snapshot) => {
         // setting up html
         let getHTML = "";
-        $("#chatarea").innerHTML = "<div class=\"info\">" +
+        $("#chatarea").innerHTML = "<div class=\"info noselect\">" +
                                    "<p class=\"fa fa-info-circle\">&ensp;Messages in this chat are only server-to-end encrypted.</p>" +
                                    "</div>";
         snapshot.forEach(({ key }) => {
             let timestamp = key;
             let data = snapshot.child(timestamp).val();
-            let token = data.token;
+            let uid = data.uid;
             // store data in local variable
             CHATDATA[timestamp] = {
-                token: data.token,
+                uid,
                 message: data.message,
                 time: data.time,
             };
@@ -37,7 +37,7 @@ const startDBListener = () => {
             localStorage.setItem(CHATROOT, JSON.stringify(CHATDATA));
             // get html from msg
             getHTML = decode(data.message);
-            if (token == USERTOKEN) {
+            if (uid == USERID) {
                 appendHTMLString($("#chatarea"),
                     "<div class=\"bubbles\" id=\"" + timestamp + "\">" +
                     "<div class=\"this sec_bg\">" +
@@ -203,7 +203,7 @@ $("#btnsend").addEventListener("click", (e) => {
             DATABASE.ref(DBROOT + CHATROOT + getTimeStamp()).update({
                 time,
                 message: encode(msg),
-                token: USERTOKEN,
+                uid: USERID,
             })
             .then(() => {
                 log("data pushed");
@@ -218,8 +218,13 @@ $("#btnsend").addEventListener("click", (e) => {
 });
 // onclick listeners
 document.body.addEventListener("click", (e) => {
+    // title bar back arrow click
+    if (e.target.className == "backarrow") {
+        log("history: going back");
+        history.back();
+    }
     // menu copy button click
-    if (e.target.id == "menu_copy") {
+    else if (e.target.id == "menu_copy") {
         menu.hide();
         copyPlainTxt(LONGPRESSED.innerHTML);
     }
@@ -228,7 +233,7 @@ document.body.addEventListener("click", (e) => {
         menu.hide();
         // this delay of 300ms is to prevent a lag that occurrs when writing to db
         setTimeout(() => {  
-            if (CHATDATA[LONGPRESSED.id].token == USERTOKEN) {
+            if (CHATDATA[LONGPRESSED.id].uid == USERID) {
                 if (getTimeStamp() - parseInt(LONGPRESSED.id) < 3600000) {
                     DATABASE.ref(DBROOT + CHATROOT).update({
                         [LONGPRESSED.id]: null
@@ -261,7 +266,7 @@ document.body.addEventListener("click", (e) => {
         let time = CHATDATA[LONGPRESSED.id].time;
         // innerHTML of dialog
         let infoHTML = "<table style=\"width:100%; text-align:left\">"
-                     +     "<tr><td>Sent by: </td><td><pre style=\"margin:0; padding:0; font-family:sans-serif; overflow:auto; width:180px;\">" + (CHATDATA[LONGPRESSED.id].token == USERTOKEN ? "You" : CHATDATA[LONGPRESSED.id].token) + "</pre></td></tr>"
+                     +     "<tr><td>Sent by: </td><td><pre style=\"margin:0; padding:0; font-family:sans-serif; overflow:auto; width:180px;\">" + (CHATDATA[LONGPRESSED.id].uid == USERID ? "You" : CHATDATA[LONGPRESSED.id].uid) + "</pre></td></tr>"
                      +     "<tr><td>Sent on: </td><td>" + time.dayname.slice(0, 3) + ", " + time.monthname.slice(0, 3) + " " + time.date + ", " + time.year + "</td></tr>"
                      +     "<tr><td>Sent at: </td><td>" + time.time + "</td></tr>"
                      + "</table>"

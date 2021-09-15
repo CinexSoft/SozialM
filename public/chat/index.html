@@ -16,23 +16,19 @@
     <link rel="icon" type="image/x-icon" href="https://sozialnmedien.web.app/favicon.ico"/>
     <title>Chat</title>
     <script>
-        const CHATROOT = "/chat/ejs993ejiei3/";
-    </script>
-    <script type="none">
+        localStorage.setItem("Chat.root", "ejs993ejiei3");
+        let CHATROOT;
         // checking if chat root exists
         if (localStorage.getItem("Auth.isLoggedIn") != "true") {
             console.log("Log: not signed in");
-            location.href = "/auth";
             location.href = "../auth";
         }
         else if (localStorage.getItem("Chat.root") != undefined) {
             console.log("Log: chat root found");
-            // chat root
             CHATROOT = "/chat/" + localStorage.getItem("Chat.root") + "/";
         }
         else {
-            console.log("Log: chat root not found");
-            location.href = "/inbox";
+            console.log("Log: chat root not found, it must be created first");
             location.href = "../inbox";
         }
     </script>
@@ -60,9 +56,9 @@
     </div>
     <div class="actionDialogRoot" id="actionDialogRoot">
         <div class="actionDialog" id="actionDialog">
-            <h2 class="">Take action</h2><hr>
+            <h2 class="">Heading</h2><hr>
             <div class="content">
-                This is an action dialog
+                Content
             </div><hr>
             <div class="buttons">
                 <button class="btnClose" id="actionDialog_btnClose">Close</button>
@@ -81,8 +77,8 @@
     </div>
     <div class="root">
         <div class="titlebar prim_bg">
-            <h class="title" style="font-size: 1rem;">&ensp;⟨</h>
-            <img class="dp" alt="profile" src="https://mpng.subpng.com/20180805/ohe/kisspng-computer-icons-clip-art-user-interface-icon-design-profile-icons-download-for-free-in-png-and-svg-5b67424e5b1245.540135551533493838373.jpg">
+            <img class="backarrow" src="../common/res/backarrow100white.png">
+            <img class="dp" src="../common/res/defaultdp.png">
             <h class="title">Demo Chat</h>
         </div>
         <div class="chatbg">
