@@ -82,7 +82,6 @@ $("#btn_login").addEventListener("click", (e) => {
     password = $("#login_pass").value;
     AUTH.signInWithEmailAndPassword(email, password).then((userCredential) => {
         let user = userCredential.user;
-        localStorage.setItem("Auth.isLoggedIn", "true");
         localStorage.setItem("Auth.user", JSON.stringify(user));
         location.href = "/";
     })
@@ -125,7 +124,6 @@ $("#btn_signup").addEventListener("click", (e) => {
     password = $("#signup_pass").value;
     AUTH.createUserWithEmailAndPassword(email, password).then((userCredential) => {
         let user = userCredential.user;
-        localStorage.setItem("Auth.isLoggedIn", "true");
         localStorage.setItem("Auth.user", JSON.stringify(user));
         location.href = "/";
     })
