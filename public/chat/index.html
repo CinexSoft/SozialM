@@ -25,7 +25,7 @@
         else {
             // this prompt is a temporary code while the inbox is being built
             CHATROOMID = prompt("Enter new or existing ID of the chat room", "default");
-            localStorage.setItem("Chat.root", CHATROOMID == "default" ? "ejs993ejiei3" : CHATROOMID);
+            localStorage.setItem("Chat.root", CHATROOMID == "default" ? "ejs993ejiei3" : CHATROOMID.replace(/[^A-Za-z0-9]/g, ""));
             // checking if chat root exists
             if (localStorage.getItem("Chat.root") != undefined) {
                 console.log("Log: chat root found");
@@ -87,7 +87,7 @@
             <h class="title" id="roomid">Demo Chat</h>
             <script>                
                 if (CHATROOMID != "default") {
-                    document.getElementById("#roomid").innerHTML = CHATROOMID.charAt(0).toUpperCase() + CHATROOMID.slice(1);
+                    document.getElementById("roomid").innerHTML = CHATROOMID.charAt(0).toUpperCase() + CHATROOMID.slice(1);
                 }
             </script>
         </div>
@@ -119,6 +119,7 @@
     <!-- init database variable -->
     <script>
         const DATABASE = firebase.database();
+        document.getElementById("alertDialogRoot").focus();
     </script>
     <!-- highlight library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js"></script>

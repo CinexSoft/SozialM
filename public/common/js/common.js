@@ -112,9 +112,11 @@ const generateToken = (length = 64) => {
 
 // user id is used to mark a message
 const getUserID = () => {
+    if (localStorage.getItem("Auth.isLoggedIn") == "true") {
     USERID = JSON.parse(localStorage.getItem("Auth.user")).uid;
-    if (USERID) {
-        log("user: id = " + uid);
+        if (USERID) {
+            log("user: id = " + USERID);
+        }
     }
 }
 
