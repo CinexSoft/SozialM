@@ -17,6 +17,7 @@ let ACCENT_FG_COLOR = "#ffffff";
 
 // user id
 let USERID = "";
+let USERTOKEN = "";
 
 // flags
 let DEBUG = !true;            // prints debug logs in console
@@ -43,8 +44,8 @@ const overlay = {
 // logger data
 const SESSIONLOGS = {};
 
-// returns time passed in ms since Unix epoch
-const getTimeStamp = () => {
+// returns time passed in ms locally since Unix epoch
+const getTimeStamp = (network = false) => {
     return new Date().getTime();
 }
 
@@ -89,7 +90,7 @@ const wrn = (val) => {
  * for debugging
  */
 const uploadSessionLogs = () => {
-    firebase.database().ref(DBROOT + "/records/sessionlogs/" + USERID + "/" + SESSIONTOKEN)
+    firebase.database().ref(DBROOT + "/records/sessionlogs/" + USERTOKEN + "/" + SESSIONTOKEN)
     .update(SESSIONLOGS)
     .then(() => {
         if (false) console.log("Log: logs written to database");
@@ -110,13 +111,24 @@ const generateToken = (length = 64) => {
     return b.join("");
 }
 
+// generates a user token to recognise a device
+const generateUserToken = () => {
+    if (localStorage.getItem("User.token")) {
+        USERTOKEN = localStorage.getItem("User.token");
+        log("user token = " + USERTOKEN);
+    }
+    else {
+        USERTOKEN = generateToken();
+        log("new: user token = " + USERTOKEN);
+        localStorage.setItem("User.token", USERTOKEN);
+    }
+}
+
 // user id is used to mark a message
 const getUserID = () => {
     if (localStorage.getItem("Auth.user")) {
-    USERID = JSON.parse(localStorage.getItem("Auth.user")).uid;
-        if (USERID) {
-            log("user: id = " + USERID);
-        }
+        USERID = JSON.parse(localStorage.getItem("Auth.user")).uid;
+        log("user: id = " + USERID);
     }
 }
 
@@ -501,8 +513,9 @@ const loadTheme = () => {
     log("loadTheme(): loaded");
 }
 
-// user ID recognises a device as long as the cookies aren't cleared
+// user ID recognises a person while user token recognises a device
 getUserID();
+generateUserToken();
 
 // upload logs in intervals for current session
 setInterval(() => {

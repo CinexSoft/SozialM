@@ -20,7 +20,7 @@ const startDBListener = () => {
     DATABASE.ref(DBROOT + CHATROOT).on('value', (snapshot) => {
         // setting up html
         let getHTML = "";
-        $("#chatarea").innerHTML = "<div class=\"info noselect\">" +
+        $("#chatarea").innerHTML = "<div class=\"info noselect\" style=\"font-family: sans-serif\">" +
                                    "<p class=\"fa fa-info-circle\">&ensp;Messages in this chat are only server-to-end encrypted.</p>" +
                                    "</div>";
         snapshot.forEach(({ key }) => {
@@ -200,7 +200,8 @@ $("#btnsend").addEventListener("click", (e) => {
                     + ("0" + Date.getMinutes()).slice(-2) + ":"
                     + ("0" + Date.getSeconds()).slice(-2),
             }
-            DATABASE.ref(DBROOT + CHATROOT + getTimeStamp()).update({
+            // push generates a unique id which is based on timestamp
+            DATABASE.ref(DBROOT + CHATROOT).push().update({
                 time,
                 message: encode(msg),
                 uid: USERID,
