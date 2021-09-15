@@ -11,7 +11,7 @@ let LONGPRESSED;
 let SOFTBOARDOPEN = false;
 
 // the entire chat is downloaded and stored here
-// the data has timestamps as keys
+// the data has unique random values as keys
 const CHATDATA = JSON.parse(localStorage.getItem(CHATROOT)) || {};
 
 // database listener
@@ -24,11 +24,11 @@ const startDBListener = () => {
                                    "<p class=\"fa fa-info-circle\">&ensp;Messages in this chat are only server-to-end encrypted.</p>" +
                                    "</div>";
         snapshot.forEach(({ key }) => {
-            let timestamp = key;
-            let data = snapshot.child(timestamp).val();
+            let pushkey = key;
+            let data = snapshot.child(pushkey).val();
             let uid = data.uid;
             // store data in local variable
-            CHATDATA[timestamp] = {
+            CHATDATA[pushkey] = {
                 uid,
                 message: data.message,
                 time: data.time,
@@ -39,24 +39,24 @@ const startDBListener = () => {
             getHTML = decode(data.message);
             if (uid == USERID) {
                 appendHTMLString($("#chatarea"),
-                    "<div class=\"bubbles\" id=\"" + timestamp + "\">" +
+                    "<div class=\"bubbles\" id=\"" + pushkey + "\">" +
                     "<div class=\"this sec_bg\">" +
                     getHTML +
                     "</div>" +
                     "</div>",
                 );
-                if (DEBUG) console.log("Log: this: timestamp = " + timestamp);
+                if (DEBUG) console.log("Log: this: pushkey = " + pushkey);
                 if (DEBUG) console.log("Log: this: html = " + $("#chatarea").innerHTML);
             }
             else {
                 appendHTMLString($("#chatarea"),
-                    "<div class=\"bubbles\" id=\"" + timestamp + "\">" +
+                    "<div class=\"bubbles\" id=\"" + pushkey + "\">" +
                     "<div class=\"that\">" +
                     getHTML +
                     "</div>" +
                     "</div>"
                 );
-                if (DEBUG) console.log("Log: that: timestamp = " + timestamp);
+                if (DEBUG) console.log("Log: that: pushkey = " + pushkey);
                 if (DEBUG) console.log("Log: that: html = " + $("#chatarea").innerHTML);
             }
             /* this delay makes sure the entire chatarea is loaded before it's scrolled to place
@@ -176,7 +176,7 @@ $("#btnsend").addEventListener("click", (e) => {
         ];
         msg = MDTOHTML.makeHtml(msg);
         /* this is temporary and is overwritten when db update is fetched
-         * which is why the class this has no timestamp id
+         * which is why the class this has no pushkey id
          */
         appendHTMLString($("#chatarea"),
             "<div class=\"bubbles\">" +
@@ -196,6 +196,7 @@ $("#btnsend").addEventListener("click", (e) => {
                 date: Date.getDate(),
                 day: Date.getDay(),
                 dayname: weekdays[Date.getDay()],
+                stamp: getTimeStamp(),
                 time: ("0" + Date.getHours()).slice(-2) + ":"
                     + ("0" + Date.getMinutes()).slice(-2) + ":"
                     + ("0" + Date.getSeconds()).slice(-2),
@@ -235,7 +236,7 @@ document.body.addEventListener("click", (e) => {
         // this delay of 300ms is to prevent a lag that occurrs when writing to db
         setTimeout(() => {  
             if (CHATDATA[LONGPRESSED.id].uid == USERID) {
-                if (getTimeStamp() - parseInt(LONGPRESSED.id) < 3600000) {
+                if (getTimeStamp() - parseInt(CHATDATA[LONGPRESSED.id].time.stamp) < 3600000) {
                     DATABASE.ref(DBROOT + CHATROOT).update({
                         [LONGPRESSED.id]: null
                     })
