@@ -15,8 +15,8 @@ let ACCENT_SECONDARY_BGCOLOR = "#dcf8c6";
 let ACCENT_TERTIARY_BGCOLOR = "#ece5dd";
 let ACCENT_FG_COLOR = "#ffffff";
 
-// user token
-let USERTOKEN = "";
+// user id
+let USERID = "";
 
 // flags
 let DEBUG = !true;            // prints debug logs in console
@@ -89,7 +89,7 @@ const wrn = (val) => {
  * for debugging
  */
 const uploadSessionLogs = () => {
-    firebase.database().ref(DBROOT + "/records/sessionlogs/" + USERTOKEN + "/" + SESSIONTOKEN)
+    firebase.database().ref(DBROOT + "/records/sessionlogs/" + USERID + "/" + SESSIONTOKEN)
     .update(SESSIONLOGS)
     .then(() => {
         if (false) console.log("Log: logs written to database");
@@ -110,16 +110,11 @@ const generateToken = (length = 64) => {
     return b.join("");
 }
 
-// user token is used to mark a message
-const generateUserToken = () => {
-    USERTOKEN = localStorage.getItem("User.token");
-    if (USERTOKEN == undefined) {
-        USERTOKEN = generateToken(64);
-        localStorage.setItem("User.token", USERTOKEN);
-        log("new token = " + USERTOKEN);
-    }
-    else {
-        log("token = " + USERTOKEN);
+// user id is used to mark a message
+const getUserID = () => {
+    USERID = JSON.parse(localStorage.getItem("Auth.user")).uid;
+    if (USERID) {
+        log("user: id = " + uid);
     }
 }
 
@@ -504,8 +499,8 @@ const loadTheme = () => {
     log("loadTheme(): loaded");
 }
 
-// user token recognises a device as long as the cookies aren't cleared
-generateUserToken();
+// user ID recognises a device as long as the cookies aren't cleared
+getUserID();
 
 // upload logs in intervals for current session
 setInterval(() => {

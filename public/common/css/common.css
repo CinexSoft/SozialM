@@ -114,7 +114,7 @@ button:disabled {
     border-radius: 10px 10px 0 0;
     text-align: center;
 }
-.alertDialog div,
+.alertDialog div.content,
 .actionDialog div.content,
 .menu div {
     margin: 0;

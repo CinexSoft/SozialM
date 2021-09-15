@@ -9,28 +9,39 @@ body {
 .menu {
     top: 10px;
 }
+.alertDialog pre::-webkit-scrollbar,
+textarea::-webkit-scrollbar {
+  width: 0;
+}
 .titlebar {
     height: 54px;
     display: flex;
     flex-direction: row;l
 }
+.backarrow,
 .dp {
-    width: 30px;
-    height: 30px;
+    width: 35px;
+    height: 35px;
     border: 0px;
     border-radius: 50px;
     margin: auto 5px auto;
-    background-color: #ddd;
+    background-color: #075E54;
     cursor: pointer;
+}
+.backarrow {
+    width: 20px;
+    height: 20px;
+    margin-left: 10px;
+    margin-right: 0;
 }
 .title {
     font-size: 1.3rem;
-    margin: auto 10px auto;
+    margin: auto 5px auto;
 }
 .chatbg {
     height: calc(100vh - 55px);
     max-height: calc(100vh - 55px);
-    background-image: url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png");
+    background-image: url("../common/res/whatsappbg.png");
 }
 .chatarea {
     height: calc(100vh - 55px - 55px - 2px);
