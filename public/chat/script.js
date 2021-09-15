@@ -265,7 +265,8 @@ document.body.addEventListener("click", (e) => {
     // menu details button click
     else if (e.target.id == "menu_details") {
         menu.hide();
-        let time = CHATDATA[LONGPRESSED.id].time;
+        let message = CHATDATA[LONGPRESSED.id];
+        let time = message.time;
         // innerHTML of dialog
         let infoHTML = "<table style=\"width:100%; text-align:left\">"
                      +     "<tr><td>Sent by: </td><td><pre style=\"margin:0; padding:0; font-family:sans-serif; overflow:auto; width:180px;\">" + (CHATDATA[LONGPRESSED.id].uid == USERID ? "You" : CHATDATA[LONGPRESSED.id].uid) + "</pre></td></tr>"
@@ -273,7 +274,21 @@ document.body.addEventListener("click", (e) => {
                      +     "<tr><td>Sent at: </td><td>" + time.time + "</td></tr>"
                      + "</table>"
         // display dialog
-        dialog.display("alert", "Message details", infoHTML);
+        dialog.display("action", "Message details", infoHTML, "Advanced", () => {
+            dialog.hide("action");
+            // display excess JSON of chat
+            dialog.display("alert", "Message details",
+                           "<pre style=\"overflow:auto; text-align:left;\">"
+                          + decode(JSON.stringify(message, null, 4)
+                              .replace(/\n    /g, "\n"))
+                              .replace(/"|'|,/g, "")
+                              .replace (/</g, "&lt;")
+                              .replace(/>/g, "&gt;")
+                              .replace(/\n}/g, "")
+                              .replace(/{\n\S/g, "")
+                              .replace(/{/g, "")
+                          + "</pre>");
+        });
     }
     /* DO NOT TOUCH THIS CODE, this is the chat bubble highlighter code
      * The upper indented block is the condition of the else if statement

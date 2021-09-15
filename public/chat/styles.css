@@ -9,7 +9,7 @@ body {
 .menu {
     top: 10px;
 }
-.alertDialog pre::-webkit-scrollbar,
+pre::-webkit-scrollbar,
 textarea::-webkit-scrollbar {
   width: 0;
 }
