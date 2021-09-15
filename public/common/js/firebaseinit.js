@@ -12,14 +12,6 @@ const firebaseConfig = {
     measurementId: "G-MFG92Y4C4F",
 };
 
-if (!location.hostname.includes("sozialnmedien.web.app")
- && !location.hostname.includes("sozialnmedien.firebaseapp.com")) {
-    console.log("Log: hosted on localhost");
-    firebaseConfig.databaseURL = "http://localhost:9000?ns=sozialnmedien";
-    firebaseConfig.authDomain = "https://localhost:9099?ns=sozialnmedien";
-    firebaseConfig.storageBucket = "https://localhost:9199?ns=sozialnmedien";
-}
-
 // Initialize Firebase
 const app = firebase.initializeApp(firebaseConfig);
 const analytics = firebase.analytics(app);
