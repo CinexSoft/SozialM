@@ -17,9 +17,8 @@
         // checking if user is logged in, local storage does exactly what it says
         if (localStorage.getItem("Auth.isLoggedIn") == "true") {
             console.log("Log: already signed in, redirect to ../chat");
-            location.href = "../chat";
+            location.href = "../inbox";
         }
-        let LOGINREDIRECT = "../chat";
     </script>
     <!-- font awesome icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
