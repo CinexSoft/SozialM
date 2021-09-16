@@ -1,3 +1,11 @@
+import {
+    DEBUG,
+    EXISTSANDROIDINTERFACE,
+    overlay,
+    log,
+    dialog,
+    menu
+} from '../common/js/modules.js';
 
 
 // global onclick listeners

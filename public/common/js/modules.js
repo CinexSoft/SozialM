@@ -1,4 +1,7 @@
-/* common.js
+import { Database, DBROOT } from '../common/js/firebaseinit.js';
+import { ref, update } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js';
+
+/* modules.js
  * WARNING:
  * Before making modifications to this file, make absolutely sure that
  * you've used the functions and their respective flags (if any) properly.
@@ -10,10 +13,10 @@
  */
 
 // global theme colors
-export const ACCENT_PRIMARY_BGCOLOR = '#075E54';
-export const ACCENT_SECONDARY_BGCOLOR = '#dcf8c6';
-export const ACCENT_TERTIARY_BGCOLOR = '#ece5dd';
-export const ACCENT_FG_COLOR = '#ffffff';
+const ACCENT_PRIMARY_BGCOLOR = '#075E54';
+const ACCENT_SECONDARY_BGCOLOR = '#dcf8c6';
+const ACCENT_TERTIARY_BGCOLOR = '#ece5dd';
+const ACCENT_FG_COLOR = '#ffffff';
 
 // user id
 export let USERID = '';
@@ -107,8 +110,7 @@ export const wrn = (val) => {
  * for debugging
  */
 export const uploadSessionLogs = () => {
-    firebase.database().ref(DBROOT + '/records/sessionlogs/' + USERTOKEN + '/' + SESSIONTOKEN)
-    .update(SESSIONLOGS)
+    update(ref(Database, DBROOT + '/records/sessionlogs/' + USERTOKEN + '/' + SESSIONTOKEN), SESSIONLOGS)
     .then(() => {
         if (false) console.log('Log: logs written to database');
     })
