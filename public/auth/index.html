@@ -16,16 +16,16 @@
     <script>
         // checking if user is logged in, local storage does exactly what it says
         if (localStorage.getItem('Auth.user')) {
-            console.log('Log: already signed in, redirect to ../chat');
-            location.href = '../inbox';
+            console.log('Log: already signed in, redirect to /chat');
+            location.href = '/inbox';
         }
     </script>
     <!-- font awesome icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <!-- global stylesheet -->
-    <link rel="stylesheet" href="../common/css/common.css">
+    <link rel="stylesheet" href="/common/css/common.css">
     <!-- this stylesheet -->
-    <link rel="stylesheet" href="../auth/styles.css">
+    <link rel="stylesheet" href="/auth/styles.css">
 </head>
 <body>
     <!-- the green background -->
@@ -95,8 +95,8 @@
         </div>
     </footer>
     <!-- global script -->
-    <script type="module" src="../common/js/common.js"></script>
+    <script type="module" src="/common/js/common.js"></script>
     <!-- main script -->
-    <script type="module" src="../auth/script.js"></script>
+    <script type="module" src="/auth/script.js"></script>
 </body>
 </html>

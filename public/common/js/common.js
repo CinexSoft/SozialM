@@ -7,7 +7,7 @@ import {
     log,
     dialog,
     menu
-} from '../common/js/modules.js';
+} from '/common/js/modules.js';
 
 // global onclick listeners
 document.body.addEventListener('click', (e) => {

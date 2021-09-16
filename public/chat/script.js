@@ -1,5 +1,5 @@
 import { ref, push, update, onValue } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js';
-import { Database, DBROOT } from '../common/js/firebaseinit.js';
+import { Database, DBROOT } from '/common/js/firebaseinit.js';
 import {
     USERID,
     DEBUG,

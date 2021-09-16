@@ -18,17 +18,17 @@
     <script>
         // checking if user is logged in
         if (!localStorage.getItem('Auth.user')) {
-            console.log('Log: not signed in, redirect to ../auth');
-            location.href = '../auth';
+            console.log('Log: not signed in, redirect to /auth');
+            location.href = '/auth';
         }
-        else location.href = '../chat';
+        else location.href = '/chat';
     </script>
     <!-- font awesome icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <!-- global css -->
-    <link rel="stylesheet" href="../common/css/common.css">
+    <link rel="stylesheet" href="/common/css/common.css">
     <!-- this stylesheet -->
-    <link rel="stylesheet" href="../inbox/styles.css">
+    <link rel="stylesheet" href="/inbox/styles.css">
 </head>
 <body><!-- 3 types of overlays -->
     <div class="menuRoot" id="menuRoot">
@@ -63,8 +63,8 @@
         </div>
     </div>
     <!-- global script -->
-    <script src="../common/js/common.js"></script>
+    <script type="module" src="/common/js/common.js"></script>
     <!-- main script -->
-    <script src="../inbox/script.js"></script>
+    <script type="module" src="/inbox/script.js"></script>
 </body>
 </html>
