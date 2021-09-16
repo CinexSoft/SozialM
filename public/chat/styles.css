@@ -9,8 +9,7 @@ body {
 .menu {
     top: 10px;
 }
-pre::-webkit-scrollbar,
-textarea::-webkit-scrollbar {
+::-webkit-scrollbar {
   width: 0;
 }
 .titlebar {

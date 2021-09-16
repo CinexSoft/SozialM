@@ -64,9 +64,10 @@ export const setVariable = (variable, value) => {
 // logger data
 export const SESSIONLOGS = {};
 
-// returns a local timestamp in nano seconds
-export const getTimeStamp = (network = false) => {
-    return new Date().getTime() * 1000000 + performance.now() * 1000;
+// returns a local timestamp in ms since Unix epoch or in ns since app launch
+export const getTimeStamp = (nanosec = false) => {
+    if (!nanosec) return new Date().getTime();
+    else performance.now() * 1000;
 }
 
 // gets current time zone, date time in Continent/City YYYY-MM-DD @ HH:MM:SS format
@@ -91,19 +92,19 @@ export const SESSIONTOKEN = getLongDateTime();
 export const log = (val) => {
     if (DEBUG) console.log('Log: ' + val);
     // write logs in local database
-    SESSIONLOGS[getTimeStamp()] = val;
+    SESSIONLOGS[getTimeStamp(true)] = val;
 }
 
 export const err = (val) => {
     if (DEBUG) console.error('Err: ' + val);
     // write logs in local database
-    SESSIONLOGS[getTimeStamp()] = '[ERR]: ' + val;
+    SESSIONLOGS[getTimeStamp(true)] = '[ERR]: ' + val;
 }
 
 export const wrn = (val) => {
     if (DEBUG) console.warn('Wrn: ' + val);
     // write logs in local database
-    SESSIONLOGS[getTimeStamp()] = '[WRN]: ' + val;
+    SESSIONLOGS[getTimeStamp(true)] = '[WRN]: ' + val;
 }
 
 /* Uploads debug logs to the database

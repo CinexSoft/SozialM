@@ -267,6 +267,7 @@ document.body.addEventListener('click', (e) => {
         // this delay of 300ms is to prevent a lag that occurrs when writing to db
         setTimeout(() => {  
             if (CHATDATA[LONGPRESSED.id].uid == USERID) {
+                // unsend is possible only within 1 hour
                 if (getTimeStamp() - parseInt(CHATDATA[LONGPRESSED.id].time.stamp) < 3600000) {
                     update(ref(Database, DBROOT + CHATROOT), {
                         [LONGPRESSED.id]: null
