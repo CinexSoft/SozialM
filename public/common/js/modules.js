@@ -67,7 +67,7 @@ export const SESSIONLOGS = {};
 // returns a local timestamp in ms since Unix epoch or in ns since app launch
 export const getTimeStamp = (nanosec = false) => {
     if (!nanosec) return new Date().getTime();
-    else return performance.now() * 1000;
+    else return Math.floor(performance.now() * 1000);
 }
 
 // gets current time zone, date time in Continent/City YYYY-MM-DD @ HH:MM:SS format
