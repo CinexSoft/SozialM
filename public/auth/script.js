@@ -1,3 +1,22 @@
+import { ref, push, update, onValue } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js';
+import { Auth } from '../common/js/firebaseinit.js';
+// import { showdown } from 'https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.1/showdown.min.js'
+// import { hljs } from 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.js'
+import {
+    USERID,
+    DEBUG,
+    overlay,
+    log,
+    err,
+    $,
+    dialog,
+    menu,
+    checkForApkUpdates,
+} from '../common/js/modules.js';
+
+checkForApkUpdates();
+
 // root visibility flag
 let ROOTFLAG = "login";
 
@@ -80,7 +99,7 @@ $("#btn_login").addEventListener("click", (e) => {
     $("#login_info").style.display = "block";
     email = $("#login_email").value;
     password = $("#login_pass").value;
-    AUTH.signInWithEmailAndPassword(email, password).then((userCredential) => {
+    signInWithEmailAndPassword(Auth, email, password).then((userCredential) => {
         let user = userCredential.user;
         localStorage.setItem("Auth.user", JSON.stringify(user));
         location.href = "/";
@@ -122,7 +141,7 @@ $("#btn_signup").addEventListener("click", (e) => {
         return;
     }
     password = $("#signup_pass").value;
-    AUTH.createUserWithEmailAndPassword(email, password).then((userCredential) => {
+    createUserWithEmailAndPassword(Auth, email, password).then((userCredential) => {
         let user = userCredential.user;
         localStorage.setItem("Auth.user", JSON.stringify(user));
         location.href = "/";

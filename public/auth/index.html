@@ -68,8 +68,8 @@
     <div class="root login" id="login">
         <h3>Login</h3>
         <input type="email" id="login_email" placeholder="E-Mail">
-        <div onclick="$('#login_pass').focus()">
-            <input type="password" id="login_pass" class="password" placeholder="Password"><i class="fa fa-eye-slash" onclick="togglePass(); $('#login_pass').focus();"></i>
+        <div onclick="document.getElementById('login_pass').focus()">
+            <input type="password" id="login_pass" class="password" placeholder="Password"><i class="fa fa-eye-slash" onclick="document.getElementById('login_pass').focus();"></i>
         </div>
         <h id="login_info">An error occurred</h>
         <a id="pass_reset" href="resetpassword">Reset password</a>
@@ -79,11 +79,11 @@
     <div class="root signup" id="signup">
         <h3>Sign Up</h3>
         <input type="email" class="email" id="signup_email" placeholder="E-Mail">
-        <div onclick="$('#signup_pass').focus()">
-            <input type="password" class="password" id="signup_pass" placeholder="Password"><i class="fa fa-eye-slash c1" onclick="togglePass(); $('#signup_pass').focus();"></i>
+        <div onclick="document.getElementById('signup_pass').focus()">
+            <input type="password" class="password" id="signup_pass" placeholder="Password"><i class="fa fa-eye-slash c1" onclick="document.getElementById('signup_pass').focus();"></i>
         </div>
-        <div onclick="$('#signup_pass_c').focus()">
-            <input type="password" class="password" id="signup_pass_c" placeholder="Confirm Password"><i class="fa fa-eye-slash c2" onclick="togglePass(); $('#signup_pass_c').focus();"></i>
+        <div onclick="document.getElementById('signup_pass_c').focus()">
+            <input type="password" class="password" id="signup_pass_c" placeholder="Confirm Password"><i class="fa fa-eye-slash c2" onclick="document.getElementById('signup_pass_c').focus();"></i>
         </div>
         <h id="signup_info">An error occurred</h>
         <button id="btn_signup">Sign Up</button>
@@ -94,21 +94,7 @@
             <font class="swinfo">Don't have an account? </font><font class="switchlink" style="font-weight: bold; color: #128c7e; cursor: pointer;" onclick="toogleRoot()">Sign Up</font>!
         </div>
     </footer>
-    <!-- The core Firebase JS SDK is always required and must be listed first -->
-    <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-database.js"></script>
-    <!-- TODO: Add SDKs for Firebase products that you want to use
-         https://firebase.google.com/docs/web/setup#available-libraries -->
-    <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-analytics.js"></script>
-    <!-- global script, contains firebase init -->
-    <script src="../common/js/firebaseinit.js"></script>
     <script src="../common/js/common.js"></script>
-    <!-- init auth variable and check for apk update -->
-    <script>
-        const AUTH = firebase.auth();
-        checkForApkUpdates();
-    </script>
     <!-- main script -->
     <script src="../auth/script.js"></script>
 </body>

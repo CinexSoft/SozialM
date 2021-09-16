@@ -1,7 +1,12 @@
+import { getAnalytics } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-app.js';
+import { getAnalytics } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-analytics.js';
+import { getDatabase } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js';
+import { getAuth } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.js';
+
 // firebase init
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
+export const firebaseConfig = {
     apiKey: "AIzaSyBeOE11fAnnEQTimqK8VClhlWMzyOu3ob8",
     authDomain: "sozialnmedien.firebaseapp.com",
     databaseURL: "https://sozialnmedien-default-rtdb.firebaseio.com",
@@ -13,9 +18,11 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = firebase.initializeApp(firebaseConfig);
-const analytics = firebase.analytics(app);
+export const App = initializeApp(firebaseConfig);
+export const Analytics = getAnalytics(app);
+export const Database = getDatabase();
+export const Auth = getAuth();
 
 // database root
-const DBROOT = "/Ci4j82hg96y36rfi96vfrwog7h85f4jh870bpgw52fekftt95hjo7d2i3jgie64k";
+export const DBROOT = "/Ci4j82hg96y36rfi96vfrwog7h85f4jh870bpgw52fekftt95hjo7d2i3jgie64k";
 console.log("Log: firebase initialised");
