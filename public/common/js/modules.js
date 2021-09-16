@@ -64,9 +64,9 @@ export const setVariable = (variable, value) => {
 // logger data
 export const SESSIONLOGS = {};
 
-// returns time passed in ms locally since Unix epoch
+// returns a local timestamp in nano seconds
 export const getTimeStamp = (network = false) => {
-    return window.performance.now();
+    return new Date().getTime() * 1000000 + performance.now() * 1000;
 }
 
 // gets current time zone, date time in Continent/City YYYY-MM-DD @ HH:MM:SS format
