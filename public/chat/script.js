@@ -312,7 +312,7 @@ document.body.addEventListener('click', (e) => {
                            '<pre style="overflow:auto; text-align:left;">'
                           + decode(JSON.stringify(message, null, 4)
                               .replace(/\n    /g, '\n'))
-                              .replace(/'|'|,/g, '')
+                              .replace(/"|'|,/g, '')
                               .replace (/</g, '&lt;')
                               .replace(/>/g, '&gt;')
                               .replace(/\n}/g, '')
