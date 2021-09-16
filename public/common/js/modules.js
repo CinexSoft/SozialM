@@ -66,7 +66,7 @@ export const SESSIONLOGS = {};
 
 // returns time passed in ms locally since Unix epoch
 export const getTimeStamp = (network = false) => {
-    return new Date().getTime();
+    return window.performance.now();
 }
 
 // gets current time zone, date time in Continent/City YYYY-MM-DD @ HH:MM:SS format
