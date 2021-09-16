@@ -154,7 +154,7 @@ export const getUserID = () => {
 // replace unsupported firebase characters with something else
 export const encode = (str) => {
     let spChars = '\n\r!"#$%&\'./<=>@[\\]{}';
-    for (c of spChars) {
+    for (let c of spChars) {
         str = str.replaceAll(c, 'ASCII' + c.charCodeAt(0));
     }
     if (DEBUG) console.log('Log: encode(): str = ' + str);
@@ -164,7 +164,7 @@ export const encode = (str) => {
 // data decoder function, replace encoded chars with special characters
 export const decode = (str) => {
     let spChars = '\n\r!"#$%&\'./<=>@[\\]{}';
-    for (c of spChars) {
+    for (let c of spChars) {
         str = str.replaceAll('ASCII' + c.charCodeAt(0), c);
     }
     if (DEBUG) console.log('Log: decode(): str = ' + str);
@@ -501,19 +501,19 @@ export const smoothScroll = (element, flag = true, notsmooth) => {
 export const loadTheme = () => {
     if (!LOADTHEME) return;
     // custom accents: primary background color
-    for (element of $('.prim_bg')) {
+    for (let element of $('.prim_bg')) {
         element.style.backgroundColor = ACCENT_PRIMARY_BGCOLOR;
         element.style.borderColor = ACCENT_PRIMARY_BGCOLOR;
         element.style.color = ACCENT_FG_COLOR;
     }
     // custom accents: secondary background color without alpha
-    for (element of $('.sec_bg')) {
+    for (let element of $('.sec_bg')) {
         element.style.backgroundColor = ACCENT_SECONDARY_BGCOLOR;
         element.style.borderColor = ACCENT_SECONDARY_BGCOLOR;
         element.style.color = '#222';
     }
     // custom accents: tertiary background color without alpha
-    for (element of $('.tert_bg')) {
+    for (let element of $('.tert_bg')) {
         element.style.backgroundColor = ACCENT_TERTIARY_BGCOLOR;
         element.style.borderColor = ACCENT_TERTIARY_BGCOLOR;
         element.style.color = '#222';

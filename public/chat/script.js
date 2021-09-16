@@ -5,7 +5,6 @@ import {
     DEBUG,
     EXISTSANDROIDINTERFACE,
     overlay,
-    setGlobal,
     getTimeStamp,
     getLongDateTime,
     log,

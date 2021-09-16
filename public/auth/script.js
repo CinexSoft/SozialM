@@ -84,8 +84,8 @@ $('#btn_login').addEventListener('click', (e) => {
     $('#login_info').style.color = '#555';
     $('#login_info').innerHTML = 'Logging you in, please wait...';
     $('#login_info').style.display = 'block';
-    email = $('#login_email').value;
-    password = $('#login_pass').value;
+    let email = $('#login_email').value;
+    let password = $('#login_pass').value;
     signInWithEmailAndPassword(Auth, email, password).then((userCredential) => {
         let user = userCredential.user;
         localStorage.setItem('Auth.user', JSON.stringify(user));
@@ -111,7 +111,7 @@ $('#btn_signup').addEventListener('click', (e) => {
     $('#signup_info').style.color = '#555';
     $('#signup_info').innerHTML = 'Signing you up, please wait...';
     $('#signup_info').style.display = 'block';
-    email = $('#signup_email').value;
+    let email = $('#signup_email').value;
     if ($('#signup_pass').value != $('#signup_pass_c').value) {
         handleError('signup', {
             message: 'Passwords don\'t match',
@@ -127,7 +127,7 @@ $('#btn_signup').addEventListener('click', (e) => {
         ]);
         return;
     }
-    password = $('#signup_pass').value;
+    let password = $('#signup_pass').value;
     createUserWithEmailAndPassword(Auth, email, password).then((userCredential) => {
         let user = userCredential.user;
         localStorage.setItem('Auth.user', JSON.stringify(user));
