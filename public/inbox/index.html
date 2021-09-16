@@ -17,28 +17,27 @@
     <title>Inbox</title>
     <script>
         // checking if user is logged in
-        if (!localStorage.getItem("Auth.user")) {
-            console.log("Log: not signed in, redirect to ../auth");
-            location.href = "../auth";
+        if (!localStorage.getItem('Auth.user')) {
+            console.log('Log: not signed in, redirect to /auth');
+            location.href = '/auth';
         }
-        else location.href = "../chat";
+        else location.href = '/chat';
     </script>
     <!-- font awesome icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <!-- global css -->
-    <link rel="stylesheet" href="../common/css/common.css">
+    <link rel="stylesheet" href="/common/css/common.css">
     <!-- this stylesheet -->
-    <link rel="stylesheet" href="../inbox/styles.css">
+    <link rel="stylesheet" href="/inbox/styles.css">
 </head>
 <body><!-- 3 types of overlays -->
     <div class="menuRoot" id="menuRoot">
         <div class="menu" id="menu">
             <h2 class="">Menu</h2><hr>
             <div class="content">
-                <button id="menu_copy">Copy message</button><hr>
-                <button id="menu_unsend">Unsend</button><hr>
-                <button id="menu_reply">Reply</button><hr>
-                <button id="menu_details">Details</button>
+                <button id="menu_btn1">Button</button><hr>
+                <button id="menu_btn2">Button</button><hr>
+                <button id="menu_btn3">Button</button>
             </div>
         </div>
     </div>
@@ -56,29 +55,16 @@
     </div>
     <div class="alertDialogRoot" id="alertDialogRoot">
         <div class="alertDialog" id="alertDialog">
-            <h2 class="">Please wait</h2><hr>
+            <h2 class="">Heading</h2><hr>
             <div class="content">
-                Your chats are being fetched. Once done, this message will self close.
+                Content
             </div><hr>
             <button id="alertDialog_btn">Close</button>
         </div>
     </div>
-    <!-- The core Firebase JS SDK is always required and must be listed first -->
-    <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-database.js"></script>
-    <!-- TODO: Add SDKs for Firebase products that you want to use
-         https://firebase.google.com/docs/web/setup#available-libraries -->
-    <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-analytics.js"></script>
-    <!-- global script, contains firebase init -->
-    <script src="../common/js/firebaseinit.js"></script>
-    <script src="../common/js/common.js"></script>
-    <!-- init database variable and check for apk update -->
-    <script>
-        let database = firebase.database();
-        checkForApkUpdates();
-    </script>
+    <!-- global script -->
+    <script type="module" src="/common/js/common.js"></script>
     <!-- main script -->
-    <script src="../inbox/script.js"></script>
+    <script type="module" src="/inbox/script.js"></script>
 </body>
 </html>
