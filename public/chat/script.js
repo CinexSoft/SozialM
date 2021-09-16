@@ -50,7 +50,8 @@ const startDBListener = () => {
         $('#chatarea').innerHTML = '<div class="info noselect" style="font-family: sans-serif">' +
                                    '<p class="fa fa-info-circle">&ensp;Messages in this chat are only server-to-end encrypted.</p>' +
                                    '</div>';
-        snapshot.forEach(({ pushkey }) => {
+        snapshot.forEach(({ key }) => {
+            let pushkey = key;
             let data = snapshot.child(pushkey).val();
             let uid = data.uid;
             // store data in local variable
@@ -229,8 +230,8 @@ $('#btnsend').addEventListener('click', (e) => {
                     + ('0' + Date.getSeconds()).slice(-2),
             }
             // push generates a unique id which is based on timestamp
-            const pushkey = push(ref(Database, DBROOT + CHATROOT)).key + "/";
-            update(ref(Database, DBROOT + CHATROOT + pushkey), {
+            const pushkey = push(ref(Database, DBROOT + CHATROOT)).key;
+            update(ref(Database, DBROOT + CHATROOT + pushkey + '/'), {
                 time,
                 pushkey,
                 message: encode(msg),
