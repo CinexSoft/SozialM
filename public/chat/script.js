@@ -1,7 +1,5 @@
 import { ref, push, update, onValue } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js';
 import { Database, DBROOT } from '../common/js/firebaseinit.js';
-// import { showdown } from 'https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.1/showdown.min.js'
-// import { hljs } from 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.js'
 import {
     USERID,
     DEBUG,

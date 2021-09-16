@@ -16,25 +16,25 @@
     <link rel="icon" type="image/x-icon" href="https://sozialnmedien.web.app/favicon.ico"/>
     <title>Chat</title>
     <script>
-        let CHATROOT = "/chat/ejs993ejiei3/",
-            CHATROOMID = "ejs993ejiei3";
+        let CHATROOT = '/chat/ejs993ejiei3/';
+            CHATROOMID = 'ejs993ejiei3';
         // checks if user is logged in
-        if (!localStorage.getItem("Auth.user")) {
-            console.log("Log: not signed in, redirect to ../auth");
-            location.href = "../auth";
+        if (!localStorage.getItem('Auth.user')) {
+            console.log('Log: not signed in, redirect to ../auth');
+            location.href = '../auth';
         }
         else {
             // this prompt is a temporary code while the inbox is being built
-            CHATROOMID = prompt("Enter new or existing ID of the chat room", "default");
-            localStorage.setItem("Chat.roomid", CHATROOMID == "default" ? "ejs993ejiei3" : CHATROOMID.replace(/[^A-Za-z0-9]/g, ""));
+            CHATROOMID = prompt('Enter new or existing ID of the chat room', 'default') || 'default';
+            localStorage.setItem('Chat.roomid', CHATROOMID == 'default' ? 'ejs993ejiei3' : CHATROOMID.replace(/[^A-Za-z0-9]/g, ''));
             // checking if chat root exists
-            if (localStorage.getItem("Chat.roomid")) {
-                console.log("Log: chat root found");
-                CHATROOT = "/chat/" + localStorage.getItem("Chat.roomid") + "/";
+            if (localStorage.getItem('Chat.roomid')) {
+                console.log('Log: chat root found');
+                CHATROOT = '/chat/' + localStorage.getItem('Chat.roomid') + '/';
             }
             else {
-                console.log("Log: chat root not found, it must be created first, redirect to ../inbox");
-                location.href = "../inbox";
+                console.log('Log: chat root not found, it must be created first, redirect to ../inbox');
+                location.href = '../inbox';
             }
         }
     </script>
@@ -87,8 +87,8 @@
             <img class="dp" src="../common/res/defaultdp.png">
             <h class="title" id="roomid">Demo Chat</h>
             <script>                
-                if (CHATROOMID != "default") {
-                    document.getElementById("roomid").innerHTML = CHATROOMID.charAt(0).toUpperCase() + CHATROOMID.slice(1);
+                if (CHATROOMID != 'default') {
+                    document.getElementById('roomid').innerHTML = CHATROOMID.charAt(0).toUpperCase() + CHATROOMID.slice(1);
                 }
             </script>
         </div>
@@ -115,8 +115,8 @@
     <!-- md to html converter -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.1/showdown.min.js"></script>
     <!-- global script -->
-    <script src="../common/js/common.js"></script>
+    <script type="module" src="../common/js/common.js"></script>
     <!-- main script -->
-    <script src="../chat/script.js"></script>
+    <script type="module" src="../chat/script.js"></script>
 </body>
 </html>

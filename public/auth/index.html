@@ -69,7 +69,7 @@
         <h3>Login</h3>
         <input type="email" id="login_email" placeholder="E-Mail">
         <div onclick="document.getElementById('login_pass').focus()">
-            <input type="password" id="login_pass" class="password" placeholder="Password"><i class="fa fa-eye-slash" onclick="document.getElementById('login_pass').focus();"></i>
+            <input type="password" id="login_pass" class="password" placeholder="Password"><i class="fa fa-eye-slash"></i>
         </div>
         <h id="login_info">An error occurred</h>
         <a id="pass_reset" href="resetpassword">Reset password</a>
@@ -80,10 +80,10 @@
         <h3>Sign Up</h3>
         <input type="email" class="email" id="signup_email" placeholder="E-Mail">
         <div onclick="document.getElementById('signup_pass').focus()">
-            <input type="password" class="password" id="signup_pass" placeholder="Password"><i class="fa fa-eye-slash c1" onclick="document.getElementById('signup_pass').focus();"></i>
+            <input type="password" class="password" id="signup_pass" placeholder="Password"><i class="fa fa-eye-slash c1"></i>
         </div>
         <div onclick="document.getElementById('signup_pass_c').focus()">
-            <input type="password" class="password" id="signup_pass_c" placeholder="Confirm Password"><i class="fa fa-eye-slash c2" onclick="document.getElementById('signup_pass_c').focus();"></i>
+            <input type="password" class="password" id="signup_pass_c" placeholder="Confirm Password"><i class="fa fa-eye-slash c2"></i>
         </div>
         <h id="signup_info">An error occurred</h>
         <button id="btn_signup">Sign Up</button>
@@ -95,8 +95,8 @@
         </div>
     </footer>
     <!-- global script -->
-    <script src="../common/js/common.js"></script>
+    <script type="module" src="../common/js/common.js"></script>
     <!-- main script -->
-    <script src="../chat/script.js"></script>
+    <script type="module" src="../auth/script.js"></script>
 </body>
 </html>

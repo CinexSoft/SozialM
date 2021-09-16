@@ -1,13 +1,6 @@
 import { Auth } from '../common/js/firebaseinit.js';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js';
-import {
-    log,
-    err,
-    $,
-    dialog,
-    menu,
-    checkForApkUpdates,
-} from '../common/js/modules.js';
+import { log, err, $, checkForApkUpdates } from '../common/js/modules.js';
 
 checkForApkUpdates();
 
@@ -38,7 +31,7 @@ const resetColors = () => {
 }
 
 // called when the eye-slash icon is pressed
-const toogleRoot = () => {
+$(".switchlink")[0].addEventListener('click', (event) => {
     resetColors();
     // if root of login visibile
     if (ROOTFLAG == 'login') {
@@ -57,10 +50,10 @@ const toogleRoot = () => {
         log('ROOTFLAG = ' + ROOTFLAG);
     }
     document.getElementById(ROOTFLAG).style.display = 'block';
-}
+});
 
 // toggle password visibility
-const togglePass = () => {
+for (let element of $(".fa-eye-slash")) element.addEventListener('click', (event) => {
     for (let element of $('.password')) {
         log('togglePass(): type = ' + element.type);
         if (element.type == 'password') {
@@ -76,7 +69,7 @@ const togglePass = () => {
             }
         }
     }
-}
+});
 
 // on focus given to an input
 document.body.addEventListener('click', (event) => {

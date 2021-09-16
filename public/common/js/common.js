@@ -9,7 +9,6 @@ import {
     menu
 } from '../common/js/modules.js';
 
-
 // global onclick listeners
 document.body.addEventListener('click', (e) => {
     log('click: ' + 'id = ' + e.target.id + ' ' + 'node = ' + e.target.nodeName + ' ' + 'class = ' + e.target.className);
