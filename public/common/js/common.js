@@ -1,7 +1,9 @@
 import {
-    DEBUG,
+    setVariable,
     EXISTSANDROIDINTERFACE,
-    overlay,
+    getUserID,
+    generateUserToken,
+    uploadSessionLogs,
     log,
     dialog,
     menu
@@ -28,5 +30,5 @@ setInterval(() => {
     uploadSessionLogs();
 }, 5000);
 
-log('common.js loaded');
+console.log('common.js loaded');
 log('[AND]: WebAppInterface: ' + EXISTSANDROIDINTERFACE);

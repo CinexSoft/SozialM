@@ -1,4 +1,4 @@
-import { getAnalytics } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-app.js';
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-app.js';
 import { getAnalytics } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-analytics.js';
 import { getDatabase } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js';
 import { getAuth } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.js';

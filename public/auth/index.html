@@ -15,9 +15,9 @@
     <title>Login or Sign Up</title>
     <script>
         // checking if user is logged in, local storage does exactly what it says
-        if (localStorage.getItem("Auth.user")) {
-            console.log("Log: already signed in, redirect to ../chat");
-            location.href = "../inbox";
+        if (localStorage.getItem('Auth.user')) {
+            console.log('Log: already signed in, redirect to ../chat');
+            location.href = '../inbox';
         }
     </script>
     <!-- font awesome icons -->
@@ -91,11 +91,12 @@
     <!-- footer -->
     <footer>
         <div class="footer" style="font-size: 0.8rem; color: #333">
-            <font class="swinfo">Don't have an account? </font><font class="switchlink" style="font-weight: bold; color: #128c7e; cursor: pointer;" onclick="toogleRoot()">Sign Up</font>!
+            <font class="swinfo">Don't have an account? </font><font class="switchlink" style="font-weight: bold; color: #128c7e; cursor: pointer;">Sign Up</font>!
         </div>
     </footer>
+    <!-- global script -->
     <script src="../common/js/common.js"></script>
     <!-- main script -->
-    <script src="../auth/script.js"></script>
+    <script src="../chat/script.js"></script>
 </body>
 </html>
