@@ -91,6 +91,7 @@ const startDBListener = () => {
         log('db update fetched');
     });
 }
+
 // on key up listener
 document.addEventListener('keyup', (e) => {
     const key = e.keyCode || e.charCode
@@ -120,6 +121,7 @@ document.addEventListener('keyup', (e) => {
         hljs.highlightAll();
     }
 });
+
 // soft keyboard launch triggers window resize event
 window.addEventListener('resize', (e) => {
     // detects soft keyboard switch
@@ -143,6 +145,7 @@ window.addEventListener('resize', (e) => {
     $('#msgpreview').style.display = 'none';
     $('#txtmsg').style.borderRadius = '40px';
 });
+
 // on send button clicked
 $('#btnsend').addEventListener('click', (e) => {
     let msgbackup = ''; 
@@ -226,6 +229,7 @@ $('#btnsend').addEventListener('click', (e) => {
         });
     }, Overlay.animation_duration);
 });
+
 // onclick listeners
 document.body.addEventListener('click', (e) => {
     let target;
