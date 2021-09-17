@@ -1,0 +1,8 @@
+/* resizes alertDialog boxes for larger display width */
+@media only screen and (min-width: 400px) {
+    .alertDialogRoot .alertDialog,
+    .actionDialogRoot .actionDialog,
+    .menuRoot .menu {
+        zoom: 1.1;
+    }
+}

@@ -1,0 +1,49 @@
+/* ----------------- THEME COLORS -------------------*/
+body {
+  --accent-bgcolor: #075E54;
+  --primary-bgcolor: #ECE5DD;
+  --secondary-bgcolor: #FFF5C4;
+  --chat-bubble-bgcolor: #DCF8C6;
+  --control-color: #128C7E;
+  --control-active-color: #2fa99c;
+  --fg-color: #333333;
+  --dark-fg-color: #FFFFFF;
+}
+.acc_bg {
+    background-color: var(--accent-bgcolor);
+    color: var(--dark-fg-color);
+    border-color: var(--accent-bgcolor);
+}
+.prim_bg {
+    background-color: var(--primary-bgcolor);
+    color: var(--fg-color);
+    border-color: var(--primary-bgcolor);
+}
+.sec_bg {
+    background-color: var(--secondary-bgcolor);
+    color: var(--fg-color);
+    border-color: var(--secondary-bgcolor);
+}
+.chatbubble_bg {
+    background-color: var(--chat-bubble-bgcolor);
+    color: var(--fg-color);
+    border-color: var(--chat-bubble-bgcolor);
+}
+.control_fg {
+    color: var(--control-color);
+}
+.control_bg {
+    background-color: var(--control-color);
+    color: var(--dark-fg-color);
+    border-color: var(--control-color);
+}
+.control_bg:hover,
+.control_bg:active {
+    background-color: var(--control-active-color);
+}
+.prim_fg {
+    color: var(--fg-color);
+}
+.dark_fg {
+    color: var(--dark-fg-color);
+}

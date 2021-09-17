@@ -28,7 +28,7 @@ export const ACCENT_BGCOLOR = document.body.style.getPropertyValue('--accent-bgc
 export const PRIMARY_BGCOLOR = document.body.style.getPropertyValue('--primary-bgcolor');
 export const SECONDARY_BGCOLOR = document.body.style.getPropertyValue('--secondary-bgcolor');
 export const CHAT_BUBBLE_BGCOLOR = document.body.style.getPropertyValue('--chat-bubble-bgcolor');
-export const CONTROL_BGCOLOR = document.body.style.getPropertyValue('--control-bgcolor');
+export const CONTROL_COLOR = document.body.style.getPropertyValue('--control-color');
 export const FG_COLOR = document.body.style.getPropertyValue('--fg-color');
 export const DARK_FG_COLOR = document.body.style.getPropertyValue('--dark-fg-color');
 
