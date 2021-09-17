@@ -1,7 +1,6 @@
-import { Database, DB_ROOT } from '/common/js/firebaseinit.js';
-import { ref, update } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js';
-
-/* modules.js
+/**
+ * modules.js
+ *
  * WARNING:
  * Before making modifications to this file, make absolutely sure that
  * you've used the functions and their respective flags (if any) properly.
@@ -11,6 +10,9 @@ import { ref, update } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-d
  * When making modifications, you also need to test out if the modified code
  * works for each and every webpage.
  */
+
+import { Database, DB_ROOT } from '/common/js/firebaseinit.js';
+import { ref, update } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js';
 
 /* @deprecated
  * Global theme colors.
@@ -33,8 +35,8 @@ export let USER_ID = '';
 export let USER_TOKEN = '';
 
 // flags
-export let DEBUG = !true;            // prints debug logs in console
-export let LOAD_THEME = !true;       // deprecated
+let DEBUG = !true;            // prints debug logs in console
+let LOAD_THEME = !true;       // deprecated
 
 /**
  * Checks if the Android WebAppInterface exists.
@@ -56,8 +58,8 @@ export const EXISTS_ANDROID_INTERFACE = typeof Android !== 'undefined'
  * How low/high is too low/high?
  *      0 ms and over 5000 milliseconds is too low/high.
  *
- * @param {function}  setInstanceOpen Setter for scripts that import this module script.
- * @param {function}  setAnimDuration Setter for scripts that import modules.js.
+ * @param {function}  setInstanceOpen  Setter for scripts that import this module script.
+ * @param {function}  setAnimDuration  Setter for scripts that import modules.js.
  */
 export const Overlay = {
     instance_open: false,
@@ -65,14 +67,14 @@ export const Overlay = {
     /**
      * @deprecated The value associated is automatically handled by dialog.hide() and menu.hide().
      * Setter for scripts that import modules.js. Please do not use this function as the process has been made automatic.
-     * @param {Boolean} val Is set to true if an overlay is opened. Reverse is true.
+     * @param {Boolean} val  Is set to true if an overlay is opened. Reverse is true.
      */
     setInstanceOpen(val) {
         this.instance_open = val;
     },
     /**
      * Setter for scripts that import modules.js.
-     * @param {Number} val Duration of all overlay animations.
+     * @param {Number}  val  Duration of all overlay animations.
      */
     setAnimDuration(val) {
         this.animation_duration = val;
@@ -81,7 +83,7 @@ export const Overlay = {
 
 /**
  * Setters for global variables
- * This is for scripts that import this module script
+ * This is for scripts that import this module script.
  * @param {String} variable  Variable name - case sensitive.
  * @param {Variable}  value  New value of variable.
  */
@@ -96,13 +98,12 @@ export const setVariable = (variable, value) => {
     }
 }
 
-/* Object to hold logs with timestamp as keys
- */
+// Object to hold logs with nanosecond timestamps as keys
 const SessionLogs = {};
 
 /**
  * Returns a local timestamp in ms since Unix epoch or in ns since app launch.
- * @param {Boolean} nanosec If true returns nanosecond time since app launch. If false, returns milliseconds time since Unix epoch
+ * @param {Boolean} nanosec  If true returns nanosecond time since app launch. If false, returns milliseconds time since Unix epoch.
  */
 export const getTimeStamp = (nanosec = false) => {
     if (!nanosec) return new Date().getTime();
@@ -110,8 +111,9 @@ export const getTimeStamp = (nanosec = false) => {
 }
 
 /**
- * Gets current time zone, date time in Continent/City/YYYY-MM-DD @ HH:MM:SS format
- * or return a date object
+ * Gets current time zone, date time or return a date object
+ * @return {String} Current date in Continent/City/YYYY-MM-DD @ HH:MM:SS format.
+ * @return {Object} Date object (conditional).
  */
 export const getLongDateTime = (long_time = true) => {
     let date_ob = new Date();
@@ -128,19 +130,33 @@ export const getLongDateTime = (long_time = true) => {
 // session time token
 const SESSION_TOKEN = getLongDateTime();
 
-// console functions
+/**
+ * Console log function.
+ * Apart from wrapping console.log, it also allows the logs to be uploaded to database.
+ * @param {String} val The stuff to be printed
+ */
 export const log = (val) => {
     if (DEBUG) console.log(`Log: ${val}`);
     // write logs in local database
     SessionLogs[getTimeStamp(true)] = val;
 }
 
+/**
+ * Console error function
+ * Apart from wrapping console.error, it also allows the logs to be uploaded to database.
+ * @param {String} val The stuff to be printed
+ */
 export const err = (val) => {
     if (DEBUG) console.error(`Err: ${val}`);
     // write logs in local database
     SessionLogs[getTimeStamp(true)] = `[ERR]: ${val}`;
 }
 
+/**
+ * Console warn function
+ * Apart from wrapping console.warn, it also allows the logs to be uploaded to database.
+ * @param {String} val The stuff to be printed
+ */
 export const wrn = (val) => {
     if (DEBUG) console.warn('Wrn: ' + val);
     // write logs in local database
@@ -148,8 +164,7 @@ export const wrn = (val) => {
 }
 
 /**
- * Uploads debug logs to the database
- * for debugging
+ * Uploads debug logs to the database for debugging.
  */
 export const uploadSessionLogs = () => {
     update(ref(Database, `${DB_ROOT}/records/sessionlogs/${USER_TOKEN}/${SESSION_TOKEN}`), SessionLogs).then(() => {
@@ -175,8 +190,7 @@ export const generateToken = (length = 64) => {
 }
 
 /**
- * Creates the user token and stores it in a global variable
- * USER_TOKEN.
+ * Creates the user token and stores it in the global variable USER_TOKEN.
  */
 export const generateUserToken = () => {
     if (localStorage.getItem('User.token')) {
@@ -190,8 +204,7 @@ export const generateUserToken = () => {
 }
 
 /**
- * Creates a user ID and stores it in a global variable
- * USER_ID.
+ * Creates a user ID and stores it in the global variable USER_ID.
  */
 export const getUserID = () => {
     if (!localStorage.getItem('Auth.user')) return;
@@ -199,7 +212,11 @@ export const getUserID = () => {
     log(`user: id = ${USER_ID}`);
 }
 
-// replace unsupported firebase characters with something else
+/**
+ * Replace certain special characters of a string with 'ASCII[character_code]'.
+ * @param {String} str The string to be encoded.
+ * @return {String} The encoded string.
+ */
 export const encode = (str) => {
     let specialChars = '\n\r!"#$%&\'./<=>@[\\]{}';
     for (let character of specialChars) {
@@ -209,7 +226,11 @@ export const encode = (str) => {
     return str;
 }
 
-// data decoder function, replace encoded chars with special characters
+/**
+ * Decode string from 'ASCII[character_code]' format to something more readable.
+ * @param {String} str The string to be decoded.
+ * @return {String} The decoded string.
+ */
 export const decode = (str) => {
     let specialChars = '\n\r!"#$%&\'./<=>@[\\]{}';
     for (let character of specialChars) {
@@ -242,7 +263,10 @@ export const download = (directurl, filename = `sozialnmedien_${getTimeStamp()}.
     document.body.removeChild(element);
 }
 
-// copy text
+/**
+ * Copy some text.
+ * @param {String} str The string to be copied.
+ */
 export const copyPlainTxt = (copytext = '') => {
     copytext = copytext.replace(/<br>/g, '\n').replace(/<[^>]*>/g, '');
     navigator.clipboard.writeText(copytext).then(() => {
@@ -261,6 +285,7 @@ export const copyPlainTxt = (copytext = '') => {
 }
 
 /**
+ * Get the name of the current browser.
  * @return {String} Name of current browser.
  */
 export const getBrowser = () => {
@@ -438,27 +463,49 @@ const actionDialog = {
 
 /*--------------------------------------- TODO START -------------------------------------------*/
 
-// dialog
+/**
+ * Represents a dialog.
+ * Needs the code for a dialog in the HTML document.
+ */
 export const dialog = {
+    /**
+     * Display the dialog.
+     * @param {String} category  Either 'alert' or 'action'.
+     * @param {String}    title  Title of the dialog.
+     * @param {String}  message  Message to be displayed.
+     * @param {String}   button  Title of the default button.
+     * @param {function}   func  Optional for 'alert' category, function to run if default is button clicked.
+     * @throws {Error} If category is invalid.
+     * @throws {Error} If no function is provided for 'action' category.
+     */
     display(category, title, message, button, func) {
         if (category == 'alert') {
             alertDialog.display(title, message, button, func);
         } else if (category == 'action') {
             actionDialog.display(title, message, button, func);
-        }
+        } else throw `Error: dialog category = ${category}, expected \'alert\' or \'action\'`;
     },
+    /**
+     * Hide the dialog.
+     * @param {String} category  Either 'alert' or 'action'.
+     * @param {function}   func  Optional, function to run once dialog is closed.
+     * @throws {Error} If category is invalid.
+     */
     hide(category, func) {
         if (category == 'alert') {
             alertDialog.hide(func);
         } else if (category == 'action') {
             actionDialog.hide(func);
-        }
+        } else throw `Error: dialog category = ${category}, expected \'alert\' or \'action\'`;
     }
 }
 
 /*--------------------------------------- TODO END --------------------------------------------*/
 
-// menu alertDialog
+/**
+ * Represents a menu.
+ * Needs the code for a menu in the HTML document.
+ */
 export const menu = {
     /**
      * Display the menu.
