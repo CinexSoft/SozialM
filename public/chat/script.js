@@ -69,14 +69,13 @@ const startDBListener = () => {
                 appendHTMLString($('#chatarea'), `<div class="bubbles" id="${pushkey}"><div class="this sec_bg">${getHTML}</div></div>`);
                 if (DEBUG) console.log(`Log: this: pushkey = ${pushkey}`);
                 if (DEBUG) console.log(`Log: this: html = ${$('#chatarea').innerHTML}`);
-            }
-            else {
+            } else {
                 appendHTMLString($('#chatarea'), `<div class="bubbles" id="${pushkey}"><div class="that">${getHTML}</div></div>`);
                 if (DEBUG) console.log(`Log: that: pushkey = ${pushkey}`);
                 if (DEBUG) console.log(`Log: that: html = ${$('#chatarea').innerHTML}`);
             }
             /* this delay makes sure the entire chatarea is loaded before it's scrolled to place
-             * it's not smooth scrolled, that's the 3rd flag
+             * it's not smooth scrolled, that's the 3rd parameter
              */
             smoothScroll($('#chatarea'), true, true);
         });
@@ -102,8 +101,7 @@ document.addEventListener('keyup', (e) => {
         $('#txtmsg').style.borderRadius = '0 0 10px 10px';
         $('#msgpreview').innerHTML = `<font class="header" color="#7d7d7d">Markdown preview</font>${HTML}`;
         smoothScroll($('#msgpreview'));
-    }
-    else {
+    } else {
         $('#msgpreview').style.display = 'none';
         $('#txtmsg').style.borderRadius = '40px';
         $('#msgpreview').innerHTML = '<font class="header" color="#7d7d7d">Markdown preview</font><font color="#7d7d7d">Preview appears here</font>';
@@ -148,13 +146,14 @@ window.addEventListener('resize', (e) => {
 
 // on send button clicked
 $('#btnsend').addEventListener('click', (e) => {
-    let msgbackup = ''; 
-    if (msgbackup = $('#txtmsg').value).trim()) {
+    const msgbackup = $('#txtmsg').value;
+    // if msgbackup is empty.
+    if (!msgbackup.trim()) {
         $('#txtmsg').value = '';
         $('#txtmsg').focus();
         return;
     }
-    const msg = QUOTE_REPLY_TEXT + $('#txtmsg').value.trim();
+    const msg = QUOTE_REPLY_TEXT + msgbackup.trim();
     if (msg.length > 1024 * 2) {
         dialog.display('alert', 'Warning', 'Text exceeds limit of 2KB');
         $('#txtmsg').value = msgbackup;
@@ -192,12 +191,12 @@ $('#btnsend').addEventListener('click', (e) => {
         'Saturday',
     ];
     msg = MDtoHTML.makeHtml(msg);
-    /* this is temporary and is overwritten when db update is fetched
+    /* this append is temporary and is overwritten when db update is fetched
      * which is why the class this has no pushkey id
      */
     appendHTMLString($('#chatarea'), `<div class="bubbles"><div class="this sec_bg">${msg}</div></div>`);
     smoothScroll($('#chatarea'), true, true);
-    // a small delay to prevent a lag caused when writing to db
+    // this delay is to prevent a lag that occurrs when writing to db, within which the dialog is hidden
     setTimeout(() => {
         const Date = getLongDateTime(false);
         const time = {
@@ -246,7 +245,7 @@ document.body.addEventListener('click', (e) => {
     // menu unsend button click
     else if (e.target.id == 'menu_unsend') {
         menu.hide();
-        // this delay of 300ms is to prevent a lag that occurrs when writing to db
+        // this delay is to prevent a lag that occurrs when writing to db, within which the dialog is hidden
         setTimeout(() => {
             // unsend not possible if not sent by user
             if (ChatData[LONG_PRESSED_ELEMENT.id].uid != USER_ID) {
@@ -265,7 +264,7 @@ document.body.addEventListener('click', (e) => {
             }).catch((error) => {
                 err(error);
             });
-        }, 300);
+        }, Overlay.animation_duration);
     }
     // menu reply button click
     else if (e.target.id == 'menu_reply') {
@@ -303,11 +302,11 @@ document.body.addEventListener('click', (e) => {
                            + '</pre>');
         });
     }
-    /* DO NOT TOUCH THIS ELSE IF BLOCK, this is the chat bubble highlighter code
-     * The upper indented block is the condition of the else if statement
-     * The condition contains an anonymous function definition and it's
-     * immediate execution.
-     * The lower indented block is the actual code
+    /* ------------------------------------- DO NOT TOUCH THIS ELSE IF BLOCK ----------------------------
+     * This is the chat bubble highlighter code.
+     * The upper indented block is just the condition of the else if statement.
+     * The condition contains an anonymous function definition and it's immediate execution.
+     * The lower indented block is the actual code.
      */
     else if (target = (() => {
         if (e.target.id.includes('tm_')) return $(`#${e.target.id.substring(3)}`);
@@ -335,6 +334,7 @@ document.body.addEventListener('click', (e) => {
             target.style.animation = '';
         }, 3000);
     }
+    /* -------------------------------------------- DO NOT TOUCH ENDS ------------------------------------ */
 });
 
 // timer variable
