@@ -37,7 +37,6 @@ body {
     color: var(--dark-fg-color);
     border-color: var(--control-color);
 }
-.control_bg:hover,
 .control_bg:active {
     background-color: var(--control-active-color);
 }
