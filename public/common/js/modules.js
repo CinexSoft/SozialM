@@ -1,4 +1,4 @@
-import { Database, DBROOT } from '/common/js/firebaseinit.js';
+import { Database, DB_ROOT } from '/common/js/firebaseinit.js';
 import { ref, update } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js';
 
 /* modules.js
@@ -19,12 +19,12 @@ const ACCENT_TERTIARY_BGCOLOR = '#ece5dd';
 const ACCENT_FG_COLOR = '#ffffff';
 
 // user id
-export let USERID = '';
-export let USERTOKEN = '';
+export let USER_ID = '';
+export let USER_TOKEN = '';
 
 // flags
 export let DEBUG = !true;            // prints debug logs in console
-export let LOADTHEME = !true;        // deprecated
+export let LOAD_THEME = !true;       // deprecated
 
 /* checks if android interface exists
  * The `Android` WebAppInterface is a class available
@@ -34,9 +34,9 @@ export let LOADTHEME = !true;        // deprecated
  * The interface is available only when this webpage is loaded on the Android
  * web app.
  */
-export const EXISTSANDROIDINTERFACE = typeof Android !== 'undefined'
-                             && typeof Android.isSozialnMedienWebapp === 'function'
-                             && Android.isSozialnMedienWebapp();
+export const EXISTS_ANDROID_INTERFACE = typeof Android !== 'undefined'
+                                     && typeof Android.isSozialnMedienWebapp === 'function'
+                                     && Android.isSozialnMedienWebapp();
 
 // overlay controls
 export const overlay = {
@@ -56,13 +56,13 @@ export const setVariable = (variable, value) => {
             DEBUG = value;
             break;
         case 'loadtheme':
-            LOADTHEME = value;
+            LOAD_THEME = value;
             break;
     }
 }
 
 // logger data
-export const SESSIONLOGS = {};
+export const SessionLogs = {};
 
 // returns a local timestamp in ms since Unix epoch or in ns since app launch
 export const getTimeStamp = (nanosec = false) => {
@@ -86,101 +86,95 @@ export const getLongDateTime = (flag = true) => {
 }
 
 // session time token
-export const SESSIONTOKEN = getLongDateTime();
+export const SESSION_TOKEN = getLongDateTime();
 
 // console functions
 export const log = (val) => {
-    if (DEBUG) console.log('Log: ' + val);
+    if (DEBUG) console.log(`Log: ${val}`);
     // write logs in local database
-    SESSIONLOGS[getTimeStamp(true)] = val;
+    SessionLogs[getTimeStamp(true)] = val;
 }
 
 export const err = (val) => {
-    if (DEBUG) console.error('Err: ' + val);
+    if (DEBUG) console.error(`Err: ${val}`);
     // write logs in local database
-    SESSIONLOGS[getTimeStamp(true)] = '[ERR]: ' + val;
+    SessionLogs[getTimeStamp(true)] = `[ERR]: ${val}`;
 }
 
 export const wrn = (val) => {
     if (DEBUG) console.warn('Wrn: ' + val);
     // write logs in local database
-    SESSIONLOGS[getTimeStamp(true)] = '[WRN]: ' + val;
+    SessionLogs[getTimeStamp(true)] = `[WRN]: ${val}`;
 }
 
 /* Uploads debug logs to the database
  * for debugging
  */
 export const uploadSessionLogs = () => {
-    update(ref(Database, DBROOT + '/records/sessionlogs/' + USERTOKEN + '/' + SESSIONTOKEN), SESSIONLOGS)
-    .then(() => {
-        if (false) console.log('Log: logs written to database');
-    })
-    .catch((error) => {
+    update(ref(Database, `${DB_ROOT}/records/sessionlogs/${USER_TOKEN}/${SESSION_TOKEN}`), SessionLogs).then(() => {
+        // do nothing
+    }).catch((error) => {
         err(error);
     });
 }
 
 // creates a random `length` sized bit token
 export const generateToken = (length = 64) => {
-    let a = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'.split('');
-    let b = [];
+    let arrayOfChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'.split('');
+    let outputToken = [];
     for (let i = 0; i < length; i++) {
-        let j = (Math.random() * (a.length - 1)).toFixed(0);
-        b[i] = a[j];
+        let j = (Math.random() * (arrayOfChars.length - 1)).toFixed(0);
+        outputToken[i] = arrayOfChars[j];
     }
-    return b.join('');
+    return outputToken.join('');
 }
 
 // generates a user token to recognise a device
 export const generateUserToken = () => {
     if (localStorage.getItem('User.token')) {
-        USERTOKEN = localStorage.getItem('User.token');
+        USER_TOKEN = localStorage.getItem('User.token');
         log('new token generated');
+        return;
     }
-    else {
-        USERTOKEN = generateToken();
-        log('new: user token = ' + USERTOKEN);
-        localStorage.setItem('User.token', USERTOKEN);
-    }
+    USER_TOKEN = generateToken();
+    log(`user: new token = ${USER_TOKEN}`);
+    localStorage.setItem('User.token', USER_TOKEN);
 }
 
 // user id is used to mark a message
 export const getUserID = () => {
-    if (localStorage.getItem('Auth.user')) {
-        USERID = JSON.parse(localStorage.getItem('Auth.user')).uid;
-        log('user: id = ' + USERID);
-    }
+    if (!localStorage.getItem('Auth.user')) return;
+    USER_ID = JSON.parse(localStorage.getItem('Auth.user')).uid;
+    log(`user: id = ${USER_ID}`);
 }
 
 // replace unsupported firebase characters with something else
 export const encode = (str) => {
-    let spChars = '\n\r!"#$%&\'./<=>@[\\]{}';
-    for (let c of spChars) {
-        str = str.replaceAll(c, 'ASCII' + c.charCodeAt(0));
+    let specialChars = '\n\r!"#$%&\'./<=>@[\\]{}';
+    for (let character of specialChars) {
+        str = str.replaceAll(character, `ASCII${character.charCodeAt(0)}`);
     }
-    if (DEBUG) console.log('Log: encode(): str = ' + str);
+    if (DEBUG) console.log(`Log: encode(): str = ${str}`);
     return str;
 }
 
 // data decoder function, replace encoded chars with special characters
 export const decode = (str) => {
-    let spChars = '\n\r!"#$%&\'./<=>@[\\]{}';
-    for (let c of spChars) {
-        str = str.replaceAll('ASCII' + c.charCodeAt(0), c);
+    let specialChars = '\n\r!"#$%&\'./<=>@[\\]{}';
+    for (let character of specialChars) {
+        str = str.replaceAll(`ASCII${character.charCodeAt(0)`, character);
     }
-    if (DEBUG) console.log('Log: decode(): str = ' + str);
+    if (DEBUG) console.log(`Log: decode(): str = ${str}`);
     return str;
 }
 
 // download a file
-export const download = (directurl, filename) => {
-    filename = filename || 'sozialnmedien_' + getTimeStamp() + '.bin';
-    if (EXISTSANDROIDINTERFACE) {
+export const download = (directurl, filename = `sozialnmedien_${getTimeStamp()}.bin`) => { 
+    if (EXISTS_ANDROID_INTERFACE) {
         try {
             Android.download(directurl, filename);
             log('[AND]: download(): through Android WepAppInterface');
-        }
-        catch (error) {
+        } catch (error) {
             err(error);
             throw error;
         }
@@ -198,20 +192,17 @@ export const download = (directurl, filename) => {
 }
 
 // copy text
-export const copyPlainTxt = (copytext) => {
+export const copyPlainTxt = (copytext = '') => {
     copytext = copytext.replace(/<br>/g, '\n').replace(/<[^>]*>/g, '');
-    navigator.clipboard.writeText(copytext)
-    .then(() => {
+    navigator.clipboard.writeText(copytext).then(() => {
         log('text copied to clipboard');
-    })
-    .catch((error) => {
+    }).catch((error) => {
         err(error);
-        if (EXISTSANDROIDINTERFACE) {
+        if (EXISTS_ANDROID_INTERFACE) {
             Android.copyToClipboard(copytext);
             log('[AND]: copyPlainTxt(): through Android WepAppInterface');
             Android.showToast('Text copied!');
-        }
-        else {
+        } else {
             err('android interface doesn\'t exist');
             dialog.display('alert', 'Oops!', 'Copy text to clipboard failed');
         }
@@ -241,9 +232,7 @@ export const getBrowser = () => {
 // js element selector function, inspired by JQuery
 export const $ = (val) => {
     val = val.trim();
-    if (/ |,|\[|\]|>|:/.test(val)) {
-        return document.querySelectorAll(val);
-    }
+    if (/ |,|\[|\]|>|:/.test(val)) return document.querySelectorAll(val);
     switch (val.charAt(0)) {
         case '#':
             return document.getElementById(val.substring(1));
@@ -257,9 +246,7 @@ export const $ = (val) => {
 // get child element using css selectors
 export const getChildElement = (element, val) => {
     val = val.trim();
-    if (/ |,|\[|\]|>|:/.test(val)) {
-        return element.querySelectorAll(val);
-    }
+    if (/ |,|\[|\]|>|:/.test(val)) return element.querySelectorAll(val);
     switch (val.charAt(0)) {
         case '#':
             return document.getElementById(val.substring(1));
@@ -275,7 +262,7 @@ export const hasElementAsParent = (child, parent) => {
     let node = child.parentNode;
     while (node != null) {
         if (node == parent) {
-            log('node ' + node.nodeName + ' has parent = ' + parent.nodeName);
+            log(`${node.nodeName} of class = ${node.className} has parent ${parent.nodeName} of class = ${parent.className}`);
             return true;
         }
         node = node.parentNode;
@@ -292,7 +279,7 @@ export const hasElementAsParent = (child, parent) => {
  * http://benalman.com/about/license/
  */
 // Visit: https://gist.github.com/cowboy/938767
-export const appendHTMLString = (element, str, reversed = false) => {
+export const appendHTMLString = (element, str = '', reversed = false) => {
     let parent =  element.parentNode;
     let next = element.nextSibling;
     if (!parent) return;                              // No parent node? Abort!
@@ -310,94 +297,86 @@ export const appendHTMLString = (element, str, reversed = false) => {
 // alertDialog
 export const alertDialog = {
     // default button is close
-    display(title, message, button = 'Close', func) {
+    display(title = 'Alert!', message = '', button = 'Close', func) {
         if (typeof button != 'string') {
-            throw 'Error: typeof button title is '+ (typeof button) + ', expected string';
+            throw `Error: typeof button title = ${typeof button}, expected String`;
         }
         if (func && typeof func != 'function') {
-            throw 'Error: typeof func is '+ (typeof func) + ', expected function';
+            throw `Error: typeof func = ${typeof func}, expected function`;
         }
         // delay when one overlay is already open
         let timeout = 0;
-        if (overlay.instance_open) {
-            timeout = overlay.animation_duration;
-        }
+        if (overlay.instance_open) timeout = overlay.animation_duration;
         setTimeout(() => {
-            log('alertDialog display(): timeout = ' + timeout);
+            log(`alertDialog display(): timeout = ${timeout}`);
             getChildElement($('#alertDialog'), 'h2')[0].innerHTML = title.replace(/\n/g, '<br>');;
             getChildElement($('#alertDialog'), 'div')[0].innerHTML = message.replace(/\n/g, '<br>');
             $('#alertDialog_btn').innerHTML = button;
-            $('#alertDialog_btn').addEventListener('click', (e) => {
-                if (func != undefined) {
-                    func();
-                }
-            // removes event listener once action is complete
+            if (func) $('#alertDialog_btn').addEventListener('click', (e) => {
+                // removes event listener once action is complete
+                $('#alertDialog_btn').removeEventListener('click', func);
+                func.call();
             }, { once: true });
-            $('#alertDialogRoot').style.animation = 'fadeIn ' + overlay.animation_duration + 'ms forwards';
-            $('#alertDialog').style.animation = 'scaleIn ' + overlay.animation_duration + 'ms forwards';
+            $('#alertDialogRoot').style.animation = `fadeIn ${overlay.animation_duration}ms forwards`;
+            $('#alertDialog').style.animation = `scaleIn ${overlay.animation_duration}ms forwards`;
             overlay.instance_open = true;
         }, timeout);
     },
     hide(func) {
-        $('#alertDialogRoot').style.animation = 'fadeOut ' + overlay.animation_duration + 'ms forwards';
-        $('#alertDialog').style.animation = 'scaleOut ' + overlay.animation_duration + 'ms forwards';
+        $('#alertDialogRoot').style.animation = `fadeOut ${overlay.animation_duration}ms forwards`;
+        $('#alertDialog').style.animation = `scaleOut ${overlay.animation_duration}ms forwards`;
         setTimeout(() => {
             overlay.instance_open = false;
         }, overlay.animation_duration);
         // additional function
-        if (func != undefined) {
-            if (typeof func != 'function') {
-                throw 'Error: typeof func is '+ (typeof func) + ', expected function';
-            }
-            func();
+        if (typeof func != 'function') {
+            throw `Error: typeof func = ${typeof func}, expected function`;
+            return;
         }
+        func();
     }
 }
 
 // actionDialog
 export const actionDialog = {
     // default button is close
-    display(title, message, button = 'OK', func) {
+    display(title = 'Alert!', message = '', button = 'OK', func) {
         if (typeof button != 'string') {
-            throw 'Error: typeof button title is '+ (typeof button) + ', expected string';
+            throw `Error: typeof button title = ${typeof button}, expected String`;
         }
         if (!func || typeof func != 'function') {
-            throw 'Error: typeof func is '+ (typeof func) + ', expected function';
+            throw `Error: typeof func = ${typeof func}, expected function`;
         }
         // delay when one overlay is already open
         let timeout = 0;
-        if (overlay.instance_open) {
-            timeout = overlay.animation_duration;
-        }
+        if (overlay.instance_open) timeout = overlay.animation_duration;
         setTimeout(() => {
-            log('actionDialog: display(): timeout = ' + timeout);
+            log(`actionDialog display(): timeout = ${timeout}`);
             getChildElement($('#actionDialog'), 'h2')[0].innerHTML = title.replace(/\n/g, '<br>');;
             getChildElement($('#actionDialog'), '.content')[0].innerHTML = message.replace(/\n/g, '<br>');
             $('#actionDialog_btnOk').innerHTML = button;
-            $('#actionDialog_btnOk').addEventListener('click', (e) => {
-                if (func != undefined) {
-                    func();
-                }
-            // removes event listener once action is complete
+            if (func) $('#actionDialog_btnOk').addEventListener('click', (e) => {
+                // removes event listener once action is complete
+                $('#actionDialog_btnOk').removeEventListener('click', func);
+                func();
             }, { once: true });
-            $('#actionDialogRoot').style.animation = 'fadeIn ' + overlay.animation_duration + 'ms forwards';
-            $('#actionDialog').style.animation = 'scaleIn ' + overlay.animation_duration + 'ms forwards';
+            $('#actionDialogRoot').style.animation = `fadeIn ${overlay.animation_duration}ms forwards`;
+            $('#actionDialog').style.animation = `scaleIn ${overlay.animation_duration}ms forwards`;
             overlay.instance_open = true;
         }, timeout);
     },
     hide(func) {
-        $('#actionDialogRoot').style.animation = 'fadeOut ' + overlay.animation_duration + 'ms forwards';
-        $('#actionDialog').style.animation = 'scaleOut ' + overlay.animation_duration + 'ms forwards';
+        $('#actionDialogRoot').style.animation = `fadeOut ${overlay.animation_duration}ms forwards`;
+        $('#actionDialog').style.animation = `scaleOut ${overlay.animation_duration}ms forwards`;
         setTimeout(() => {
             overlay.instance_open = false;
         }, overlay.animation_duration);
         // additional function
-        if (func != undefined) { 
-            if (typeof func != 'function') {
-                throw 'Error: typeof func is '+ (typeof func) + ', expected function';
-            }
-            func();
+        if (typeof func != 'function') {
+            throw `Error: typeof func = ${typeof func}, expected function`;
+            return;
         }
+        func();
     }
 }
 
@@ -408,16 +387,14 @@ export const dialog = {
     display(category, title, message, button, func) {
         if (category == 'alert') {
             alertDialog.display(title, message, button, func);
-        }
-        else if (category == 'action') {
+        } else if (category == 'action') {
             actionDialog.display(title, message, button, func);
         }
     },
     hide(category, func) {
         if (category == 'alert') {
             alertDialog.hide(func);
-        }
-        else if (category == 'action') {
+        } else if (category == 'action') {
             actionDialog.hide(func);
         }
     }
@@ -430,20 +407,18 @@ export const menu = {
     display(title = 'Menu') {
         // delay when one overlay is already open
         let timeout = 0;
-        if (overlay.instance_open) {
-            timeout = overlay.animation_duration;
-        }
+        if (overlay.instance_open) timeout = overlay.animation_duration;
         setTimeout(() => {
-            log('menu: timeout = ' + timeout);
+            log(`menu: timeout = ${timeout}`);
             getChildElement($('#menu'), 'h2')[0].innerHTML = title.replace(/\n/g, '<br>');;
-            $('#menuRoot').style.animation = 'fadeIn ' + overlay.animation_duration + 'ms forwards';
-            $('#menu').style.animation = 'scaleIn ' + overlay.animation_duration + 'ms forwards';
+            $('#menuRoot').style.animation = `fadeIn ${overlay.animation_duration}ms forwards`;
+            $('#menu').style.animation = `scaleIn ${overlay.animation_duration}ms forwards`;
             overlay.instance_open = true;
         }, timeout);
     },
     hide() {
-        $('#menuRoot').style.animation = 'fadeOut ' + overlay.animation_duration + 'ms forwards';
-        $('#menu').style.animation = 'scaleOut ' + overlay.animation_duration + 'ms forwards';
+        $('#menuRoot').style.animation = `fadeOut ${overlay.animation_duration}ms forwards`;
+        $('#menu').style.animation = `scaleOut ${overlay.animation_duration}ms forwards`;
         setTimeout(() => {
             overlay.instance_open = false;
         }, overlay.animation_duration);
@@ -452,11 +427,9 @@ export const menu = {
 
 // looks for updates to android app
 export const checkForApkUpdates = () => {
-    if (EXISTSANDROIDINTERFACE) {
-        let val;
-        try {
-            val = Android.updateAvailable();
-            switch (val) {
+    if (EXISTS_ANDROID_INTERFACE) {
+        try { 
+            switch (Android.updateAvailable()) {
                 case 'true':
                     log('alertDialog: launch: update available');
                     dialog.display('alert', 'Update available', 'A new version of this Android app is available.', 'Download', () => {
@@ -467,10 +440,10 @@ export const checkForApkUpdates = () => {
                         dialog.hide('alert');
                         log('[AND]: downloaded Android app');
                     });
-                break;
+                    break;
                 case 'failed':
                     err('update check failed');
-                break;
+                    break;
             }
         }
         catch (error) {
@@ -480,17 +453,16 @@ export const checkForApkUpdates = () => {
 }
 
 // smooth scroll
-export const smoothScroll = (element, flag = true, notsmooth) => {
+export const smoothScroll = (element, getbehavioronly = true, notsmooth) => {
     // check if down scrollable part of element is < 720 px
     if (!notsmooth && element.scrollHeight - (document.body.clientHeight - 110) - element.scrollTop < 720) {
-        if (!flag) return 'smooth';
+        if (!getbehavioronly) return 'smooth';
         element.style.scrollBehavior = 'smooth';
-    }
-    else {
-        if (!flag) return 'auto';
+    } else {
+        if (!getbehavioronly) return 'auto';
         element.style.scrollBehavior = 'auto';
     }
-    log('smoothscroll(): element = ' + element.nodeName + ' class = ' + element.className + ' diff = ' + (element.scrollHeight - element.scrollTop));
+    log(`smoothscroll(): element = ${element.nodeName} class = ${element.className} diff = ${element.scrollHeight - element.scrollTop}`);
     element.scrollTop = element.scrollHeight;
 }
 
@@ -500,7 +472,7 @@ export const smoothScroll = (element, flag = true, notsmooth) => {
  * a all teal accent (WhatsApp theme). So this won't be needed.
  */
 export const loadTheme = () => {
-    if (!LOADTHEME) return;
+    if (!LOAD_THEME) return;
     // custom accents: primary background color
     for (let element of $('.prim_bg')) {
         element.style.backgroundColor = ACCENT_PRIMARY_BGCOLOR;

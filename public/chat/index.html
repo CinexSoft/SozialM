@@ -16,7 +16,7 @@
     <link rel="icon" type="image/x-icon" href="https://sozialnmedien.web.app/favicon.ico"/>
     <title>Chat</title>
     <script>
-        let CHATROOT = '/chat/ejs993ejiei3/';
+        let CHAT_ROOT = '/chat/ejs993ejiei3/';
             CHATROOMID = 'ejs993ejiei3';
         // checks if user is logged in
         if (!localStorage.getItem('Auth.user')) {
@@ -30,7 +30,7 @@
             // checking if chat root exists
             if (localStorage.getItem('Chat.roomid')) {
                 console.log('Log: chat root found');
-                CHATROOT = '/chat/' + localStorage.getItem('Chat.roomid') + '/';
+                CHAT_ROOT = '/chat/' + localStorage.getItem('Chat.roomid') + '/';
             }
             else {
                 console.log('Log: chat root not found, it must be created first, redirect to /inbox');

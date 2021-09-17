@@ -1,5 +1,5 @@
 import { ref, push, update, onValue } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js';
-import { Database, DBROOT } from '/common/js/firebaseinit.js';
+import { Database, DB_ROOT } from '/common/js/firebaseinit.js';
 import {
     USERID,
     DEBUG,
@@ -39,12 +39,12 @@ let SOFTBOARDOPEN = false;
 
 // the entire chat is downloaded and stored here
 // the data has unique random values as keys
-const CHATDATA = JSON.parse(localStorage.getItem(CHATROOT)) || {};
+const CHATDATA = JSON.parse(localStorage.getItem(CHAT_ROOT)) || {};
 
 // database listener
 const startDBListener = () => {
     // db listener, fetches new msg on update
-    onValue(ref(Database, DBROOT + CHATROOT), (snapshot) => {
+    onValue(ref(Database, DB_ROOT + CHAT_ROOT), (snapshot) => {
         // setting up html
         let getHTML = '';
         $('#chatarea').innerHTML = '<div class="info noselect" style="font-family: sans-serif">' +
@@ -62,7 +62,7 @@ const startDBListener = () => {
                 time: data.time,
             };
             // cache chat in local storage
-            localStorage.setItem(CHATROOT, JSON.stringify(CHATDATA));
+            localStorage.setItem(CHAT_ROOT, JSON.stringify(CHATDATA));
             // get html from msg
             getHTML = decode(data.message);
             if (uid == USERID) {
@@ -230,8 +230,8 @@ $('#btnsend').addEventListener('click', (e) => {
                     + ('0' + Date.getSeconds()).slice(-2),
             }
             // push generates a unique id which is based on timestamp
-            const pushkey = push(ref(Database, DBROOT + CHATROOT)).key;
-            update(ref(Database, DBROOT + CHATROOT + pushkey + '/'), {
+            const pushkey = push(ref(Database, DB_ROOT + CHAT_ROOT)).key;
+            update(ref(Database, DB_ROOT + CHAT_ROOT + pushkey + '/'), {
                 time,
                 pushkey,
                 message: encode(msg),
@@ -269,7 +269,7 @@ document.body.addEventListener('click', (e) => {
             if (CHATDATA[LONGPRESSED.id].uid == USERID) {
                 // unsend is possible only within 1 hour
                 if (getTimeStamp() - parseInt(CHATDATA[LONGPRESSED.id].time.stamp) < 3600000) {
-                    update(ref(Database, DBROOT + CHATROOT), {
+                    update(ref(Database, DB_ROOT + CHAT_ROOT), {
                         [LONGPRESSED.id]: null
                     })
                     .then(() => {
