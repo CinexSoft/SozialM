@@ -1,7 +1,7 @@
 import {
     setVariable,
     EXISTS_ANDROID_INTERFACE,
-    getUserID,
+    getUserInfo,
     generateUserToken,
     uploadSessionLogs,
     log,
@@ -21,7 +21,7 @@ document.body.addEventListener('click', (e) => {
 });
 
 // user ID recognises a person while user token recognises a device
-getUserID();
+getUserInfo();
 generateUserToken();
 
 // upload logs in intervals for current session

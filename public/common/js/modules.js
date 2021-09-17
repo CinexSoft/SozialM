@@ -447,6 +447,7 @@ const alertDialog = {
             Overlay.instance_open = false;
         }, Overlay.animation_duration);
         // additional function
+        if (!func) return;
         if (typeof func != 'function') {
             throw `Error: typeof func = ${typeof func}, expected function`;
             return;
@@ -492,6 +493,7 @@ const actionDialog = {
             Overlay.instance_open = false;
         }, Overlay.animation_duration);
         // additional function
+        if (!func) return;
         if (typeof func != 'function') {
             throw `Error: typeof func = ${typeof func}, expected function`;
             return;
