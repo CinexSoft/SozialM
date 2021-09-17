@@ -208,7 +208,7 @@ $('#btnsend').addEventListener('click', (e) => {
             time: ('0' + Date.getHours()).slice(-2)) + ':'
                 + ('0' + Date.getMinutes()).slice(-2)) + ':'
                 + ('0' + Date.getSeconds()).slice(-2)) + ' '
-                + (Intl.DateTimeFormat().resolvedOptions().timeZone)`,
+                + (Intl.DateTimeFormat().resolvedOptions().timeZone),
         }
         // push generates a unique id which is based on timestamp
         const pushkey = push(ref(Database, DB_ROOT + CHAT_ROOT)).key;
