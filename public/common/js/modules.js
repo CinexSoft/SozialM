@@ -128,8 +128,8 @@ export const setVariable = (variable, value) => {
         case 'CHAT_BUBBLE_BGCOLOR':
             CHAT_BUBBLE_BGCOLOR = value;
             break;
-        case 'CONTROL_BGCOLOR':
-            CONTROL_BGCOLOR = value;
+        case 'CONTROL_COLOR':
+            CONTROL_COLOR = value;
             break;
         default:
             throw `Error: for variable ${variable}, no such variable in module.js, note that variables are case-sensitive`;
@@ -682,8 +682,8 @@ export const loadTheme = () => {
     }
     // custom accents: controls background color
     for (let element of $('.control_bg')) {
-        element.style.backgroundColor = CONTROL_BGCOLOR;
-        element.style.borderColor = CONTROL_BGCOLOR;
+        element.style.backgroundColor = CONTROL_COLOR;
+        element.style.borderColor = CONTROL_COLOR;
         element.style.color = DARK_FG_COLOR;
     }
     log('loadTheme(): loaded');

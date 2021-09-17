@@ -51,7 +51,7 @@ const startDBListener = () => {
     // db listener, fetches new msg on update
     firebaseOnRtdbDataChanged(firebaseDBRef(Database, DB_ROOT + CHAT_ROOT), (snapshot) => {
         // setting up html
-        $('#chatarea').innerHTML = '<div class="info noselect" style="font-family: sans-serif">'
+        $('#chatarea').innerHTML = '<div class="info noselect sec_bg" style="font-family:sans-serif">'
                                  + '<p class="fa fa-info-circle">&ensp;Messages in this chat are only server-to-end encrypted.</p>'
                                  + '</div>';
         snapshot.forEach(({ key }) => {
@@ -70,7 +70,7 @@ const startDBListener = () => {
             // get html from msg
             const getHTML = decode(data.message);
             if (uid == USER_ID) {
-                appendHTMLString($('#chatarea'), `<div class="bubbles" id="${pushkey}"><div class="this sec_bg">${getHTML}</div></div>`);
+                appendHTMLString($('#chatarea'), `<div class="bubbles" id="${pushkey}"><div class="this chatbubble_bg">${getHTML}</div></div>`);
                 if (DEBUG) console.log(`Chat: Log: this: pushkey = ${pushkey}`);
                 if (DEBUG) console.log(`Chat: Log: this: html = ${$('#chatarea').innerHTML}`);
             } else {
@@ -198,7 +198,7 @@ $('#btnsend').addEventListener('click', (e) => {
     /* this append is temporary and is overwritten when db update is fetched
      * which is why the class this has no pushkey id
      */
-    appendHTMLString($('#chatarea'), `<div class="bubbles"><div class="this sec_bg">${messageHTML}</div></div>`);
+    appendHTMLString($('#chatarea'), `<div class="bubbles"><div class="this chatbubble_bg">${messageHTML}</div></div>`);
     smoothScroll($('#chatarea'), true, true);
     // this delay is to prevent a lag that occurrs when writing to db, within which the dialog is hidden
     setTimeout(() => {

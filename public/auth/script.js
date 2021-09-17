@@ -60,7 +60,7 @@ for (let element of $(".fa-eye-slash")) element.addEventListener('click', (event
         } else if (element.type == 'text') {
             element.type = 'password';
             for (let element of $('.fa-eye-slash')) {
-                element.style.color = CONTROL_BGCOLOR;
+                element.style.color = CONTROL_COLOR;
             }
         }
     }

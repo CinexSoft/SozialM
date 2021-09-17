@@ -128,3 +128,11 @@
 .menu button:last-child {
     border-radius: 0 0 9px 9px;
 }
+/* resizes alertDialog boxes for larger display width */
+@media only screen and (min-width: 400px) {
+    .alertDialogRoot .alertDialog,
+    .actionDialogRoot .actionDialog,
+    .menuRoot .menu {
+        zoom: 1.1;
+    }
+}
