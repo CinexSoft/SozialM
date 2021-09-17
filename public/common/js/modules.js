@@ -203,7 +203,7 @@ export const generateUserToken = () => {
 }
 
 /**
- * gets current user info from Firebase Auth and stores the id in the global variable USER_ID.
+ * Gets current user info from Firebase Auth and stores the id in the global variable USER_ID.
  */
 export const getUserInfo = () => {
     onAuthStateChanged(Auth, (user) => {
@@ -239,7 +239,7 @@ export const encode = (str) => {
 export const decode = (str) => {
     let specialChars = '\n\r!"#$%&\'./<=>@[\\]{}';
     for (let character of specialChars) {
-        str = str.replaceAll(`ASCII${character.charCodeAt(0)`, character);
+        str = str.replaceAll(`ASCII${character.charCodeAt(0)}`, character);
     }
     if (DEBUG) console.log(`Log: decode(): str = ${str}`);
     return str;
