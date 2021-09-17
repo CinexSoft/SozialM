@@ -152,16 +152,16 @@ $('#btnsend').addEventListener('click', (e) => {
         return;
     }
     const msg = QUOTE_REPLY_TEXT + $('#txtmsg').value.trim();
-    QUOTE_REPLY_TEXT = '';
-    $('#txtmsg').value = '';
-    $('#msgpreview').innerHTML = '<font class="header" color="#7d7d7d">Markdown preview</font>';
-    $('#msgpreview').style.display = 'none';
-    $('#txtmsg').style.borderRadius = '40px';
     if (msg.length > 1024 * 2) {
         dialog.display('alert', 'Warning', 'Text exceeds limit of 2KB');
         $('#txtmsg').value = msgbackup;
         return;
     }
+    QUOTE_REPLY_TEXT = '';
+    $('#txtmsg').value = '';
+    $('#msgpreview').innerHTML = '<font class="header" color="#7d7d7d">Markdown preview</font>';
+    $('#msgpreview').style.display = 'none';
+    $('#txtmsg').style.borderRadius = '40px';
     $('#txtmsg').focus();
     // months array
     const months = [
@@ -194,7 +194,7 @@ $('#btnsend').addEventListener('click', (e) => {
      */
     appendHTMLString($('#chatarea'), `<div class="bubbles"><div class="this sec_bg">${msg}</div></div>`);
     smoothScroll($('#chatarea'), true, true);
-    // a small delay of 200ms to prevent a lag caused when writing to db
+    // a small delay to prevent a lag caused when writing to db
     setTimeout(() => {
         const Date = getLongDateTime(false);
         const time = {
@@ -205,7 +205,10 @@ $('#btnsend').addEventListener('click', (e) => {
             day: Date.getDay(),
             dayname: weekdays[Date.getDay()],
             stamp: getTimeStamp(),
-            time: `${'0' + Date.getHours()).slice(-2)}:${'0' + Date.getMinutes()).slice(-2)}:${'0' + Date.getSeconds()).slice(-2)} ${Intl.DateTimeFormat().resolvedOptions().timeZone}`,
+            time: ('0' + Date.getHours()).slice(-2)) + ':'
+                + ('0' + Date.getMinutes()).slice(-2)) + ':'
+                + ('0' + Date.getSeconds()).slice(-2)) + ' '
+                + (Intl.DateTimeFormat().resolvedOptions().timeZone)`,
         }
         // push generates a unique id which is based on timestamp
         const pushkey = push(ref(Database, DB_ROOT + CHAT_ROOT)).key;
@@ -221,7 +224,7 @@ $('#btnsend').addEventListener('click', (e) => {
             err(error);
             $('#txtmsg').value = msgbackup;
         });
-    }, 200);
+    }, Overlay.animation_duration);
 });
 // onclick listeners
 document.body.addEventListener('click', (e) => {
