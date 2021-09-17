@@ -35,8 +35,8 @@ export let USER_ID = '';
 export let USER_TOKEN = '';
 
 // flags
-let DEBUG = !true;            // prints debug logs in console
-let LOAD_THEME = !true;       // deprecated
+export let DEBUG = !true;            // prints debug logs in console
+let LOAD_THEME = !true;              // deprecated
 
 /**
  * Checks if the Android WebAppInterface exists.
