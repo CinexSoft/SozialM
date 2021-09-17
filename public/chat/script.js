@@ -231,7 +231,12 @@ $('#btnsend').addEventListener('click', (e) => {
 
 // onclick listeners
 document.body.addEventListener('click', (e) => {
-    let target;
+    /**
+     * Variable should only be used by bubble highlighter block.
+     * Purpose is to store the node that is to be highlighted when someone taps on a reply message.
+     * @type {Node} HTML element
+     */
+    let highlight_target;
     // title bar back arrow click
     if (e.target.className == 'backarrow') {
         log('history: going back');
@@ -290,16 +295,19 @@ document.body.addEventListener('click', (e) => {
              * WARNING: Take care when modifying the regex and order of replace function.
              */
             dialog.display('alert', 'Message details',
-                           '<pre style="overflow:auto; text-align:left;">'
-                           + decode(JSON.stringify(message, null, 4)
-                               .replace(/\n    /g, '\n')
-                               .replace(/"|'|,/g, ''))
-                               .replace (/</g, '&lt;')
-                               .replace(/>/g, '&gt;')
-                               .replace(/\n}/g, '')
-                               .replace(/{\n\S/g, '')
-                               .replace(/{/g, '')
-                           + '</pre>');
+                '<pre style="overflow:auto; text-align:left;">'
+                    + decode(
+                        JSON.stringify(message, null, 4)
+                        .replace(/\n    /g, '\n')
+                        .replace(/"|'|,/g, '')
+                    )
+                    .replace (/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/\n}/g, '')
+                    .replace(/{\n\S/g, '')
+                    .replace(/{/g, '')
+                + '</pre>'
+            );
         });
     }
     /* ------------------------------------- DO NOT TOUCH THIS ELSE IF BLOCK ----------------------------
@@ -308,7 +316,7 @@ document.body.addEventListener('click', (e) => {
      * The condition contains an anonymous function definition and it's immediate execution.
      * The lower indented block is the actual code.
      */
-    else if (target = (() => {
+    else if (highlight_target = (() => {
         if (e.target.id.includes('tm_')) return $(`#${e.target.id.substring(3)}`);
         for (let bq of $('blockquote')) {
             log(`bq id = ${bq.id}`);
@@ -322,16 +330,16 @@ document.body.addEventListener('click', (e) => {
     // else if condition ends here
     {
         // code starts here
-        log(`target id = #${target.id}`);
-        const behavior = smoothScroll(target, false);
-        target.scrollIntoView(true, {
+        log(`highlight: bubble target id = #${highlight_target.id}`);
+        highlight_target.style.animation = '';
+        const behavior = smoothScroll(highlight_target, false);
+        highlight_target.scrollIntoView(true, {
             behavior,
             block: 'center'
         });
-        target.style.animation = 'initial';
-        target.style.animation = 'highlight 4s';
+        highlight_target.style.animation = 'highlight 4s';
         setTimeout(() => {
-            target.style.animation = '';
+            highlight_target.style.animation = '';
         }, 3000);
     }
     /* -------------------------------------------- DO NOT TOUCH ENDS ------------------------------------ */
