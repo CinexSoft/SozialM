@@ -1,5 +1,10 @@
-import { ref, push, update, onValue } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js';
 import { Database, DB_ROOT } from '/common/js/firebaseinit.js';
+import {
+    ref as firebaseDBRef,
+    push as firebaseDBPush,
+    update as firebaseDBUpdate,
+    onValue as firebaseOnRtdbDataChanged,
+} from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js';
 import {
     USER_ID,
     DEBUG,
@@ -44,9 +49,8 @@ const ChatData = JSON.parse(localStorage.getItem(CHAT_ROOT)) || {};
 // database listener
 const startDBListener = () => {
     // db listener, fetches new msg on update
-    onValue(ref(Database, DB_ROOT + CHAT_ROOT), (snapshot) => {
+    firebaseOnRtdbDataChanged(firebaseDBRef(Database, DB_ROOT + CHAT_ROOT), (snapshot) => {
         // setting up html
-        let getHTML = '';
         $('#chatarea').innerHTML = '<div class="info noselect" style="font-family: sans-serif">'
                                  + '<p class="fa fa-info-circle">&ensp;Messages in this chat are only server-to-end encrypted.</p>'
                                  + '</div>';
@@ -64,7 +68,7 @@ const startDBListener = () => {
             // cache chat in local storage
             localStorage.setItem(CHAT_ROOT, JSON.stringify(ChatData));
             // get html from msg
-            getHTML = decode(data.message);
+            const getHTML = decode(data.message);
             if (uid == USER_ID) {
                 appendHTMLString($('#chatarea'), `<div class="bubbles" id="${pushkey}"><div class="this sec_bg">${getHTML}</div></div>`);
                 if (DEBUG) console.log(`Log: this: pushkey = ${pushkey}`);
@@ -93,10 +97,10 @@ const startDBListener = () => {
 
 // on key up listener
 document.addEventListener('keyup', (e) => {
-    const key = e.keyCode || e.charCode
+    const key = e.keyCode || e.charCode;
     log(`keypress: key = ${key}`);
     const HTML = QUOTE_REPLY_TEXT + MDtoHTML.makeHtml($('#txtmsg').value.trim());
-    if (HTML != '') {
+    if (HTML) {
         $('#msgpreview').style.display = 'block';
         $('#txtmsg').style.borderRadius = '0 0 10px 10px';
         $('#msgpreview').innerHTML = `<font class="header" color="#7d7d7d">Markdown preview</font>${HTML}`;
@@ -108,7 +112,7 @@ document.addEventListener('keyup', (e) => {
     }
     const KEY_DEL = 8,
           KEY_BACKSPACE = 46;
-    if ((key == KEY_DEL || key == KEY_BACKSPACE) && $('#txtmsg').value.trim() == '') {
+    if ((key == KEY_DEL || key == KEY_BACKSPACE) && !$('#txtmsg').value.trim()) {
         QUOTE_REPLY_TEXT = '';
         $('#msgpreview').style.display = 'none';
         $('#txtmsg').style.borderRadius = '40px';
@@ -213,8 +217,8 @@ $('#btnsend').addEventListener('click', (e) => {
                 + (Intl.DateTimeFormat().resolvedOptions().timeZone),
         }
         // push generates a unique id which is based on timestamp
-        const pushkey = push(ref(Database, DB_ROOT + CHAT_ROOT)).key;
-        update(ref(Database, DB_ROOT + CHAT_ROOT + pushkey + '/'), {
+        const pushkey = firebaseDBPush(firebaseDBRef(Database, DB_ROOT + CHAT_ROOT)).key;
+        firebaseDBUpdate(firebaseDBRef(Database, DB_ROOT + CHAT_ROOT + pushkey + '/'), {
             time,
             pushkey,
             message: encode(msg),
@@ -262,7 +266,7 @@ document.body.addEventListener('click', (e) => {
                 dialog.display('alert', 'Not allowed', 'You can only unsend a message within 1 hour of sending it.');
                 return;
             }
-            update(ref(Database, DB_ROOT + CHAT_ROOT), {
+            firebaseDBUpdate(firebaseDBRef(Database, DB_ROOT + CHAT_ROOT), {
                 [LONG_PRESSED_ELEMENT.id]: null
             }).then(() => {
                 log('msg deleted, data updated');

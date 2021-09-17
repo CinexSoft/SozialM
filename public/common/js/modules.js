@@ -12,8 +12,11 @@
  */
 
 import { Auth, Database, DB_ROOT } from '/common/js/firebaseinit.js';
-import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.js';
-import { ref, update } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js';
+import { onAuthStateChanged as firebaseOnAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.js';
+import {
+    ref as firebaseDBRef,
+    update as firebaseDBUpdate,
+} from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js';
 
 /* @deprecated
  * Global theme colors.
@@ -182,7 +185,7 @@ export const wrn = (val) => {
  * Uploads debug logs to the database for debugging.
  */
 export const uploadSessionLogs = () => {
-    update(ref(Database, `${DB_ROOT}/records/sessionlogs/${USER_TOKEN}/${SESSION_TOKEN}`), SessionLogs).then(() => {
+    firebaseDBUpdate(firebaseDBRef(Database, `${DB_ROOT}/records/sessionlogs/${USER_TOKEN}/${SESSION_TOKEN}`), SessionLogs).then(() => {
         // do nothing
     }).catch((error) => {
         err(error);
@@ -220,7 +223,7 @@ export const generateUserToken = () => {
  * Gets current user info from Firebase Auth and stores the id in the global variable USER_ID.
  */
 export const getUserInfo = () => {
-    onAuthStateChanged(Auth, (user) => {
+    firebaseOnAuthStateChanged(Auth, (user) => {
         if (!user) {
             log('user: not signed in');
             return;
