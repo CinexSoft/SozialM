@@ -125,7 +125,7 @@ window.addEventListener('resize', (e) => {
     // detects soft keyboard switch
     if (PREVIOUS_HEIGHT != document.body.clientHeight && PREVIOUS_WIDTH == document.body.clientWidth) {
         SOFTBOARD_OPEN = !SOFTBOARD_OPEN;
-        log(`keyboard switch? height diff = ${document.body.clientHeight - PREVIOUS_HEIGHT}`);
+        log(`keyboard: switched? height diff = ${document.body.clientHeight - PREVIOUS_HEIGHT}`);
     }
     if (document.body.clientHeight - PREVIOUS_HEIGHT < 0) $('#chatarea').scrollTop += Math.abs(document.body.clientHeight - PREVIOUS_HEIGHT);
     PREVIOUS_WIDTH = document.body.clientWidth;
@@ -272,14 +272,14 @@ document.body.addEventListener('click', (e) => {
     // menu details button click
     else if (e.target.id == 'menu_details') {
         menu.hide();
-        let message = ChatData[LONG_PRESSED_ELEMENT.id];
-        let time = message.time;
+        const message = ChatData[LONG_PRESSED_ELEMENT.id];
+        const time = message.time;
         // innerHTML of dialog
-        let infoHTML = '<table style="width:100%; text-align:left">'
-                     +     `<tr><td>Sent by: </td><td><pre style="margin:0; padding:0; font-family:sans-serif; overflow:auto; width:180px;">${ChatData[LONG_PRESSED_ELEMENT.id].uid == USER_ID ? 'You' : ChatData[LONG_PRESSED_ELEMENT.id].uid}</pre></td></tr>`
-                     +     `<tr><td>Sent on: </td><td>${time.dayname.slice(0, 3)}, ${time.monthname.slice(0, 3) ${time.date}, ${time.year}</td></tr>`
-                     +     `<tr><td>Sent at: </td><td><pre style="margin:0; padding:0; font-family:sans-serif; overflow:auto; width:180px;">${time.time}</pre></td></tr>`
-                     + '</table>'
+        const infoHTML = '<table style="width:100%; text-align:left">'
+                       +     `<tr><td>Sent by: </td><td><pre style="margin:0; padding:0; font-family:sans-serif; overflow:auto; width:180px;">${ChatData[LONG_PRESSED_ELEMENT.id].uid == USER_ID ? 'You' : ChatData[LONG_PRESSED_ELEMENT.id].uid}</pre></td></tr>`
+                       +     `<tr><td>Sent on: </td><td>${time.dayname.slice(0, 3)}, ${time.monthname.slice(0, 3) ${time.date}, ${time.year}</td></tr>`
+                       +     `<tr><td>Sent at: </td><td><pre style="margin:0; padding:0; font-family:sans-serif; overflow:auto; width:180px;">${time.time}</pre></td></tr>`
+                       + '</table>'
         // display dialog
         dialog.display('action', 'Message details', infoHTML, 'Advanced', () => {
             dialog.hide('action');
@@ -306,9 +306,7 @@ document.body.addEventListener('click', (e) => {
      * The lower indented block is the actual code
      */
     else if (target = (() => {
-        if (e.target.id.includes('tm_')) {
-            return $(`#${e.target.id.substring(3)}`);
-        }
+        if (e.target.id.includes('tm_')) return $(`#${e.target.id.substring(3)}`);
         for (let bq of $('blockquote')) {
             log(`bq id = ${bq.id}`);
             if (childHasParent(e.target, bq) && bq.id.includes('tm_')) {
@@ -322,9 +320,9 @@ document.body.addEventListener('click', (e) => {
     {
         // code starts here
         log(`target id = #${target.id}`);
-        let behavior = smoothScroll(target, false);
+        const behavior = smoothScroll(target, false);
         target.scrollIntoView(true, {
-            behavior: behavior,
+            behavior,
             block: 'center'
         });
         target.style.animation = 'initial';
@@ -360,7 +358,7 @@ document.body.addEventListener('pointerdown', (e) => {
     // image long pressed
     else if (e.target.nodeName == 'IMG' && e.target.parentNode.parentNode.parentNode.className == 'bubbles') {
         // get parent bubble container (.bubbles) of the image
-        let parent_bubble = e.target.parentNode.parentNode.parentNode;
+        const parent_bubble = e.target.parentNode.parentNode.parentNode;
         // 200 ms delay
         LONGPRESS_TIMER = setTimeout(() => {
             // shrink the parent slightly
