@@ -240,7 +240,12 @@ export const decode = (str) => {
     return str;
 }
 
-// download a file
+/**
+ * Download a file using the Android WebAppInterface.
+ * @param {String} directurl  The direct URL to the file.
+ * @param {String}  filename  Optional, but recommended otherwise the file extension is set to '.bin'.
+ * @throws {Error} android interface doesn't exist.
+ */
 export const download = (directurl, filename = `sozialnmedien_${getTimeStamp()}.bin`) => { 
     if (EXISTS_ANDROID_INTERFACE) {
         try {
@@ -253,7 +258,7 @@ export const download = (directurl, filename = `sozialnmedien_${getTimeStamp()}.
         return;
     }
     err('android interface doesn\'t exist');
-    throw 'android interface doesn\'t exist';
+    throw 'Error: android interface doesn\'t exist';
     let element = document.createElement('a');
     element.setAttribute('href', directurl);
     element.setAttribute('download', filename);
@@ -307,7 +312,12 @@ export const getBrowser = () => {
     return 'unknown';
 }
 
-// js element selector function, inspired by JQuery
+/**
+ * Select HTML element/s from the document root using CSS syntax.
+ * @param {String} val  The CSS representation of the element.
+ * @return {Node} The HTML element or,
+ * @return {HTMLCollection} A collection of similar HTML elements.
+ */
 export const $ = (val) => {
     val = val.trim();
     if (/ |,|\[|\]|>|:/.test(val)) return document.querySelectorAll(val);
@@ -321,7 +331,13 @@ export const $ = (val) => {
     }
 }
 
-// get child element using css selectors
+/**
+ * Select HTML element/s from an HTML node using CSS syntax.
+ * @param {Node} element  The element from which other elements will be selected.
+ * @param {String}   val  The CSS representation of the element.
+ * @return {Node} The HTML element or,
+ * @return {HTMLCollection} A collection of similar HTML elements.
+ */
 export const getChildElement = (element, val) => {
     val = val.trim();
     if (/ |,|\[|\]|>|:/.test(val)) return element.querySelectorAll(val);
