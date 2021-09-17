@@ -104,7 +104,7 @@
     background-color: #bcd8a6;
 }
 .chatarea .bubbles .that blockquote:active {
-    background-color: #e8e8e8;
+    background-color: #d8d8d8;
 }
 .chatarea .bubbles pre code {
     border: 0;
@@ -193,9 +193,6 @@
     font-size: 20px;
 }
 @media only screen and (orientation: landscape) and (min-height: 640px) {
-    body {
-        
-    }
     .root,
     .titlebar,
     .msgpreview,
@@ -214,7 +211,7 @@
 /* animations */
 @keyframes highlight {
     0% {
-        background-color: #52dcce;
+        background-color: var(--highlight-select-color);
     }
     100% {
         background-color: transparent;
