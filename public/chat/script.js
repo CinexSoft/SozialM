@@ -16,7 +16,7 @@ import {
     getBrowser,
     $,
     getChildElement,
-    hasElementAsParent,
+    childHasParent,
     appendHTMLString,
     dialog,
     menu,
@@ -334,7 +334,7 @@ document.body.addEventListener('click', (e) => {
         }
         for (let bq of $('blockquote')) {
             log('bq id = ' + bq.id);
-            if (hasElementAsParent(e.target, bq) && bq.id.includes('tm_')) {
+            if (childHasParent(e.target, bq) && bq.id.includes('tm_')) {
                 log('generated id = ' + '#' + bq.id.substring(3));
                 return $('#' + bq.id.substring(3));
             }

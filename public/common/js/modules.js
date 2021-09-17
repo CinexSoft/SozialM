@@ -12,13 +12,26 @@ import { ref, update } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-d
  * works for each and every webpage.
  */
 
-// global theme colors
+/* @deprecated
+ * global theme colors
+ * These can be used to modify the accent of the website
+ * It was meant to provide users with custom control over
+ * how their account looks and feels.
+ */
 const ACCENT_PRIMARY_BGCOLOR = '#075E54';
 const ACCENT_SECONDARY_BGCOLOR = '#dcf8c6';
 const ACCENT_TERTIARY_BGCOLOR = '#ece5dd';
 const ACCENT_FG_COLOR = '#ffffff';
 
-// user id
+/* user ID and Token
+ * uid stores id from Firebase auth
+ * token is a random 64 bit alphanumeric string
+ * that is used to recognise a device until browser
+ * cookies get cleared.
+ * The token is used to then identify the logs taken for
+ * a session.
+ * If user signs in, the logs of a token also contain the User ID
+ */
 export let USER_ID = '';
 export let USER_TOKEN = '';
 
@@ -26,19 +39,34 @@ export let USER_TOKEN = '';
 export let DEBUG = !true;            // prints debug logs in console
 export let LOAD_THEME = !true;       // deprecated
 
-/* checks if android interface exists
+/**
+ * Checks if android interface exists.
  * The `Android` WebAppInterface is a class available
- * in the Android web app of this project. The interface allows the
+ * in the Android web APK of this project. The interface allows the
  * website to use Android features through javascript without requiring
  * a complete Android app to be developed.
  * The interface is available only when this webpage is loaded on the Android
- * web app.
+ * web APK.
  */
 export const EXISTS_ANDROID_INTERFACE = typeof Android !== 'undefined'
                                      && typeof Android.isSozialnMedienWebapp === 'function'
                                      && Android.isSozialnMedienWebapp();
 
-// overlay controls
+/**
+ * Contains global data for behavior of overlays viz. menus and dialogs
+ * @param {Boolean}     instance_open if an overlay is already open,
+ *                                    other overlays are postponed for ${overlay.animation_duration}
+ *                                    milliseconds, which is the time taken for an overlay to animate out.
+ *                                    Needs to be set to true everytime an overlay opens.
+ *                                    Needs to be set to false everytime an overlay closes.
+ * @param {Number} animation_duration Can be modified to increase or decrease
+ *                                    duration of overlay animations. Too low/high values may break the UI.
+ * How high is too low/high?
+ *      0 ms and over 5000 milliseconds is too low/high.
+ *
+ * @param {function}  setInstanceOpen Setter for scripts that import this module script.
+ * @param {function}  setAnimDuration Setter for scripts that import this module script.
+ */
 export const overlay = {
     instance_open: false,
     animation_duration: 250,
@@ -50,32 +78,44 @@ export const overlay = {
     },
 }
 
+/**
+ * Setters for global variables
+ * This is for scripts that import this module script
+ * @param {String} variable  Variable name - case sensitive.
+ * @param {String}    value  nlNew value of variable.
+ */
 export const setVariable = (variable, value) => {
-    switch (variable.toLowerCase) {
-        case 'debug':
+    switch (variable) {
+        case 'DEBUG':
             DEBUG = value;
             break;
-        case 'loadtheme':
+        case 'LOAD_THEME':
             LOAD_THEME = value;
             break;
     }
 }
 
-// logger data
+/* Object to hold logs with timestamp as keys
+ */
 export const SessionLogs = {};
 
-// returns a local timestamp in ms since Unix epoch or in ns since app launch
+/**
+ * Returns a local timestamp in ms since Unix epoch or in ns since app launch.
+ * @param {Boolean} nanosec If true returns nanosecond time since app launch.
+ *                          If false, returns milliseconds time since Unix epoch
+ */
 export const getTimeStamp = (nanosec = false) => {
     if (!nanosec) return new Date().getTime();
     else return Math.floor(performance.now() * 1000);
 }
 
-// gets current time zone, date time in Continent/City YYYY-MM-DD @ HH:MM:SS format
-export const getLongDateTime = (flag = true) => {
+/**
+ * Gets current time zone, date time in Continent/City/YYYY-MM-DD @ HH:MM:SS format
+ * or return a date object
+ */
+export const getLongDateTime = (long_time = true) => {
     let date_ob = new Date();
-    if (!flag) {
-        return date_ob;
-    }
+    if (!long_time) return date_ob;
     let date = ('0' + date_ob.getDate()).slice(-2);
     let month = ('0' + (date_ob.getMonth() + 1)).slice(-2);
     let year = date_ob.getFullYear();
@@ -118,7 +158,7 @@ export const uploadSessionLogs = () => {
     });
 }
 
-// creates a random `length` sized bit token
+// creates a random `length` sized token
 export const generateToken = (length = 64) => {
     let arrayOfChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'.split('');
     let outputToken = [];
@@ -141,7 +181,7 @@ export const generateUserToken = () => {
     localStorage.setItem('User.token', USER_TOKEN);
 }
 
-// user id is used to mark a message
+// user id is used to mark a message and recognise a user            
 export const getUserID = () => {
     if (!localStorage.getItem('Auth.user')) return;
     USER_ID = JSON.parse(localStorage.getItem('Auth.user')).uid;
@@ -257,8 +297,13 @@ export const getChildElement = (element, val) => {
     }
 }
 
-// checks if the parent has the passed child
-export const hasElementAsParent = (child, parent) => {
+/**
+ * Checks if the given child has the given parent.
+ * @param {Node}  child  The child in concern.
+ * @param {Node} parent  The parent in concern.
+ * @return {Boolean} If true, the given child has the given parent
+ */
+export const childHasParent = (child, parent) => {
     let node = child.parentNode;
     while (node != null) {
         if (node == parent) {
@@ -270,15 +315,15 @@ export const hasElementAsParent = (child, parent) => {
     return false;
 }
 
-/*!
- * JavaScript detach - v0.2 - 5/18/2011
- * http://benalman.com/
- *
- * Copyright (c) 2011 'Cowboy' Ben Alman
- * Dual licensed under the MIT and GPL licenses.
- * http://benalman.com/about/license/
+/**
+ * Takes an HTML string, converts it to a node and attatches it to the
+ * element passed.
+ * This is done by detaching and reattaching the element
+ * to its parent to improve performance.
+ * @param {Node}     element  The element to which HTML will be appended.
+ * @param {String}       str  The HTML string.
+ * @param {Boolean} reversed  Prepends the HTML to the node.
  */
-// Visit: https://gist.github.com/cowboy/938767
 export const appendHTMLString = (element, str = '', reversed = false) => {
     let parent =  element.parentNode;
     let next = element.nextSibling;
@@ -425,7 +470,9 @@ export const menu = {
     }
 }
 
-// looks for updates to android app
+/** 
+ * Looks for updates to the android app and opens an alert dialog if update is available.
+ */
 export const checkForApkUpdates = () => {
     if (EXISTS_ANDROID_INTERFACE) {
         try { 
@@ -452,24 +499,32 @@ export const checkForApkUpdates = () => {
     }
 }
 
-// smooth scroll
-export const smoothScroll = (element, getbehavioronly = true, notsmooth) => {
+/**
+ * Scrolls down a view smoothly if amount of element below viewport is less than
+ * 720 pixels.
+ * @param {Node}              element  The element to scroll down.
+ * @param {Boolean} get_behavior_only  If true, only returns scroll behavior based
+ *                                     on amount of element below viewport
+ * @param {Boolean}        not_smooth  Explicitly mention to scroll without animations.
+ */
+export const smoothScroll = (element, get_behavior_only = true, not_smooth) => {
     // check if down scrollable part of element is < 720 px
-    if (!notsmooth && element.scrollHeight - (document.body.clientHeight - 110) - element.scrollTop < 720) {
-        if (!getbehavioronly) return 'smooth';
+    if (!not_smooth && element.scrollHeight - (document.body.clientHeight - 110) - element.scrollTop < 720) {
+        if (!get_behavior_only) return 'smooth';
         element.style.scrollBehavior = 'smooth';
     } else {
-        if (!getbehavioronly) return 'auto';
+        if (!get_behavior_only) return 'auto';
         element.style.scrollBehavior = 'auto';
     }
     log(`smoothscroll(): element = ${element.nodeName} class = ${element.className} diff = ${element.scrollHeight - element.scrollTop}`);
     element.scrollTop = element.scrollHeight;
 }
 
-/* @deprecated
+/**
+ * @deprecated
  * This function was supposed to reload the dynamic accent colors
  * of the newly added chat bubbles. But currently we're using
- * a all teal accent (WhatsApp theme). So this won't be needed.
+ * a all teal accent (former WhatsApp brand colors). So this won't be needed.
  */
 export const loadTheme = () => {
     if (!LOAD_THEME) return;
