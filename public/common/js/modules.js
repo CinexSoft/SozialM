@@ -54,14 +54,12 @@ export const EXISTS_ANDROID_INTERFACE = typeof Android !== 'undefined'
 
 /**
  * Contains global data for behavior of overlays viz. menus and dialogs
- * @param {Boolean}     instance_open if an overlay is already open,
- *                                    other overlays are postponed for ${overlay.animation_duration}
- *                                    milliseconds, which is the time taken for an overlay to animate out.
- *                                    Needs to be set to true everytime an overlay opens.
- *                                    Needs to be set to false everytime an overlay closes.
- * @param {Number} animation_duration Can be modified to increase or decrease
- *                                    duration of overlay animations. Too low/high values may break the UI.
- * How high is too low/high?
+ * The time taken for an overlay to animate out is overlay.animation_duration ms.
+ * Vlaue of instance_open needs to be set to true everytime an overlay opens and to false everytime an overlay closes.
+ * @param {Boolean}     instance_open  If an overlay is already open, other overlays are postponed for overlay.animation_duration ms.
+ * @param {Number} animation_duration  Can be modified to increase or decrease duration of overlay animations. Too low/high values may break the UI.
+ * 
+ * How low/high is too low/high?
  *      0 ms and over 5000 milliseconds is too low/high.
  *
  * @param {function}  setInstanceOpen Setter for scripts that import this module script.
@@ -101,8 +99,7 @@ export const SessionLogs = {};
 
 /**
  * Returns a local timestamp in ms since Unix epoch or in ns since app launch.
- * @param {Boolean} nanosec If true returns nanosecond time since app launch.
- *                          If false, returns milliseconds time since Unix epoch
+ * @param {Boolean} nanosec If true returns nanosecond time since app launch. If false, returns milliseconds time since Unix epoch
  */
 export const getTimeStamp = (nanosec = false) => {
     if (!nanosec) return new Date().getTime();
@@ -340,7 +337,7 @@ export const appendHTMLString = (element, str = '', reversed = false) => {
  */
 
 // alertDialog
-export const alertDialog = {
+const alertDialog = {
     // default button is close
     display(title = 'Alert!', message = '', button = 'Close', func) {
         if (typeof button != 'string') {
@@ -383,7 +380,7 @@ export const alertDialog = {
 }
 
 // actionDialog
-export const actionDialog = {
+const actionDialog = {
     // default button is close
     display(title = 'Alert!', message = '', button = 'OK', func) {
         if (typeof button != 'string') {
@@ -449,6 +446,10 @@ export const dialog = {
 
 // menu alertDialog
 export const menu = {
+    /**
+     * Display the menu
+     * @param {String} title Optional, default value = 'Menu'. Title of the menu dialog.
+     */
     display(title = 'Menu') {
         // delay when one overlay is already open
         let timeout = 0;
@@ -461,6 +462,9 @@ export const menu = {
             overlay.instance_open = true;
         }, timeout);
     },
+    /**
+     * Hide the menu dialog
+     */
     hide() {
         $('#menuRoot').style.animation = `fadeOut ${overlay.animation_duration}ms forwards`;
         $('#menu').style.animation = `scaleOut ${overlay.animation_duration}ms forwards`;
@@ -474,28 +478,28 @@ export const menu = {
  * Looks for updates to the android app and opens an alert dialog if update is available.
  */
 export const checkForApkUpdates = () => {
-    if (EXISTS_ANDROID_INTERFACE) {
-        try { 
-            switch (Android.updateAvailable()) {
-                case 'true':
-                    log('alertDialog: launch: update available');
-                    dialog.display('alert', 'Update available', 'A new version of this Android app is available.', 'Download', () => {
-                        setTimeout(() => {
-                            Android.showToast('Downloading app, look into your notification panel');
-                            Android.download('https://sozialnmedien.web.app/downloads/chat.app.web.sozialnmedien.apk', 'chat.app.web.sozialnmedien.apk');
-                        }, 500);
-                        dialog.hide('alert');
-                        log('[AND]: downloaded Android app');
-                    });
-                    break;
-                case 'failed':
-                    err('update check failed');
-                    break;
-            }
+    if (!EXISTS_ANDROID_INTERFACE) return;
+    log('[APK]: checking for update');
+    try { 
+        switch (Android.updateAvailable()) {
+            case 'true':
+                log('alertDialog: launch: update available');
+                dialog.display('alert', 'Update available', 'A new version of this Android app is available.', 'Download', () => {
+                   setTimeout(() => {
+                        Android.showToast('Downloading app, look into your notification panel');
+                        Android.download('https://sozialnmedien.web.app/downloads/chat.app.web.sozialnmedien.apk', 'chat.app.web.sozialnmedien.apk');
+                    }, 500);
+                    dialog.hide('alert');
+                    log('[AND]: downloaded Android app');
+                });
+                break;
+            case 'failed':
+                err('update check failed');
+                break;
         }
-        catch (error) {
-            err(error);
-        }
+    }
+    catch (error) {
+        err(error);
     }
 }
 
@@ -503,8 +507,7 @@ export const checkForApkUpdates = () => {
  * Scrolls down a view smoothly if amount of element below viewport is less than
  * 720 pixels.
  * @param {Node}              element  The element to scroll down.
- * @param {Boolean} get_behavior_only  If true, only returns scroll behavior based
- *                                     on amount of element below viewport
+ * @param {Boolean} get_behavior_only  If true, only returns scroll behavior based on amount of element below viewport
  * @param {Boolean}        not_smooth  Explicitly mention to scroll without animations.
  */
 export const smoothScroll = (element, get_behavior_only = true, not_smooth) => {
