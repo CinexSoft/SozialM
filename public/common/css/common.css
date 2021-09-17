@@ -28,7 +28,7 @@ button, a, .fa {
     cursor: pointer;
 }
 .nohighlight,
-img, button,
+blockquote, img, button,
 .fa {
     -webkit-tap-highlight-color: rgba(0,0,0,0);    /* prevent a blue highlight */
 }
@@ -287,19 +287,9 @@ footer {
     display: block;
     overflow: auto;
     font-size: 0.8rem;
-    border: 0;
-    border-left: 5px solid #075E54;
-    background-color: #f0f0f0;
-}
-.markdown blockquote img {
-    width: 90px;
-    height: auto;
-    margin: 0 0 10px 0;
-}
-.markdown .this blockquote {
-    border: 0;
-    border-left: 5px solid purple;
-    background-color: #cce8b6;
+    border: 1px;
+    border-left: 5px solid gray;
+    background-color: #fafafa;
 }
 .markdown blockquote > p {
     width: 100%;
@@ -329,14 +319,9 @@ footer {
     color: #222;
     overflow: auto;
     font-family: monospace;
-    border: 0;
-    border-left: 5px solid #075E54;
-    background-color: #f0f0f0;
-}
-.markdown .this pre code {
-    border: 0;
-    border-left: 5px solid purple;
-    background-color: #cce8b6;
+    border: 1px;
+    border-left: 5px solid gray;
+    background-color: #fafafa;
 }
 /* ----------------- ANIMATIONS -----------------------
  * Note that using a key frame while another is

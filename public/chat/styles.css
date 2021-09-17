@@ -89,7 +89,39 @@ body {
 .chatarea .bubbles blockquote {
     cursor: pointer;
 }
-.markdown img {
+.chatarea .bubbles blockquote img {
+    width: 90px;
+    height: auto;
+    margin: 0 0 10px 0;
+}
+.chatarea .bubbles blockquote {
+    border: 0;
+    border-left: 5px solid #075E54;
+    background-color: #f0f0f0;
+    transition-duration: 200ms;
+}
+.chatarea .bubbles .this blockquote {
+    border: 0;
+    border-left: 5px solid purple;
+    background-color: #cce8b6;
+}
+.chatarea .bubbles .this blockquote:active {
+    background-color: #bcd8a6;
+}
+.chatarea .bubbles .that blockquote:active {
+    background-color: #e8e8e8;
+}
+.chatarea .bubbles pre code {
+    border: 0;
+    border-left: 5px solid #075E54;
+    background-color: #f0f0f0;
+}
+.chatarea .bubbles .this pre code {
+    border: 0;
+    border-left: 5px solid purple;
+    background-color: #cce8b6;
+}
+.chatarea .bubble img {
     transition-duration: 250ms;
     cursor: pointer;
 }

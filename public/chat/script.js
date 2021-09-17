@@ -28,7 +28,7 @@ import {
     checkForApkUpdates,
     smoothScroll,
     loadTheme,
-} from '../common/js/modules.js';
+} from '/common/js/modules.js';
 
 // Markdown converter
 const MDtoHTML = new showdown.Converter();
@@ -194,11 +194,11 @@ $('#btnsend').addEventListener('click', (e) => {
         'Friday',
         'Saturday',
     ];
-    msg = MDtoHTML.makeHtml(msg);
+    const messageHTML = MDtoHTML.makeHtml(msg);
     /* this append is temporary and is overwritten when db update is fetched
      * which is why the class this has no pushkey id
      */
-    appendHTMLString($('#chatarea'), `<div class="bubbles"><div class="this sec_bg">${msg}</div></div>`);
+    appendHTMLString($('#chatarea'), `<div class="bubbles"><div class="this sec_bg">${messageHTML}</div></div>`);
     smoothScroll($('#chatarea'), true, true);
     // this delay is to prevent a lag that occurrs when writing to db, within which the dialog is hidden
     setTimeout(() => {
@@ -211,17 +211,17 @@ $('#btnsend').addEventListener('click', (e) => {
             day: Date.getDay(),
             dayname: weekdays[Date.getDay()],
             stamp: getTimeStamp(),
-            time: ('0' + Date.getHours()).slice(-2)) + ':'
-                + ('0' + Date.getMinutes()).slice(-2)) + ':'
-                + ('0' + Date.getSeconds()).slice(-2)) + ' '
-                + (Intl.DateTimeFormat().resolvedOptions().timeZone),
+            time: ('0' + Date.getHours()).slice(-2) + ':'
+                + ('0' + Date.getMinutes()).slice(-2) + ':'
+                + ('0' + Date.getSeconds()).slice(-2) + ' '
+                + Intl.DateTimeFormat().resolvedOptions().timeZone,
         }
         // push generates a unique id which is based on timestamp
         const pushkey = firebaseDBPush(firebaseDBRef(Database, DB_ROOT + CHAT_ROOT)).key;
         firebaseDBUpdate(firebaseDBRef(Database, DB_ROOT + CHAT_ROOT + pushkey + '/'), {
             time,
             pushkey,
-            message: encode(msg),
+            message: encode(messageHTML),
             uid: USER_ID,
         }).then(() => {
             log('data pushed');
@@ -232,6 +232,12 @@ $('#btnsend').addEventListener('click', (e) => {
         });
     }, Overlay.animation_duration);
 });
+
+/**
+ * Variable should only be used by bubble highlighter block inside the 'click' event listener.
+ * @type {Number} Stores a timer id 
+ */
+let QUOTED_REPLY_HIGHLIGHT_TIMEOUT;
 
 // onclick listeners
 document.body.addEventListener('click', (e) => {
@@ -289,7 +295,7 @@ document.body.addEventListener('click', (e) => {
         // innerHTML of dialog
         const infoHTML = '<table style="width:100%; text-align:left">'
                        +     `<tr><td>Sent by: </td><td><pre style="margin:0; padding:0; font-family:sans-serif; overflow:auto; width:180px;">${ChatData[LONG_PRESSED_ELEMENT.id].uid == USER_ID ? 'You' : ChatData[LONG_PRESSED_ELEMENT.id].uid}</pre></td></tr>`
-                       +     `<tr><td>Sent on: </td><td>${time.dayname.slice(0, 3)}, ${time.monthname.slice(0, 3) ${time.date}, ${time.year}</td></tr>`
+                       +     `<tr><td>Sent on: </td><td>${time.dayname.slice(0, 3)}, ${time.monthname.slice(0, 3)} ${time.date}, ${time.year}</td></tr>`
                        +     `<tr><td>Sent at: </td><td><pre style="margin:0; padding:0; font-family:sans-serif; overflow:auto; width:180px;">${time.time}</pre></td></tr>`
                        + '</table>'
         // display dialog
@@ -329,16 +335,16 @@ document.body.addEventListener('click', (e) => {
     })()) {
         // code starts here
         log(`highlight: bubble target id = #${highlight_target.id}`);
+        if (QUOTED_REPLY_HIGHLIGHT_TIMEOUT) clearTimeout(QUOTED_REPLY_HIGHLIGHT_TIMEOUT);
         highlight_target.style.animation = '';
         const behavior = smoothScroll(highlight_target, false);
         highlight_target.scrollIntoView(true, {
             behavior,
-            block: 'center'
         });
-        highlight_target.style.animation = 'highlight 4s';
-        setTimeout(() => {
+        highlight_target.style.animation = 'highlight 10s';
+        QUOTED_REPLY_HIGHLIGHT_TIMEOUT = setTimeout(() => {
             highlight_target.style.animation = '';
-        }, 3000);
+        }, 10000);
     }
     /* -------------------------------------------- DO NOT TOUCH ENDS ------------------------------------ */
 });
