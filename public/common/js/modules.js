@@ -11,7 +11,8 @@
  * works for each and every webpage.
  */
 
-import { Database, DB_ROOT } from '/common/js/firebaseinit.js';
+import { Auth, Database, DB_ROOT } from '/common/js/firebaseinit.js';
+import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.js';
 import { ref, update } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js';
 
 /* @deprecated
@@ -193,23 +194,27 @@ export const generateToken = (length = 64) => {
  * Creates the user token and stores it in the global variable USER_TOKEN.
  */
 export const generateUserToken = () => {
-    if (localStorage.getItem('User.token')) {
-        USER_TOKEN = localStorage.getItem('User.token');
-        log('new token generated');
-        return;
+    if (!localStorage.getItem('User.token')) {
+        USER_TOKEN = generateToken();
+        localStorage.setItem('User.token', USER_TOKEN);
+        log(`user: new token = ${USER_TOKEN}`);
     }
-    USER_TOKEN = generateToken();
-    log(`user: new token = ${USER_TOKEN}`);
-    localStorage.setItem('User.token', USER_TOKEN);
+    USER_TOKEN = localStorage.getItem('User.token');
 }
 
 /**
- * Creates a user ID and stores it in the global variable USER_ID.
+ * gets current user info from Firebase Auth and stores the id in the global variable USER_ID.
  */
-export const getUserID = () => {
-    if (!localStorage.getItem('Auth.user')) return;
-    USER_ID = JSON.parse(localStorage.getItem('Auth.user')).uid;
-    log(`user: id = ${USER_ID}`);
+export const getUserInfo = () => {
+    onAuthStateChanged(Auth, (user) => {
+        if (!user) {
+            log('user: not signed in');
+            return;
+        }
+        USER_ID = user.uid;
+        localStorage.setItem('Auth.user', JSON.stringify(user));
+        log(`user: id = ${USER_ID}`);
+    });
 }
 
 /**
