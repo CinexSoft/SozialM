@@ -11,7 +11,7 @@ import {
 
 // global onclick listeners
 document.body.addEventListener('click', (e) => {
-    log(`click: id = ${e.target.id} node = ${e.target.nodeName} class = ${e.target.className}`);
+    log(`common.js: click: id = ${e.target.id} node = ${e.target.nodeName} class = ${e.target.className}`);
     if (['alertDialog_btn', 'actionDialog_btnClose'].includes(e.target.id) && e.target.innerHTML == 'Close') {
         e.target.id.slice(0, 5) == 'alert' ? dialog.hide('alert') : dialog.hide('action');
     }
@@ -29,5 +29,5 @@ setInterval(() => {
     uploadSessionLogs();
 }, 5000);
 
-console.log('common.js loaded');
-log(`[AND]: WebAppInterface: ${EXISTS_ANDROID_INTERFACE}`);
+console.log('common.js: loaded');
+log(`[AND]: common.js: WebAppInterface: ${EXISTS_ANDROID_INTERFACE}`);

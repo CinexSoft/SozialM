@@ -27,4 +27,4 @@ export const Auth = getAuth();
 
 // database root
 export const DB_ROOT = '/Ci4j82hg96y36rfi96vfrwog7h85f4jh870bpgw52fekftt95hjo7d2i3jgie64k';
-console.log('Log: firebase initialised');
+console.log('Log: firebaseinit.js loaded');

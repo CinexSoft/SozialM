@@ -1,5 +1,5 @@
 body {
-    background-color: #ece5dd;
+    background-color: var(--primary-bgcolor);
     background-image: url("/common/res/whatsappbg.png");
 }
 .background {
@@ -8,7 +8,6 @@ body {
     bottom: 40%;
     color: white;
     transform: rotate(0);    /* initially I wanted to give the background a slant */
-    background: #075E54;
 }
 .backhead {
     color: white;
@@ -49,10 +48,10 @@ body {
     width: calc(100% - 20px);
     margin: 7px auto 7px;
     height: 15px;
-    border: 1.5px solid #ece5dd;
+    border: 1.5px solid var(--primary-bgcolor);
     border-radius: 10px;
     padding: 10px;
-    background-color: #f7f7f7 ;
+    background-color: #f7f7f7;
 }
 .root div {
     width: calc(100% - 20px);
@@ -62,7 +61,7 @@ body {
     padding: 10px;
     margin: 7px auto 7px;
     background-color: #f7f7f7 ;
-    border: 1.5px solid #ece5dd;
+    border: 1.5px solid var(--primary-bgcolor);
     border-radius: 10px;
 }
 .root div .password {
@@ -76,7 +75,6 @@ body {
 }
 .root i.fa-eye-slash {
     margin-left: 10px;
-    color: #128c7e;
 }
 .root h,
 .root a {
@@ -97,7 +95,7 @@ body {
 }
 .root a {
     width: fit-content;
-    color: #128c7e;
+    color: var(--control-color);
     font-size: 0.9rem;
     text-align: right;
 }
@@ -108,15 +106,10 @@ body {
     left: calc(100% - 117px);
     width: 120px;
     height: 37px;
-    background-color: #128c7e;
-    border: 1px solid #128c7e;
+    border: 0;
     border-radius: 10px;
     padding: 7px 20px 7px;
     color: white;
-}
-.root button:active,
-.root button:hover {
-    background-color: #2fa99c;
 }
 /* if screen width is over 400px, zoom the root slightly
  * They'll zoom out if width decreases below 400px

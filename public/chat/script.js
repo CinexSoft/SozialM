@@ -71,12 +71,12 @@ const startDBListener = () => {
             const getHTML = decode(data.message);
             if (uid == USER_ID) {
                 appendHTMLString($('#chatarea'), `<div class="bubbles" id="${pushkey}"><div class="this sec_bg">${getHTML}</div></div>`);
-                if (DEBUG) console.log(`Log: this: pushkey = ${pushkey}`);
-                if (DEBUG) console.log(`Log: this: html = ${$('#chatarea').innerHTML}`);
+                if (DEBUG) console.log(`Chat: Log: this: pushkey = ${pushkey}`);
+                if (DEBUG) console.log(`Chat: Log: this: html = ${$('#chatarea').innerHTML}`);
             } else {
                 appendHTMLString($('#chatarea'), `<div class="bubbles" id="${pushkey}"><div class="that">${getHTML}</div></div>`);
-                if (DEBUG) console.log(`Log: that: pushkey = ${pushkey}`);
-                if (DEBUG) console.log(`Log: that: html = ${$('#chatarea').innerHTML}`);
+                if (DEBUG) console.log(`Chat: Log: that: pushkey = ${pushkey}`);
+                if (DEBUG) console.log(`Chat: Log: that: html = ${$('#chatarea').innerHTML}`);
             }
             /* this delay makes sure the entire chatarea is loaded before it's scrolled to place
              * it's not smooth scrolled, that's the 3rd parameter
@@ -91,14 +91,14 @@ const startDBListener = () => {
             checkForApkUpdates();
         });
         loadTheme();
-        log('db update fetched');
+        log('Chat: db update fetched');
     });
 }
 
 // on key up listener
 document.addEventListener('keyup', (e) => {
     const key = e.keyCode || e.charCode;
-    log(`keypress: key = ${key}`);
+    log(`Chat: keypress: key = ${key}`);
     const HTML = QUOTE_REPLY_TEXT + MDtoHTML.makeHtml($('#txtmsg').value.trim());
     if (HTML) {
         $('#msgpreview').style.display = 'block';
@@ -129,7 +129,7 @@ window.addEventListener('resize', (e) => {
     // detects soft keyboard switch
     if (PREVIOUS_HEIGHT != document.body.clientHeight && PREVIOUS_WIDTH == document.body.clientWidth) {
         SOFTBOARD_OPEN = !SOFTBOARD_OPEN;
-        log(`keyboard: switched? height diff = ${document.body.clientHeight - PREVIOUS_HEIGHT}`);
+        log(`Chat: keyboard: switched? height diff = ${document.body.clientHeight - PREVIOUS_HEIGHT}`);
     }
     if (document.body.clientHeight - PREVIOUS_HEIGHT < 0) $('#chatarea').scrollTop += Math.abs(document.body.clientHeight - PREVIOUS_HEIGHT);
     PREVIOUS_WIDTH = document.body.clientWidth;
@@ -224,7 +224,7 @@ $('#btnsend').addEventListener('click', (e) => {
             message: encode(messageHTML),
             uid: USER_ID,
         }).then(() => {
-            log('data pushed');
+            log('Chat: data pushed');
             loadTheme();
         }).catch((error) => {
             err(error);
@@ -249,7 +249,7 @@ document.body.addEventListener('click', (e) => {
     let highlight_target;
     // title bar back arrow click
     if (e.target.className == 'backarrow') {
-        log('history: going back');
+        log('Chat: history: going back');
         history.back();
     }
     // menu copy button click
@@ -275,7 +275,7 @@ document.body.addEventListener('click', (e) => {
             firebaseDBUpdate(firebaseDBRef(Database, DB_ROOT + CHAT_ROOT), {
                 [LONG_PRESSED_ELEMENT.id]: null
             }).then(() => {
-                log('msg deleted, data updated');
+                log('Chat: msg deleted, data updated');
             }).catch((error) => {
                 err(error);
             });
@@ -329,12 +329,12 @@ document.body.addEventListener('click', (e) => {
     else if (highlight_target = (() => {
         if (e.target.id.includes('tm_')) return $(`#${e.target.id.substring(3)}`);
         for (let bq of $('blockquote')) if (childHasParent(e.target, bq) && bq.id.includes('tm_')) {
-            log(`generated id = #${bq.id.substring(3)}`);
+            log(`Chat: generated id = #${bq.id.substring(3)}`);
             return $(`#${bq.id.substring(3)}`);
         }
     })()) {
         // code starts here
-        log(`highlight: bubble target id = #${highlight_target.id}`);
+        log(`Chat: highlight: bubble target id = #${highlight_target.id}`);
         if (QUOTED_REPLY_HIGHLIGHT_TIMEOUT) clearTimeout(QUOTED_REPLY_HIGHLIGHT_TIMEOUT);
         highlight_target.style.animation = '';
         const behavior = smoothScroll(highlight_target, false);
@@ -355,7 +355,7 @@ let LONGPRESS_TIMEOUT;
 
 // on mouse down listener
 document.body.addEventListener('pointerdown', (e) => {
-    log(`pointerdown: id = ${e.target.id} node = ${e.target.nodeName} class = ${e.target.className}`);
+    log(`Chat: pointerdown: id = ${e.target.id} node = ${e.target.nodeName} class = ${e.target.className}`);
     // bubble container long press
     if (e.target.className == 'bubbles') {
         LONGPRESS_TIMER = setTimeout(() => {
@@ -363,7 +363,7 @@ document.body.addEventListener('pointerdown', (e) => {
             e.target.style.userSelect = 'none';
         }, 200);
         LONGPRESS_TIMEOUT = setTimeout(() => {
-            log('long press triggered');
+            log('Chat: long press triggered');
             LONG_PRESSED_ELEMENT = e.target;
             e.target.style.transform = 'scale(1)';
             clearTimeout(LONGPRESS_TIMER);
@@ -381,7 +381,7 @@ document.body.addEventListener('pointerdown', (e) => {
             parent_bubble.style.transform = 'scale(0.93)';
         }, 200);
         LONGPRESS_TIMEOUT = setTimeout(() => {
-            log('long press triggered');
+            log('Chat: long press triggered');
             LONG_PRESSED_ELEMENT = parent_bubble;
             parent_bubble.style.transform = 'scale(1)';
             clearTimeout(LONGPRESS_TIMER);
@@ -403,7 +403,7 @@ document.body.addEventListener('pointerdown', (e) => {
     // if it's a link, copy it
     else if (e.target.nodeName == 'A') {
         if (EXISTS_ANDROID_INTERFACE) LONGPRESS_TIMEOUT = setTimeout(() => {
-            log('long press triggered');
+            log('Chat: long press triggered');
             copyPlainTxt(e.target.href);
         }, 500);
     }
@@ -411,7 +411,7 @@ document.body.addEventListener('pointerdown', (e) => {
 
 // on mouse up listener
 document.body.addEventListener('pointerup', (e) => {
-    log('pointer up');
+    log('Chat: pointer up');
     if (LONG_PRESSED_ELEMENT) LONG_PRESSED_ELEMENT.style.transform = 'scale(1)';
     e.target.style.transform = 'scale(1)';
     e.target.style.userSelect = 'initial';
@@ -421,7 +421,7 @@ document.body.addEventListener('pointerup', (e) => {
 
 // swipe gesture listener
 document.body.addEventListener('touchmove', (e) => {
-    log(`swiped: id = ${e.target.id} node = ${e.target.nodeName} class = ${e.target.className}`);
+    log(`Chat: swiped: id = ${e.target.id} node = ${e.target.nodeName} class = ${e.target.className}`);
     if (LONG_PRESSED_ELEMENT) LONG_PRESSED_ELEMENT.style.transform = 'scale(1)';
     e.target.style.transform = 'scale(1)';
     e.target.style.userSelect = 'initial';

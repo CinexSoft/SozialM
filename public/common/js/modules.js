@@ -18,17 +18,20 @@ import {
     update as firebaseDBUpdate,
 } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js';
 
-/* @deprecated
+/* 
  * Global theme colors.
  * These can be used to modify the accent of the website.
  * It was meant to provide users with custom control over
  * how their account looks and feels.
  */
-const ACCENT_PRIMARY_BGCOLOR = '#075E54';
-const ACCENT_SECONDARY_BGCOLOR = '#dcf8c6';
-const ACCENT_TERTIARY_BGCOLOR = '#ece5dd';
-const ACCENT_FG_COLOR = '#ffffff';
- 
+export const ACCENT_BGCOLOR = document.body.style.getPropertyValue('--accent-bgcolor');
+export const PRIMARY_BGCOLOR = document.body.style.getPropertyValue('--primary-bgcolor');
+export const SECONDARY_BGCOLOR = document.body.style.getPropertyValue('--secondary-bgcolor');
+export const CHAT_BUBBLE_BGCOLOR = document.body.style.getPropertyValue('--chat-bubble-bgcolor');
+export const CONTROL_BGCOLOR = document.body.style.getPropertyValue('--control-bgcolor');
+export const FG_COLOR = document.body.style.getPropertyValue('--fg-color');
+export const DARK_FG_COLOR = document.body.style.getPropertyValue('--dark-fg-color');
+
 /**
  * Used to recognise a user.
  * @type {String} Stores UID from Firebase Auth.
@@ -103,7 +106,7 @@ export const Overlay = {
  * Setters for global variables
  * This is for scripts that import modules.js.
  * @param {String} variable Variable name - case sensitive.
- * @param {Variable} value New value of variable.
+ * @param {*} value New value of variable.
  */
 export const setVariable = (variable, value) => {
     switch (variable) {
@@ -113,6 +116,23 @@ export const setVariable = (variable, value) => {
         case 'LOAD_THEME':
             LOAD_THEME = value;
             break;
+        case 'ACCENT_BGCOLOR':
+            ACCENT_BGCOLOR = value;
+            break;
+        case 'PRIMARY_BGCOLOR':
+            PRIMARY_BGCOLOR = value;
+            break;
+        case 'SECONDARY_BGCOLOR':
+            ACCENT_SECONDARY_BGCOLOR = value;
+            break;
+        case 'CHAT_BUBBLE_BGCOLOR':
+            CHAT_BUBBLE_BGCOLOR = value;
+            break;
+        case 'CONTROL_BGCOLOR':
+            CONTROL_BGCOLOR = value;
+            break;
+        default:
+            throw `Error: for variable ${variable}, no such variable in module.js, note that variables are case-sensitive`;
     }
 }
 
@@ -225,7 +245,7 @@ export const generateUserToken = () => {
 export const getUserInfo = () => {
     firebaseOnAuthStateChanged(Auth, (user) => {
         if (!user) {
-            log('user: not signed in');
+            err('user: not signed in');
             return;
         }
         USER_ID = user.uid;
@@ -637,22 +657,34 @@ export const smoothScroll = (element, get_behavior_only = true, not_smooth) => {
 export const loadTheme = () => {
     if (!LOAD_THEME) return;
     // custom accents: primary background color
+    for (let element of $('.acc_bg')) {
+        element.style.backgroundColor = ACCENT_BGCOLOR;
+        element.style.borderColor = ACCENT_BGCOLOR;
+        element.style.color = DARK_FG_COLOR;
+    }
+    // custom accents: primary background color
     for (let element of $('.prim_bg')) {
-        element.style.backgroundColor = ACCENT_PRIMARY_BGCOLOR;
-        element.style.borderColor = ACCENT_PRIMARY_BGCOLOR;
-        element.style.color = ACCENT_FG_COLOR;
+        element.style.backgroundColor = PRIMARY_BGCOLOR;
+        element.style.borderColor = PRIMARY_BGCOLOR;
+        element.style.color = FG_COLOR;
     }
-    // custom accents: secondary background color without alpha
+    // custom accents: secondary background color
     for (let element of $('.sec_bg')) {
-        element.style.backgroundColor = ACCENT_SECONDARY_BGCOLOR;
-        element.style.borderColor = ACCENT_SECONDARY_BGCOLOR;
-        element.style.color = '#222';
+        element.style.backgroundColor = SECONDARY_BGCOLOR;
+        element.style.borderColor = SECONDARY_BGCOLOR;
+        element.style.color = FG_COLOR;
     }
-    // custom accents: tertiary background color without alpha
-    for (let element of $('.tert_bg')) {
-        element.style.backgroundColor = ACCENT_TERTIARY_BGCOLOR;
-        element.style.borderColor = ACCENT_TERTIARY_BGCOLOR;
-        element.style.color = '#222';
+    // custom accents: chat bubble background color
+    for (let element of $('.chatbubble_bg')) {
+        element.style.backgroundColor = CHAT_BUBBLE_BGCOLOR;
+        element.style.borderColor = CHAT_BUBBLE_BGCOLOR;
+        element.style.color = FG_COLOR;
+    }
+    // custom accents: controls background color
+    for (let element of $('.control_bg')) {
+        element.style.backgroundColor = CONTROL_BGCOLOR;
+        element.style.borderColor = CONTROL_BGCOLOR;
+        element.style.color = DARK_FG_COLOR;
     }
     log('loadTheme(): loaded');
 }
