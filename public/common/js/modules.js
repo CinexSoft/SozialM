@@ -13,8 +13,8 @@ import { ref, update } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-d
  */
 
 /* @deprecated
- * global theme colors
- * These can be used to modify the accent of the website
+ * Global theme colors.
+ * These can be used to modify the accent of the website.
  * It was meant to provide users with custom control over
  * how their account looks and feels.
  */
@@ -23,14 +23,11 @@ const ACCENT_SECONDARY_BGCOLOR = '#dcf8c6';
 const ACCENT_TERTIARY_BGCOLOR = '#ece5dd';
 const ACCENT_FG_COLOR = '#ffffff';
 
-/* user ID and Token
- * uid stores id from Firebase auth
- * token is a random 64 bit alphanumeric string
- * that is used to recognise a device until browser
- * cookies get cleared.
- * The token is used to then identify the logs taken for
- * a session.
- * If user signs in, the logs of a token also contain the User ID
+/* user id and Token.
+ * USER_ID stores id from Firebase auth.
+ * USER_TOKEN is a random 64 bit alphanumeric string that is used to recognise a device until browser cookies get cleared.
+ * The token is used to then identify the logs taken for a session.
+ * If user signs in, the logs under a token also contain the user id.
  */
 export let USER_ID = '';
 export let USER_TOKEN = '';
@@ -40,37 +37,43 @@ export let DEBUG = !true;            // prints debug logs in console
 export let LOAD_THEME = !true;       // deprecated
 
 /**
- * Checks if android interface exists.
- * The `Android` WebAppInterface is a class available
- * in the Android web APK of this project. The interface allows the
- * website to use Android features through javascript without requiring
- * a complete Android app to be developed.
- * The interface is available only when this webpage is loaded on the Android
- * web APK.
+ * Checks if the Android WebAppInterface exists.
+ * The `Android` WebAppInterface is a class available in the Android APK of this project.
+ * The interface allows the website to use Android features through javascript without requiring an independent Android app to be developed.
+ * The interface is available only when this webpage is loaded on the Android APK.
  */
 export const EXISTS_ANDROID_INTERFACE = typeof Android !== 'undefined'
                                      && typeof Android.isSozialnMedienWebapp === 'function'
                                      && Android.isSozialnMedienWebapp();
 
 /**
- * Contains global data for behavior of overlays viz. menus and dialogs
- * The time taken for an overlay to animate out is overlay.animation_duration ms.
+ * Contains global data for behavior of overlays viz menus and dialogs.
+ * The time taken for an overlay to animate out is Overlay.animation_duration ms.
  * Vlaue of instance_open needs to be set to true everytime an overlay opens and to false everytime an overlay closes.
- * @param {Boolean}     instance_open  If an overlay is already open, other overlays are postponed for overlay.animation_duration ms.
+ * @param {Boolean}     instance_open  If an overlay is already open, other overlays are postponed for Overlay.animation_duration ms.
  * @param {Number} animation_duration  Can be modified to increase or decrease duration of overlay animations. Too low/high values may break the UI.
  * 
  * How low/high is too low/high?
  *      0 ms and over 5000 milliseconds is too low/high.
  *
  * @param {function}  setInstanceOpen Setter for scripts that import this module script.
- * @param {function}  setAnimDuration Setter for scripts that import this module script.
+ * @param {function}  setAnimDuration Setter for scripts that import modules.js.
  */
-export const overlay = {
+export const Overlay = {
     instance_open: false,
     animation_duration: 250,
+    /**
+     * @deprecated The value associated is automatically handled by dialog.hide() and menu.hide().
+     * Setter for scripts that import modules.js. Please do not use this function as the process has been made automatic.
+     * @param {Boolean} val Is set to true if an overlay is opened. Reverse is true.
+     */
     setInstanceOpen(val) {
         this.instance_open = val;
     },
+    /**
+     * Setter for scripts that import modules.js.
+     * @param {Number} val Duration of all overlay animations.
+     */
     setAnimDuration(val) {
         this.animation_duration = val;
     },
@@ -80,7 +83,7 @@ export const overlay = {
  * Setters for global variables
  * This is for scripts that import this module script
  * @param {String} variable  Variable name - case sensitive.
- * @param {String}    value  nlNew value of variable.
+ * @param {Variable}  value  New value of variable.
  */
 export const setVariable = (variable, value) => {
     switch (variable) {
@@ -95,7 +98,7 @@ export const setVariable = (variable, value) => {
 
 /* Object to hold logs with timestamp as keys
  */
-export const SessionLogs = {};
+const SessionLogs = {};
 
 /**
  * Returns a local timestamp in ms since Unix epoch or in ns since app launch.
@@ -123,7 +126,7 @@ export const getLongDateTime = (long_time = true) => {
 }
 
 // session time token
-export const SESSION_TOKEN = getLongDateTime();
+const SESSION_TOKEN = getLongDateTime();
 
 // console functions
 export const log = (val) => {
@@ -144,7 +147,8 @@ export const wrn = (val) => {
     SessionLogs[getTimeStamp(true)] = `[WRN]: ${val}`;
 }
 
-/* Uploads debug logs to the database
+/**
+ * Uploads debug logs to the database
  * for debugging
  */
 export const uploadSessionLogs = () => {
@@ -155,7 +159,11 @@ export const uploadSessionLogs = () => {
     });
 }
 
-// creates a random `length` sized token
+/**
+ * Creates a random `length` sized token.
+ * @param {Number} length Optional, default value = 64. Size of token.
+ * @return {String} The token of given size.
+ */
 export const generateToken = (length = 64) => {
     let arrayOfChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'.split('');
     let outputToken = [];
@@ -166,7 +174,10 @@ export const generateToken = (length = 64) => {
     return outputToken.join('');
 }
 
-// generates a user token to recognise a device
+/**
+ * Creates the user token and stores it in a global variable
+ * USER_TOKEN.
+ */
 export const generateUserToken = () => {
     if (localStorage.getItem('User.token')) {
         USER_TOKEN = localStorage.getItem('User.token');
@@ -178,7 +189,10 @@ export const generateUserToken = () => {
     localStorage.setItem('User.token', USER_TOKEN);
 }
 
-// user id is used to mark a message and recognise a user            
+/**
+ * Creates a user ID and stores it in a global variable
+ * USER_ID.
+ */
 export const getUserID = () => {
     if (!localStorage.getItem('Auth.user')) return;
     USER_ID = JSON.parse(localStorage.getItem('Auth.user')).uid;
@@ -246,7 +260,9 @@ export const copyPlainTxt = (copytext = '') => {
     });
 }
 
-// detect browser
+/**
+ * @return {String} Name of current browser.
+ */
 export const getBrowser = () => {
     if (navigator.userAgent.matches(/Opera|OPR/)) {
         return 'opera';
@@ -298,7 +314,7 @@ export const getChildElement = (element, val) => {
  * Checks if the given child has the given parent.
  * @param {Node}  child  The child in concern.
  * @param {Node} parent  The parent in concern.
- * @return {Boolean} If true, the given child has the given parent
+ * @return {Boolean} If true, the given child has the given parent.
  */
 export const childHasParent = (child, parent) => {
     let node = child.parentNode;
@@ -313,10 +329,8 @@ export const childHasParent = (child, parent) => {
 }
 
 /**
- * Takes an HTML string, converts it to a node and attatches it to the
- * element passed.
- * This is done by detaching and reattaching the element
- * to its parent to improve performance.
+ * Takes an HTML string, converts it to a node and attatches it to the element passed.
+ * This is done by detaching and reattaching the element to its parent to improve performance.
  * @param {Node}     element  The element to which HTML will be appended.
  * @param {String}       str  The HTML string.
  * @param {Boolean} reversed  Prepends the HTML to the node.
@@ -348,7 +362,7 @@ const alertDialog = {
         }
         // delay when one overlay is already open
         let timeout = 0;
-        if (overlay.instance_open) timeout = overlay.animation_duration;
+        if (Overlay.instance_open) timeout = Overlay.animation_duration;
         setTimeout(() => {
             log(`alertDialog display(): timeout = ${timeout}`);
             getChildElement($('#alertDialog'), 'h2')[0].innerHTML = title.replace(/\n/g, '<br>');;
@@ -359,17 +373,17 @@ const alertDialog = {
                 $('#alertDialog_btn').removeEventListener('click', func);
                 func.call();
             }, { once: true });
-            $('#alertDialogRoot').style.animation = `fadeIn ${overlay.animation_duration}ms forwards`;
-            $('#alertDialog').style.animation = `scaleIn ${overlay.animation_duration}ms forwards`;
-            overlay.instance_open = true;
+            $('#alertDialogRoot').style.animation = `fadeIn ${Overlay.animation_duration}ms forwards`;
+            $('#alertDialog').style.animation = `scaleIn ${Overlay.animation_duration}ms forwards`;
+            Overlay.instance_open = true;
         }, timeout);
     },
     hide(func) {
-        $('#alertDialogRoot').style.animation = `fadeOut ${overlay.animation_duration}ms forwards`;
-        $('#alertDialog').style.animation = `scaleOut ${overlay.animation_duration}ms forwards`;
+        $('#alertDialogRoot').style.animation = `fadeOut ${Overlay.animation_duration}ms forwards`;
+        $('#alertDialog').style.animation = `scaleOut ${Overlay.animation_duration}ms forwards`;
         setTimeout(() => {
-            overlay.instance_open = false;
-        }, overlay.animation_duration);
+            Overlay.instance_open = false;
+        }, Overlay.animation_duration);
         // additional function
         if (typeof func != 'function') {
             throw `Error: typeof func = ${typeof func}, expected function`;
@@ -391,7 +405,7 @@ const actionDialog = {
         }
         // delay when one overlay is already open
         let timeout = 0;
-        if (overlay.instance_open) timeout = overlay.animation_duration;
+        if (Overlay.instance_open) timeout = Overlay.animation_duration;
         setTimeout(() => {
             log(`actionDialog display(): timeout = ${timeout}`);
             getChildElement($('#actionDialog'), 'h2')[0].innerHTML = title.replace(/\n/g, '<br>');;
@@ -402,17 +416,17 @@ const actionDialog = {
                 $('#actionDialog_btnOk').removeEventListener('click', func);
                 func();
             }, { once: true });
-            $('#actionDialogRoot').style.animation = `fadeIn ${overlay.animation_duration}ms forwards`;
-            $('#actionDialog').style.animation = `scaleIn ${overlay.animation_duration}ms forwards`;
-            overlay.instance_open = true;
+            $('#actionDialogRoot').style.animation = `fadeIn ${Overlay.animation_duration}ms forwards`;
+            $('#actionDialog').style.animation = `scaleIn ${Overlay.animation_duration}ms forwards`;
+            Overlay.instance_open = true;
         }, timeout);
     },
     hide(func) {
-        $('#actionDialogRoot').style.animation = `fadeOut ${overlay.animation_duration}ms forwards`;
-        $('#actionDialog').style.animation = `scaleOut ${overlay.animation_duration}ms forwards`;
+        $('#actionDialogRoot').style.animation = `fadeOut ${Overlay.animation_duration}ms forwards`;
+        $('#actionDialog').style.animation = `scaleOut ${Overlay.animation_duration}ms forwards`;
         setTimeout(() => {
-            overlay.instance_open = false;
-        }, overlay.animation_duration);
+            Overlay.instance_open = false;
+        }, Overlay.animation_duration);
         // additional function
         if (typeof func != 'function') {
             throw `Error: typeof func = ${typeof func}, expected function`;
@@ -447,30 +461,30 @@ export const dialog = {
 // menu alertDialog
 export const menu = {
     /**
-     * Display the menu
+     * Display the menu.
      * @param {String} title Optional, default value = 'Menu'. Title of the menu dialog.
      */
     display(title = 'Menu') {
         // delay when one overlay is already open
         let timeout = 0;
-        if (overlay.instance_open) timeout = overlay.animation_duration;
+        if (Overlay.instance_open) timeout = Overlay.animation_duration;
         setTimeout(() => {
             log(`menu: timeout = ${timeout}`);
             getChildElement($('#menu'), 'h2')[0].innerHTML = title.replace(/\n/g, '<br>');;
-            $('#menuRoot').style.animation = `fadeIn ${overlay.animation_duration}ms forwards`;
-            $('#menu').style.animation = `scaleIn ${overlay.animation_duration}ms forwards`;
-            overlay.instance_open = true;
+            $('#menuRoot').style.animation = `fadeIn ${Overlay.animation_duration}ms forwards`;
+            $('#menu').style.animation = `scaleIn ${Overlay.animation_duration}ms forwards`;
+            Overlay.instance_open = true;
         }, timeout);
     },
     /**
      * Hide the menu dialog
      */
     hide() {
-        $('#menuRoot').style.animation = `fadeOut ${overlay.animation_duration}ms forwards`;
-        $('#menu').style.animation = `scaleOut ${overlay.animation_duration}ms forwards`;
+        $('#menuRoot').style.animation = `fadeOut ${Overlay.animation_duration}ms forwards`;
+        $('#menu').style.animation = `scaleOut ${Overlay.animation_duration}ms forwards`;
         setTimeout(() => {
-            overlay.instance_open = false;
-        }, overlay.animation_duration);
+            Overlay.instance_open = false;
+        }, Overlay.animation_duration);
     }
 }
 
@@ -504,11 +518,11 @@ export const checkForApkUpdates = () => {
 }
 
 /**
- * Scrolls down a view smoothly if amount of element below viewport is less than
- * 720 pixels.
+ * Scrolls down a view smoothly if amount of element below viewport is less than 720 pixels.
  * @param {Node}              element  The element to scroll down.
- * @param {Boolean} get_behavior_only  If true, only returns scroll behavior based on amount of element below viewport
+ * @param {Boolean} get_behavior_only  If true, only returns scroll behavior based on amount of element below viewport.
  * @param {Boolean}        not_smooth  Explicitly mention to scroll without animations.
+ * @return {String} The scroll behavior (conditional).
  */
 export const smoothScroll = (element, get_behavior_only = true, not_smooth) => {
     // check if down scrollable part of element is < 720 px
@@ -524,10 +538,10 @@ export const smoothScroll = (element, get_behavior_only = true, not_smooth) => {
 }
 
 /**
- * @deprecated
- * This function was supposed to reload the dynamic accent colors
- * of the newly added chat bubbles. But currently we're using
- * a all teal accent (former WhatsApp brand colors). So this won't be needed.
+ * @deprecated Apparently unnecessary function.
+ * This function was supposed to reload the dynamic accent colors of the newly added chat bubbles.
+ * But currently we're using an all-teal accent (former WhatsApp brand colors).
+ * So this won't be needed.
  */
 export const loadTheme = () => {
     if (!LOAD_THEME) return;

@@ -440,7 +440,15 @@ document.body.addEventListener('touchmove', (e) => {
     clearTimeout(LONGPRESSTIMEOUT);
 });
 
-overlay.setInstanceOpen(true);
+/* Although deprecated, this function is used because
+ * the 'Loading chats' dialog is not shown using dialog.display().
+ * Instead it's shown using CSS style 'visibility: visible'.
+ * This is done to make the dialog visible immediately after the page
+ * is loaded.
+ */
+Overlay.setInstanceOpen(true);
+
+// start listening for arrival/departure of messages
 startDBListener();
 
 log('Chat: document and script load complete');
