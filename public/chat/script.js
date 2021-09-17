@@ -51,9 +51,9 @@ const startDBListener = () => {
                                  + '<p class="fa fa-info-circle">&ensp;Messages in this chat are only server-to-end encrypted.</p>'
                                  + '</div>';
         snapshot.forEach(({ key }) => {
-            let pushkey = key;
-            let data = snapshot.child(pushkey).val();
-            let uid = data.uid;
+            const pushkey = key;
+            const data = snapshot.child(pushkey).val();
+            const uid = data.uid;
             // store data in local variable
             ChatData[pushkey] = {
                 uid,
@@ -93,9 +93,9 @@ const startDBListener = () => {
 }
 // on key up listener
 document.addEventListener('keyup', (e) => {
-    let key = e.keyCode || e.charCode
-    log('keypress: key = ' + key);
-    let HTML = QUOTE_REPLY_TEXT + MDtoHTML.makeHtml($('#txtmsg').value.trim());
+    const key = e.keyCode || e.charCode
+    log(`keypress: key = ${key}`);
+    const HTML = QUOTE_REPLY_TEXT + MDtoHTML.makeHtml($('#txtmsg').value.trim());
     if (HTML != '') {
         $('#msgpreview').style.display = 'block';
         $('#txtmsg').style.borderRadius = '0 0 10px 10px';
@@ -127,106 +127,101 @@ window.addEventListener('resize', (e) => {
         SOFTBOARD_OPEN = !SOFTBOARD_OPEN;
         log(`keyboard switch? height diff = ${document.body.clientHeight - PREVIOUS_HEIGHT}`);
     }
-    if (document.body.clientHeight - PREVIOUS_HEIGHT < 0) {
-        $('#chatarea').scrollTop += Math.abs(document.body.clientHeight - PREVIOUS_HEIGHT);
-    }
+    if (document.body.clientHeight - PREVIOUS_HEIGHT < 0) $('#chatarea').scrollTop += Math.abs(document.body.clientHeight - PREVIOUS_HEIGHT);
     PREVIOUS_WIDTH = document.body.clientWidth;
     PREVIOUS_HEIGHT = document.body.clientHeight;
     // switches visibility of msgpreview
-    let HTML = QUOTE_REPLY_TEXT + MDtoHTML.makeHtml($('#txtmsg').value.trim());
+    const HTML = QUOTE_REPLY_TEXT + MDtoHTML.makeHtml($('#txtmsg').value.trim());
     if (HTML != '' && SOFTBOARD_OPEN) {
         $('#msgpreview').innerHTML = `<font class="header" color="#7d7d7d">Markdown preview</font>${HTML}`;
         $('#msgpreview').style.display = 'block';
         $('#txtmsg').style.borderRadius = '0 0 10px 10px';
         smoothScroll($('#msgpreview'));
+        return;
     }
-    else {
-        $('#msgpreview').innerHTML = '<font class="header" color="#7d7d7d">Markdown preview</font><font color="#7d7d7d">Preview appears here</font>';
-        $('#msgpreview').style.display = 'none';
-        $('#txtmsg').style.borderRadius = '40px';
-    }
+    $('#msgpreview').innerHTML = '<font class="header" color="#7d7d7d">Markdown preview</font><font color="#7d7d7d">Preview appears here</font>';
+    $('#msgpreview').style.display = 'none';
+    $('#txtmsg').style.borderRadius = '40px';
 });
 // on send button clicked
 $('#btnsend').addEventListener('click', (e) => {
-    let msgbackup = '';
-    let msg = (msgbackup = $('#txtmsg').value).trim();
-    if (msg == '') {
+    let msgbackup = ''; 
+    if (msgbackup = $('#txtmsg').value).trim()) {
         $('#txtmsg').value = '';
         $('#txtmsg').focus();
+        return;
     }
-    else {
-        msg = QUOTE_REPLY_TEXT + $('#txtmsg').value.trim();
-        QUOTE_REPLY_TEXT = '';
-        $('#txtmsg').value = '';
-        $('#msgpreview').innerHTML = '<font class="header" color="#7d7d7d">Markdown preview</font>';
-        $('#msgpreview').style.display = 'none';
-        $('#txtmsg').style.borderRadius = '40px';
-        if (msg.length > 1024 * 2) {
-            dialog.display('alert', 'Warning', 'Text exceeds limit of 2KB');
-            $('#txtmsg').value = msgbackup;
-            return;
+    const msg = QUOTE_REPLY_TEXT + $('#txtmsg').value.trim();
+    QUOTE_REPLY_TEXT = '';
+    $('#txtmsg').value = '';
+    $('#msgpreview').innerHTML = '<font class="header" color="#7d7d7d">Markdown preview</font>';
+    $('#msgpreview').style.display = 'none';
+    $('#txtmsg').style.borderRadius = '40px';
+    if (msg.length > 1024 * 2) {
+        dialog.display('alert', 'Warning', 'Text exceeds limit of 2KB');
+        $('#txtmsg').value = msgbackup;
+        return;
+    }
+    $('#txtmsg').focus();
+    // months array
+    const months = [
+        'January', 
+        'February', 
+        'March', 
+        'April', 
+        'May', 
+        'June', 
+        'July', 
+        'August', 
+        'September', 
+        'October', 
+        'November', 
+        'December',
+    ];
+    // Days array
+    const weekdays = [
+        'Sunday',
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday',
+    ];
+    msg = MDtoHTML.makeHtml(msg);
+    /* this is temporary and is overwritten when db update is fetched
+     * which is why the class this has no pushkey id
+     */
+    appendHTMLString($('#chatarea'), `<div class="bubbles"><div class="this sec_bg">${msg}</div></div>`);
+    smoothScroll($('#chatarea'), true, true);
+    // a small delay of 200ms to prevent a lag caused when writing to db
+    setTimeout(() => {
+        const Date = getLongDateTime(false);
+        const time = {
+            year: Date.getFullYear(),
+            month: Date.getMonth() + 1,
+            monthname: months[Date.getMonth()],
+            date: Date.getDate(),
+            day: Date.getDay(),
+            dayname: weekdays[Date.getDay()],
+            stamp: getTimeStamp(),
+            time: `${'0' + Date.getHours()).slice(-2)}:${'0' + Date.getMinutes()).slice(-2)}:${'0' + Date.getSeconds()).slice(-2)} ${Intl.DateTimeFormat().resolvedOptions().timeZone}`,
         }
-        $('#txtmsg').focus();
-        // months array
-        const months = [
-            'January', 
-            'February', 
-            'March', 
-            'April', 
-            'May', 
-            'June', 
-            'July', 
-            'August', 
-            'September', 
-            'October', 
-            'November', 
-            'December',
-        ];
-        // Days array
-        const weekdays = [
-            'Sunday',
-            'Monday',
-            'Tuesday',
-            'Wednesday',
-            'Thursday',
-            'Friday',
-            'Saturday',
-        ];
-        msg = MDtoHTML.makeHtml(msg);
-        /* this is temporary and is overwritten when db update is fetched
-         * which is why the class this has no pushkey id
-         */
-        appendHTMLString($('#chatarea'), `<div class="bubbles"><div class="this sec_bg">${msg}</div></div>`);
-        smoothScroll($('#chatarea'), true, true);
-        // a small delay of 200ms to prevent a lag caused when writing to db
-        setTimeout(() => {
-            const Date = getLongDateTime(false);
-            const time = {
-                year: Date.getFullYear(),
-                month: Date.getMonth() + 1,
-                monthname: months[Date.getMonth()],
-                date: Date.getDate(),
-                day: Date.getDay(),
-                dayname: weekdays[Date.getDay()],
-                stamp: getTimeStamp(),
-                time: `${'0' + Date.getHours()).slice(-2)}:${'0' + Date.getMinutes()).slice(-2)}:${'0' + Date.getSeconds()).slice(-2)} ${Intl.DateTimeFormat().resolvedOptions().timeZone}`,
-            }
-            // push generates a unique id which is based on timestamp
-            const pushkey = push(ref(Database, DB_ROOT + CHAT_ROOT)).key;
-            update(ref(Database, DB_ROOT + CHAT_ROOT + pushkey + '/'), {
-                time,
-                pushkey,
-                message: encode(msg),
-                uid: USER_ID,
-            }).then(() => {
-                log('data pushed');
-                loadTheme();
-            }).catch((error) => {
-                err(error);
-                $('#txtmsg').value = msgbackup;
-            });
-        }, 200);
-    }
+        // push generates a unique id which is based on timestamp
+        const pushkey = push(ref(Database, DB_ROOT + CHAT_ROOT)).key;
+        update(ref(Database, DB_ROOT + CHAT_ROOT + pushkey + '/'), {
+            time,
+            pushkey,
+            message: encode(msg),
+            uid: USER_ID,
+        }).then(() => {
+            log('data pushed');
+            loadTheme();
+        }).catch((error) => {
+            err(error);
+            $('#txtmsg').value = msgbackup;
+        });
+    }, 200);
 });
 // onclick listeners
 document.body.addEventListener('click', (e) => {
