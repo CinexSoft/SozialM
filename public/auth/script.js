@@ -1,6 +1,6 @@
 import { Auth } from '/common/js/firebaseinit.js';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.js';
-import { PRIMARY_BGCOLOR, FG_COLOR, log, err, $, checkForApkUpdates } from '/common/js/modules.js';
+import { PRIMARY_BGCOLOR, CONTROL_COLOR, FG_COLOR, log, err, $, checkForApkUpdates } from '/common/js/modules.js';
 
 checkForApkUpdates();
 

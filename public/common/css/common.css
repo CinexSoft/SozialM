@@ -51,7 +51,7 @@ button {
     transition-duration: 200ms;
 }
 button:active {
-    font-size: 0.95rem;
+    font-size: 1.03rem;
 }
 button:disabled {
     background-color: gray;

@@ -190,7 +190,7 @@
     box-shadow: 1px 1px 2px #aaa;
 }
 .msgbox button:active {
-    font-size: 20px;
+    font-size: 22px;
 }
 @media only screen and (orientation: landscape) and (min-height: 640px) {
     .root,
