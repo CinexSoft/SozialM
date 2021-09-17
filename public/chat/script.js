@@ -318,17 +318,11 @@ document.body.addEventListener('click', (e) => {
      */
     else if (highlight_target = (() => {
         if (e.target.id.includes('tm_')) return $(`#${e.target.id.substring(3)}`);
-        for (let bq of $('blockquote')) {
-            log(`bq id = ${bq.id}`);
-            if (childHasParent(e.target, bq) && bq.id.includes('tm_')) {
-                log(`generated id = #${bq.id.substring(3)}`);
-                return $(`#${bq.id.substring(3)}`);
-            }
+        for (let bq of $('blockquote')) if (childHasParent(e.target, bq) && bq.id.includes('tm_')) {
+            log(`generated id = #${bq.id.substring(3)}`);
+            return $(`#${bq.id.substring(3)}`);
         }
-        return null;
-    })() != null)
-    // else if condition ends here
-    {
+    })()) {
         // code starts here
         log(`highlight: bubble target id = #${highlight_target.id}`);
         highlight_target.style.animation = '';
