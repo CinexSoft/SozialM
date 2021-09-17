@@ -83,7 +83,7 @@ export const Overlay = {
 
 /**
  * Setters for global variables
- * This is for scripts that import this module script.
+ * This is for scripts that import modules.js.
  * @param {String} variable  Variable name - case sensitive.
  * @param {Variable}  value  New value of variable.
  */
@@ -124,7 +124,7 @@ export const getLongDateTime = (long_time = true) => {
     let hours = ('0' + date_ob.getHours()).slice(-2);
     let minutes = ('0' + date_ob.getMinutes()).slice(-2);
     let seconds = ('0' + date_ob.getSeconds()).slice(-2);
-    return Intl.DateTimeFormat().resolvedOptions().timeZone + '/' + year + '-' + month + '-' + date + ' @ ' + hours + ':' + minutes + ':' + seconds;
+    return `${Intl.DateTimeFormat().resolvedOptions().timeZone}/${year}-${month}-${date} @ ${hours}:${minutes}:${seconds}`;
 }
 
 // session time token
@@ -158,7 +158,7 @@ export const err = (val) => {
  * @param {String} val The stuff to be printed
  */
 export const wrn = (val) => {
-    if (DEBUG) console.warn('Wrn: ' + val);
+    if (DEBUG) console.warn(`Wrn: ${val}`);
     // write logs in local database
     SessionLogs[getTimeStamp(true)] = `[WRN]: ${val}`;
 }
@@ -379,11 +379,11 @@ export const childHasParent = (child, parent) => {
 export const appendHTMLString = (element, str = '', reversed = false) => {
     let parent =  element.parentNode;
     let next = element.nextSibling;
-    if (!parent) return;                              // No parent node? Abort!
-    parent.removeChild(element);                      // Detach node from DOM.
-    if (!reversed) element.innerHTML += str;          // append html string
-    else element.innerHTML = str + element.innerHTML; // reversed append html
-    parent.insertBefore(element, next);               // Re-attach node to DOM.
+    if (!parent) return;                                   // No parent node? Abort!
+    parent.removeChild(element);                           // Detach node from DOM.
+    if (!reversed) element.innerHTML += str;               // append html string
+    else element.innerHTML = `${str}${element.innerHTML}`; // reversed append html
+    parent.insertBefore(element, next);                    // Re-attach node to DOM.
 }
 
 /* ----------------------------------------- TODO -------------------------------------------
@@ -393,7 +393,7 @@ export const appendHTMLString = (element, str = '', reversed = false) => {
 
 // alertDialog
 const alertDialog = {
-    // default button is close
+    // default button is Close
     display(title = 'Alert!', message = '', button = 'Close', func) {
         if (typeof button != 'string') {
             throw `Error: typeof button title = ${typeof button}, expected String`;
@@ -409,11 +409,13 @@ const alertDialog = {
             getChildElement($('#alertDialog'), 'h2')[0].innerHTML = title.replace(/\n/g, '<br>');;
             getChildElement($('#alertDialog'), 'div')[0].innerHTML = message.replace(/\n/g, '<br>');
             $('#alertDialog_btn').innerHTML = button;
-            if (func) $('#alertDialog_btn').addEventListener('click', (e) => {
+            // function to be passed to event listener
+            const runFunction = () => {
                 // removes event listener once action is complete
-                $('#alertDialog_btn').removeEventListener('click', func);
+                $('#alertDialog_btn').removeEventListener('click', runFunction);
                 func.call();
-            }, { once: true });
+            }
+            if (func) $('#alertDialog_btn').addEventListener('click', runFunction, { once: true });
             $('#alertDialogRoot').style.animation = `fadeIn ${Overlay.animation_duration}ms forwards`;
             $('#alertDialog').style.animation = `scaleIn ${Overlay.animation_duration}ms forwards`;
             Overlay.instance_open = true;
@@ -430,13 +432,13 @@ const alertDialog = {
             throw `Error: typeof func = ${typeof func}, expected function`;
             return;
         }
-        func();
+        func.call();
     }
 }
 
 // actionDialog
 const actionDialog = {
-    // default button is close
+    // default button is Ok
     display(title = 'Alert!', message = '', button = 'OK', func) {
         if (typeof button != 'string') {
             throw `Error: typeof button title = ${typeof button}, expected String`;
@@ -452,11 +454,13 @@ const actionDialog = {
             getChildElement($('#actionDialog'), 'h2')[0].innerHTML = title.replace(/\n/g, '<br>');;
             getChildElement($('#actionDialog'), '.content')[0].innerHTML = message.replace(/\n/g, '<br>');
             $('#actionDialog_btnOk').innerHTML = button;
-            if (func) $('#actionDialog_btnOk').addEventListener('click', (e) => {
+            // function to be passed to event listener
+            const runFunction = () => {
                 // removes event listener once action is complete
-                $('#actionDialog_btnOk').removeEventListener('click', func);
-                func();
-            }, { once: true });
+                $('#actionDialog_btnOk').removeEventListener('click', runFunction);
+                func.call();
+            }
+            if (func) $('#actionDialog_btnOk').addEventListener('click', runFunction, { once: true });
             $('#actionDialogRoot').style.animation = `fadeIn ${Overlay.animation_duration}ms forwards`;
             $('#actionDialog').style.animation = `scaleIn ${Overlay.animation_duration}ms forwards`;
             Overlay.instance_open = true;
@@ -473,7 +477,7 @@ const actionDialog = {
             throw `Error: typeof func = ${typeof func}, expected function`;
             return;
         }
-        func();
+        func.call();
     }
 }
 
@@ -499,7 +503,7 @@ export const dialog = {
             alertDialog.display(title, message, button, func);
         } else if (category == 'action') {
             actionDialog.display(title, message, button, func);
-        } else throw `Error: dialog category = ${category}, expected \'alert\' or \'action\'`;
+        } else throw `Error: dialog category = ${category}, expected 'alert' or 'action'`;
     },
     /**
      * Hide the dialog.
@@ -512,7 +516,7 @@ export const dialog = {
             alertDialog.hide(func);
         } else if (category == 'action') {
             actionDialog.hide(func);
-        } else throw `Error: dialog category = ${category}, expected \'alert\' or \'action\'`;
+        } else throw `Error: dialog category = ${category}, expected 'alert' or 'action'`;
     }
 }
 
