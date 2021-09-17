@@ -25,25 +25,39 @@ const ACCENT_PRIMARY_BGCOLOR = '#075E54';
 const ACCENT_SECONDARY_BGCOLOR = '#dcf8c6';
 const ACCENT_TERTIARY_BGCOLOR = '#ece5dd';
 const ACCENT_FG_COLOR = '#ffffff';
+ 
+/**
+ * Used to recognise a user.
+ * @type {String} Stores UID from Firebase Auth.
+ */
+export let USER_ID = '';
 
-/* user id and Token.
- * USER_ID stores id from Firebase auth.
+/**
  * USER_TOKEN is a random 64 bit alphanumeric string that is used to recognise a device until browser cookies get cleared.
  * The token is used to then identify the logs taken for a session.
  * If user signs in, the logs under a token also contain the user id.
+ * @type {String}
  */
-export let USER_ID = '';
 export let USER_TOKEN = '';
 
-// flags
-export let DEBUG = !true;            // prints debug logs in console
-let LOAD_THEME = !true;              // deprecated
+/**
+ * Flag
+ * @type {Boolean} If true, prints debug info in the console.
+ */
+export let DEBUG = !true;
+
+/**
+ * Flag
+ * @type {Boolean} If true, reloads the theme/accent colors based on usage of function loadTheme().
+ */
+let LOAD_THEME = !true;
 
 /**
  * Checks if the Android WebAppInterface exists.
  * The `Android` WebAppInterface is a class available in the Android APK of this project.
  * The interface allows the website to use Android features through javascript without requiring an independent Android app to be developed.
  * The interface is available only when this webpage is loaded on the Android APK.
+ * @type {Boolean}
  */
 export const EXISTS_ANDROID_INTERFACE = typeof Android !== 'undefined'
                                      && typeof Android.isSozialnMedienWebapp === 'function'
@@ -59,8 +73,8 @@ export const EXISTS_ANDROID_INTERFACE = typeof Android !== 'undefined'
  * How low/high is too low/high?
  *      0 ms and over 5000 milliseconds is too low/high.
  *
- * @param {function} setInstanceOpen Setter for scripts that import this module script.
- * @param {function} setAnimDuration Setter for scripts that import modules.js.
+ * @param {Function} setInstanceOpen Setter for scripts that import this module script.
+ * @param {Function} setAnimDuration Setter for scripts that import modules.js.
  */
 export const Overlay = {
     instance_open: false,
@@ -499,7 +513,7 @@ export const dialog = {
      * @param {String} title Title of the dialog.
      * @param {String} message Message to be displayed.
      * @param {String} button Title of the default button.
-     * @param {function} func Optional for 'alert' category, function to run if default is button clicked.
+     * @param {Function} func Optional for 'alert' category, function to run if default is button clicked.
      * @throws {Error} If category is invalid.
      * @throws {Error} If no function is provided for 'action' category.
      */
@@ -513,7 +527,7 @@ export const dialog = {
     /**
      * Hide the dialog.
      * @param {String} category Either 'alert' or 'action'.
-     * @param {function} func Optional, function to run once dialog is closed.
+     * @param {Function} func Optional, function to run once dialog is closed.
      * @throws {Error} If category is invalid.
      */
     hide(category, func) {
