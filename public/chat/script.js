@@ -218,12 +218,10 @@ $('#btnsend').addEventListener('click', (e) => {
                 pushkey,
                 message: encode(msg),
                 uid: USER_ID,
-            })
-            .then(() => {
+            }).then(() => {
                 log('data pushed');
                 loadTheme();
-            })
-            .catch((error) => {
+            }).catch((error) => {
                 err(error);
                 $('#txtmsg').value = msgbackup;
             });
@@ -247,27 +245,24 @@ document.body.addEventListener('click', (e) => {
     else if (e.target.id == 'menu_unsend') {
         menu.hide();
         // this delay of 300ms is to prevent a lag that occurrs when writing to db
-        setTimeout(() => {  
-            if (ChatData[LONG_PRESSED_ELEMENT.id].uid == USER_ID) {
-                // unsend is possible only within 1 hour
-                if (getTimeStamp() - parseInt(ChatData[LONG_PRESSED_ELEMENT.id].time.stamp) < 3600000) {
-                    update(ref(Database, DB_ROOT + CHAT_ROOT), {
-                        [LONG_PRESSED_ELEMENT.id]: null
-                    })
-                    .then(() => {
-                        log('msg deleted, data updated');
-                    })
-                    .catch((error) => {
-                        err(error);
-                    });
-                }
-                else {
-                    dialog.display('alert', 'Not allowed', 'You can only unsend a message within 1 hour of sending it.');
-                }
-            }
-            else {
+        setTimeout(() => {
+            // unsend not possible if not sent by user
+            if (ChatData[LONG_PRESSED_ELEMENT.id].uid != USER_ID) {
                 dialog.display('alert', 'Not allowed', 'You can unsend a message only if you have sent it.');
+                return;
             }
+            // unsend not possible after 1 hour
+            if (getTimeStamp() - parseInt(ChatData[LONG_PRESSED_ELEMENT.id].time.stamp) > 3600000) {
+                dialog.display('alert', 'Not allowed', 'You can only unsend a message within 1 hour of sending it.');
+                return;
+            }
+            update(ref(Database, DB_ROOT + CHAT_ROOT), {
+                [LONG_PRESSED_ELEMENT.id]: null
+            }).then(() => {
+                log('msg deleted, data updated');
+            }).catch((error) => {
+                err(error);
+            });
         }, 300);
     }
     // menu reply button click
