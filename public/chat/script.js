@@ -30,11 +30,11 @@ const MDtoHTML = new showdown.Converter();
 MDtoHTML.setFlavor('github');
 
 // other variables
-let PREV_HEIGHT = document.body.clientHeight;
-let PREV_WIDTH = document.body.clientWidth;
-let CHAT_SCROLL_HEIGHT = $('#chatarea').scrollHeight;
-let PRETEXT = '';
-let LONG_PRESSED;
+let PREVIOUS_HEIGHT = document.body.clientHeight;
+let PREVIOUS_WIDTH = document.body.clientWidth;
+let CHATAREA_SCROLL_HEIGHT = $('#chatarea').scrollHeight;
+let QUOTE_REPLY_TEXT = '';
+let LONG_PRESSED_ELEMENT;
 let SOFTBOARD_OPEN = false;
 
 // the entire chat is downloaded and stored here
@@ -95,7 +95,7 @@ const startDBListener = () => {
 document.addEventListener('keyup', (e) => {
     let key = e.keyCode || e.charCode
     log('keypress: key = ' + key);
-    let HTML = PRETEXT + MDtoHTML.makeHtml($('#txtmsg').value.trim());
+    let HTML = QUOTE_REPLY_TEXT + MDtoHTML.makeHtml($('#txtmsg').value.trim());
     if (HTML != '') {
         $('#msgpreview').style.display = 'block';
         $('#txtmsg').style.borderRadius = '0 0 10px 10px';
@@ -107,8 +107,10 @@ document.addEventListener('keyup', (e) => {
         $('#txtmsg').style.borderRadius = '40px';
         $('#msgpreview').innerHTML = '<font class="header" color="#7d7d7d">Markdown preview</font><font color="#7d7d7d">Preview appears here</font>';
     }
-    if ((key == 8 || key == 46) && $('#txtmsg').value.trim() == '') {
-        PRETEXT = '';
+    const KEY_DEL = 8,
+          KEY_BACKSPACE = 46;
+    if ((key == KEY_DEL || key == KEY_BACKSPACE) && $('#txtmsg').value.trim() == '') {
+        QUOTE_REPLY_TEXT = '';
         $('#msgpreview').style.display = 'none';
         $('#txtmsg').style.borderRadius = '40px';
         $('#msgpreview').innerHTML = '<font class="header" color="#7d7d7d">Markdown preview</font><font color="#7d7d7d">Preview appears here</font>';
@@ -121,17 +123,17 @@ document.addEventListener('keyup', (e) => {
 // soft keyboard launch triggers window resize event
 window.addEventListener('resize', (e) => {
     // detects soft keyboard switch
-    if (PREV_HEIGHT != document.body.clientHeight && PREV_WIDTH == document.body.clientWidth) {
+    if (PREVIOUS_HEIGHT != document.body.clientHeight && PREVIOUS_WIDTH == document.body.clientWidth) {
         SOFTBOARD_OPEN = !SOFTBOARD_OPEN;
-        log(`keyboard switch? height diff = ${document.body.clientHeight - PREV_HEIGHT}`);
+        log(`keyboard switch? height diff = ${document.body.clientHeight - PREVIOUS_HEIGHT}`);
     }
-    if (document.body.clientHeight - PREV_HEIGHT < 0) {
-        $('#chatarea').scrollTop += Math.abs(document.body.clientHeight - PREV_HEIGHT);
+    if (document.body.clientHeight - PREVIOUS_HEIGHT < 0) {
+        $('#chatarea').scrollTop += Math.abs(document.body.clientHeight - PREVIOUS_HEIGHT);
     }
-    PREV_WIDTH = document.body.clientWidth;
-    PREV_HEIGHT = document.body.clientHeight;
+    PREVIOUS_WIDTH = document.body.clientWidth;
+    PREVIOUS_HEIGHT = document.body.clientHeight;
     // switches visibility of msgpreview
-    let HTML = PRETEXT + MDtoHTML.makeHtml($('#txtmsg').value.trim());
+    let HTML = QUOTE_REPLY_TEXT + MDtoHTML.makeHtml($('#txtmsg').value.trim());
     if (HTML != '' && SOFTBOARD_OPEN) {
         $('#msgpreview').innerHTML = `<font class="header" color="#7d7d7d">Markdown preview</font>${HTML}`;
         $('#msgpreview').style.display = 'block';
@@ -153,8 +155,8 @@ $('#btnsend').addEventListener('click', (e) => {
         $('#txtmsg').focus();
     }
     else {
-        msg = PRETEXT + $('#txtmsg').value.trim();
-        PRETEXT = '';
+        msg = QUOTE_REPLY_TEXT + $('#txtmsg').value.trim();
+        QUOTE_REPLY_TEXT = '';
         $('#txtmsg').value = '';
         $('#msgpreview').innerHTML = '<font class="header" color="#7d7d7d">Markdown preview</font>';
         $('#msgpreview').style.display = 'none';
@@ -239,18 +241,18 @@ document.body.addEventListener('click', (e) => {
     // menu copy button click
     else if (e.target.id == 'menu_copy') {
         menu.hide();
-        copyPlainTxt(LONG_PRESSED.innerHTML);
+        copyPlainTxt(LONG_PRESSED_ELEMENT.innerHTML);
     }
     // menu unsend button click
     else if (e.target.id == 'menu_unsend') {
         menu.hide();
         // this delay of 300ms is to prevent a lag that occurrs when writing to db
         setTimeout(() => {  
-            if (ChatData[LONG_PRESSED.id].uid == USER_ID) {
+            if (ChatData[LONG_PRESSED_ELEMENT.id].uid == USER_ID) {
                 // unsend is possible only within 1 hour
-                if (getTimeStamp() - parseInt(ChatData[LONG_PRESSED.id].time.stamp) < 3600000) {
+                if (getTimeStamp() - parseInt(ChatData[LONG_PRESSED_ELEMENT.id].time.stamp) < 3600000) {
                     update(ref(Database, DB_ROOT + CHAT_ROOT), {
-                        [LONG_PRESSED.id]: null
+                        [LONG_PRESSED_ELEMENT.id]: null
                     })
                     .then(() => {
                         log('msg deleted, data updated');
@@ -271,17 +273,17 @@ document.body.addEventListener('click', (e) => {
     // menu reply button click
     else if (e.target.id == 'menu_reply') {
         menu.hide();
-        PRETEXT = `<blockquote id="tm_${LONG_PRESSED.id}">${getChildElement(LONG_PRESSED, 'div')[0].innerHTML}</blockquote>\n\n`;
+        QUOTE_REPLY_TEXT = `<blockquote id="tm_${LONG_PRESSED_ELEMENT.id}">${getChildElement(LONG_PRESSED_ELEMENT, 'div')[0].innerHTML}</blockquote>\n\n`;
         $('#txtmsg').focus();
     }
     // menu details button click
     else if (e.target.id == 'menu_details') {
         menu.hide();
-        let message = ChatData[LONG_PRESSED.id];
+        let message = ChatData[LONG_PRESSED_ELEMENT.id];
         let time = message.time;
         // innerHTML of dialog
         let infoHTML = '<table style="width:100%; text-align:left">'
-                     +     `<tr><td>Sent by: </td><td><pre style="margin:0; padding:0; font-family:sans-serif; overflow:auto; width:180px;">${ChatData[LONG_PRESSED.id].uid == USER_ID ? 'You' : ChatData[LONG_PRESSED.id].uid}</pre></td></tr>`
+                     +     `<tr><td>Sent by: </td><td><pre style="margin:0; padding:0; font-family:sans-serif; overflow:auto; width:180px;">${ChatData[LONG_PRESSED_ELEMENT.id].uid == USER_ID ? 'You' : ChatData[LONG_PRESSED_ELEMENT.id].uid}</pre></td></tr>`
                      +     `<tr><td>Sent on: </td><td>${time.dayname.slice(0, 3)}, ${time.monthname.slice(0, 3) ${time.date}, ${time.year}</td></tr>`
                      +     `<tr><td>Sent at: </td><td><pre style="margin:0; padding:0; font-family:sans-serif; overflow:auto; width:180px;">${time.time}</pre></td></tr>`
                      + '</table>'
@@ -355,7 +357,7 @@ document.body.addEventListener('pointerdown', (e) => {
         }, 200);
         LONGPRESS_TIMEOUT = setTimeout(() => {
             log('long press triggered');
-            LONG_PRESSED = e.target;
+            LONG_PRESSED_ELEMENT = e.target;
             e.target.style.transform = 'scale(1)';
             clearTimeout(LONGPRESS_TIMER);
             // show menu
@@ -373,7 +375,7 @@ document.body.addEventListener('pointerdown', (e) => {
         }, 200);
         LONGPRESS_TIMEOUT = setTimeout(() => {
             log('long press triggered');
-            LONG_PRESSED = parent_bubble;
+            LONG_PRESSED_ELEMENT = parent_bubble;
             parent_bubble.style.transform = 'scale(1)';
             clearTimeout(LONGPRESS_TIMER);
             if (EXISTS_ANDROID_INTERFACE) dialog.display('action', 'Download image', 'Do you wish to download this image?', 'Download', () => {
@@ -403,7 +405,7 @@ document.body.addEventListener('pointerdown', (e) => {
 // on mouse up listener
 document.body.addEventListener('pointerup', (e) => {
     log('pointer up');
-    if (LONG_PRESSED) LONG_PRESSED.style.transform = 'scale(1)';
+    if (LONG_PRESSED_ELEMENT) LONG_PRESSED_ELEMENT.style.transform = 'scale(1)';
     e.target.style.transform = 'scale(1)';
     e.target.style.userSelect = 'initial';
     clearTimeout(LONGPRESS_TIMER);
@@ -413,7 +415,7 @@ document.body.addEventListener('pointerup', (e) => {
 // swipe gesture listener
 document.body.addEventListener('touchmove', (e) => {
     log(`swiped: id = ${e.target.id} node = ${e.target.nodeName} class = ${e.target.className}`);
-    if (LONG_PRESSED) LONG_PRESSED.style.transform = 'scale(1)';
+    if (LONG_PRESSED_ELEMENT) LONG_PRESSED_ELEMENT.style.transform = 'scale(1)';
     e.target.style.transform = 'scale(1)';
     e.target.style.userSelect = 'initial';
     clearTimeout(LONGPRESS_TIMER);
