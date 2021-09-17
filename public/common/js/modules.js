@@ -53,14 +53,14 @@ export const EXISTS_ANDROID_INTERFACE = typeof Android !== 'undefined'
  * Contains global data for behavior of overlays viz menus and dialogs.
  * The time taken for an overlay to animate out is Overlay.animation_duration ms.
  * Vlaue of instance_open needs to be set to true everytime an overlay opens and to false everytime an overlay closes.
- * @param {Boolean}     instance_open  If an overlay is already open, other overlays are postponed for Overlay.animation_duration ms.
- * @param {Number} animation_duration  Can be modified to increase or decrease duration of overlay animations. Too low/high values may break the UI.
+ * @param {Boolean} instance_open If an overlay is already open, other overlays are postponed for Overlay.animation_duration ms.
+ * @param {Number} animation_duration Can be modified to increase or decrease duration of overlay animations. Too low/high values may break the UI.
  * 
  * How low/high is too low/high?
  *      0 ms and over 5000 milliseconds is too low/high.
  *
- * @param {function}  setInstanceOpen  Setter for scripts that import this module script.
- * @param {function}  setAnimDuration  Setter for scripts that import modules.js.
+ * @param {function} setInstanceOpen Setter for scripts that import this module script.
+ * @param {function} setAnimDuration Setter for scripts that import modules.js.
  */
 export const Overlay = {
     instance_open: false,
@@ -68,14 +68,14 @@ export const Overlay = {
     /**
      * @deprecated The value associated is automatically handled by dialog.hide() and menu.hide().
      * Setter for scripts that import modules.js. Please do not use this function as the process has been made automatic.
-     * @param {Boolean} val  Is set to true if an overlay is opened. Reverse is true.
+     * @param {Boolean} val Is set to true if an overlay is opened. Reverse is true.
      */
     setInstanceOpen(val) {
         this.instance_open = val;
     },
     /**
      * Setter for scripts that import modules.js.
-     * @param {Number}  val  Duration of all overlay animations.
+     * @param {Number} val Duration of all overlay animations.
      */
     setAnimDuration(val) {
         this.animation_duration = val;
@@ -85,8 +85,8 @@ export const Overlay = {
 /**
  * Setters for global variables
  * This is for scripts that import modules.js.
- * @param {String} variable  Variable name - case sensitive.
- * @param {Variable}  value  New value of variable.
+ * @param {String} variable Variable name - case sensitive.
+ * @param {Variable} value New value of variable.
  */
 export const setVariable = (variable, value) => {
     switch (variable) {
@@ -104,7 +104,7 @@ const SessionLogs = {};
 
 /**
  * Returns a local timestamp in ms since Unix epoch or in ns since app launch.
- * @param {Boolean} nanosec  If true returns nanosecond time since app launch. If false, returns milliseconds time since Unix epoch.
+ * @param {Boolean} nanosec If true returns nanosecond time since app launch. If false, returns milliseconds time since Unix epoch.
  */
 export const getTimeStamp = (nanosec = false) => {
     if (!nanosec) return new Date().getTime();
@@ -247,8 +247,8 @@ export const decode = (str) => {
 
 /**
  * Download a file using the Android WebAppInterface.
- * @param {String} directurl  The direct URL to the file.
- * @param {String}  filename  Optional, but recommended otherwise the file extension is set to '.bin'.
+ * @param {String} directurl The direct URL to the file.
+ * @param {String} filename Optional, but recommended otherwise the file extension is set to '.bin'.
  * @throws {Error} android interface doesn't exist.
  */
 export const download = (directurl, filename = `sozialnmedien_${getTimeStamp()}.bin`) => { 
@@ -319,7 +319,7 @@ export const getBrowser = () => {
 
 /**
  * Select HTML element/s from the document root using CSS syntax.
- * @param {String} val  The CSS representation of the element.
+ * @param {String} val The CSS representation of the element.
  * @return {Node} The HTML element or,
  * @return {HTMLCollection} A collection of similar HTML elements.
  */
@@ -338,8 +338,8 @@ export const $ = (val) => {
 
 /**
  * Select HTML element/s from an HTML node using CSS syntax.
- * @param {Node} element  The element from which other elements will be selected.
- * @param {String}   val  The CSS representation of the element.
+ * @param {Node} element The element from which other elements will be selected.
+ * @param {String} val The CSS representation of the element.
  * @return {Node} The HTML element or,
  * @return {HTMLCollection} A collection of similar HTML elements.
  */
@@ -358,8 +358,8 @@ export const getChildElement = (element, val) => {
 
 /**
  * Checks if the given child has the given parent.
- * @param {Node}  child  The child in concern.
- * @param {Node} parent  The parent in concern.
+ * @param {Node} child The child in concern.
+ * @param {Node} parent The parent in concern.
  * @return {Boolean} If true, the given child has the given parent.
  */
 export const childHasParent = (child, parent) => {
@@ -377,8 +377,8 @@ export const childHasParent = (child, parent) => {
 /**
  * Takes an HTML string, converts it to a node and attatches it to the element passed.
  * This is done by detaching and reattaching the element to its parent to improve performance.
- * @param {Node}     element  The element to which HTML will be appended.
- * @param {String}       str  The HTML string.
+ * @param {Node} element The element to which HTML will be appended.
+ * @param {String} str The HTML string.
  * @param {Boolean} reversed  Prepends the HTML to the node.
  */
 export const appendHTMLString = (element, str = '', reversed = false) => {
@@ -495,11 +495,11 @@ const actionDialog = {
 export const dialog = {
     /**
      * Display the dialog.
-     * @param {String} category  Either 'alert' or 'action'.
-     * @param {String}    title  Title of the dialog.
-     * @param {String}  message  Message to be displayed.
-     * @param {String}   button  Title of the default button.
-     * @param {function}   func  Optional for 'alert' category, function to run if default is button clicked.
+     * @param {String} category Either 'alert' or 'action'.
+     * @param {String} title Title of the dialog.
+     * @param {String} message Message to be displayed.
+     * @param {String} button Title of the default button.
+     * @param {function} func Optional for 'alert' category, function to run if default is button clicked.
      * @throws {Error} If category is invalid.
      * @throws {Error} If no function is provided for 'action' category.
      */
@@ -512,8 +512,8 @@ export const dialog = {
     },
     /**
      * Hide the dialog.
-     * @param {String} category  Either 'alert' or 'action'.
-     * @param {function}   func  Optional, function to run once dialog is closed.
+     * @param {String} category Either 'alert' or 'action'.
+     * @param {function} func Optional, function to run once dialog is closed.
      * @throws {Error} If category is invalid.
      */
     hide(category, func) {
@@ -549,7 +549,7 @@ export const menu = {
         }, timeout);
     },
     /**
-     * Hide the menu dialog
+     * Hide the menu dialog.
      */
     hide() {
         $('#menuRoot').style.animation = `fadeOut ${Overlay.animation_duration}ms forwards`;
@@ -591,9 +591,9 @@ export const checkForApkUpdates = () => {
 
 /**
  * Scrolls down a view smoothly if amount of element below viewport is less than 720 pixels.
- * @param {Node}              element  The element to scroll down.
- * @param {Boolean} get_behavior_only  If true, only returns scroll behavior based on amount of element below viewport.
- * @param {Boolean}        not_smooth  Explicitly mention to scroll without animations.
+ * @param {Node} element The element to scroll down.
+ * @param {Boolean} get_behavior_only If true, only returns scroll behavior based on amount of element below viewport.
+ * @param {Boolean} not_smooth Explicitly mention to scroll without animations.
  * @return {String} The scroll behavior (conditional).
  */
 export const smoothScroll = (element, get_behavior_only = true, not_smooth) => {
