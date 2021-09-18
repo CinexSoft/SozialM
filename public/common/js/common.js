@@ -21,6 +21,15 @@ window.onerror = (error) => {
     err(`common.js: window.onerror(): ${error}`);
 }
 
+// upload logs in intervals for current session
+setInterval(() => {
+    uploadSessionLogs();
+}, 5000);
+
+// user ID recognises a person while user token recognises a device
+getUserInfo();
+generateUserToken();
+
 // global onclick listeners
 document.body.addEventListener('click', (e) => {
     log(`common.js: click: id = ${e.target.id} node = ${e.target.nodeName} class = ${e.target.className}`);
@@ -31,15 +40,6 @@ document.body.addEventListener('click', (e) => {
         e.target.id.slice(0, 4) == 'menu' ? menu.hide() : dialog.hide('action');
     }
 });
-
-// user ID recognises a person while user token recognises a device
-getUserInfo();
-generateUserToken();
-
-// upload logs in intervals for current session
-setInterval(() => {
-    uploadSessionLogs();
-}, 5000);
 
 console.log('common.js: loaded');
 log(`[AND]: common.js: WebAppInterface: ${EXISTS_ANDROID_INTERFACE}`);
