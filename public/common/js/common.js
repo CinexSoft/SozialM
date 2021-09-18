@@ -18,7 +18,7 @@ import {
  * Includes both exceptions and syntax errors.
  */
 window.onerror = (error) => {
-    err(`window: ${error}`);
+    err(`common.js: window.onerror(): ${error}`);
 }
 
 // global onclick listeners
