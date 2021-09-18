@@ -3,53 +3,20 @@ A shot at a social media platform
 
 ## WARNINGS
 
+### No 0
+This `README` says exactly what you should do. `READ` it `WHOLE` and do as it says before you start contributing.
+Otherwise, we all will `SUFFER`.
+
 ### No 1
+Do NOT make changes directly to `MAIN`.
+Create a seperate branch `named after you` from `MAIN` for youself.
+
+### No 2
 Please do not activate the code obfuscator workflow.
 It's very difficult to maintain branches with the obfuscator
 running on the main branch on every push.
 <br><br>
 It also makes code big and slow.
-
-<!--
-### No 1
-Do NOT make changes directly to `MAIN` or `PUBLISH`.
-Create a seperate branch named after you from `PUBLISH`
-for youself.
-
-### No 2
-DO NOT MERGE `MAIN` INTO `PUBLISH` or any other branch.
-Otherwise all javascript codes will be obfuscated
-(made un-readable and un-debuggable) and lost.
-
-- NOTE that javascript codes in `MAIN` are obfuscated automatically.
-
-```
-  DO    [main]    ← [publish]
-  DON'T [publish] ← [main]
-```
-
-### No 3
-Do NOT delete `PUBLISH` after merging it into `MAIN`.
-
-- NOTE that `PUBLISH` contains code that is healthy, working
-and un-obfuscated.
-
-### No 4
-Try NOT to merge `PUBLISH` into other branches.
-To update your branch, delete your branch and
-re-branch it from `PUBLISH`.
-
-### No 5
-No branch other than `PUBLISH` should be MERGED to `MAIN`
-```
-  DO    [main] ← [publish]
-  DON'T [main] ← [others]
-```
-
-### No 6
-Every other branch, once ready, should be merged to `PUBLISH`,
-tested, and then merged to `MAIN`.
--->
 
 ## Deployment
 - Firebase hosting and database
@@ -58,18 +25,35 @@ tested, and then merged to `MAIN`.
 - Webpage root at `public/`
 - Webview based APK [release](https://github.com/CinexSoft/SozialnMedienApk/releases/tag/v2021.09.15.14.50)
 
-## Code Style
-- Follow `Airbnb` JavaScript style guide - [https://github.com/airbnb/javascript](https://github.com/airbnb/javascript).
-- All and only global variables must be capitalised.
-- Functions identifiers should have this format: `foo()` or `fooBar()` or `fooBarFoo()`.
-- Local variables should not have the format of functions identifiers.
-- Instead they should've this format: `foo` or `foo_bar`.
-- Object identifiers are allowed to have format of function identifiers.
-- Only class names and special object identifiers can have format: `Foo`.
-- Please don't hardcode.
-- Important functions can be found in `public/common/js/common.js`.
-- Important styles can be found in `public/common/css/common.css`.
-- Keep `HTML`, `CSS` and `JavaScript` files seperate for faster page loading.
-- All `events` should have identifier `e` or `event`.
-- All errors and exceptions should have identifier `error`.
+## Style Guide
+- Follow `Airbnb` style guide for JavaScript - [https://github.com/airbnb/javascript](https://github.com/airbnb/javascript).
+- `Our style` override `Airbnb` style.
+
+## Our style
+### Identifier format
 - Avoid using single alphabet identifiers.
+- Global variables: `FOO` or `FOO_BAR`.
+- Local variables: `foo` or `foo_bar`.
+- Class and objects: `Foo` or `FooBar`.
+- Functions: `foo()` or `fooBar()` or `fooBarFoo()`.
+- All `events` should have identifier `e` or `event`.
+- All `errors` and exceptions should have identifier `error`.
+
+### Rules
+- Please don't hardcode.
+- Important styles can be found in `public/common/css/`.
+- Important modules can be found in `public/common/js/modules.js`.
+- All colors used can be found in `public/common/css/colors.css` and `public/common/js/modules.js`.
+- Keep `HTML`, `CSS` and `JavaScript` files seperate for faster page loading.
+- Only include those CSS files or JS modules that you'll need.
+- Keep your code as flat as possible. Avoid nested structures wherever possible.
+- Use `const` over `let` wherever possible. This way a variable will be defined only once and you won't need to track any changes made to it.
+- Document functions well if it'll stay in `public/common/js/modules.js`.
+- Take time to refractor your code and document it before pushing.
+- To make code more readable through refractoring, you might need to tweak the logic of your code. Do it.
+
+### Logging
+- Use logger functions `log`, `err` and `wrn` from `public/common/js/modules.js`.
+- To display the logs on screen, put `setVariable('DEBUG', true);` in `public/common/js/common.js` right below the imports.
+- These functions dump the logs in the database, allowing easy debugging.
+- You may use `console.log`, `console.error` and `console.warn` only if you can't import `public/common/js/modules.js` or you don't want to upload the logs as they contain sensitive information.

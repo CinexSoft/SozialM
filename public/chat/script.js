@@ -71,12 +71,12 @@ const startDBListener = () => {
             const getHTML = decode(data.message);
             if (uid == USER_ID) {
                 appendHTMLString($('#chatarea'), `<div class="bubbles" id="${pushkey}"><div class="this chatbubble_bg">${getHTML}</div></div>`);
-                if (DEBUG) console.log(`Chat: Log: this: pushkey = ${pushkey}`);
-                if (DEBUG) console.log(`Chat: Log: this: html = ${$('#chatarea').innerHTML}`);
+                if (DEBUG) console.log(`Log: Chat: this: pushkey = ${pushkey}`);
+                if (DEBUG) console.log(`Log: Chat: this: html = ${$('#chatarea').innerHTML}`);
             } else {
                 appendHTMLString($('#chatarea'), `<div class="bubbles" id="${pushkey}"><div class="that">${getHTML}</div></div>`);
-                if (DEBUG) console.log(`Chat: Log: that: pushkey = ${pushkey}`);
-                if (DEBUG) console.log(`Chat: Log: that: html = ${$('#chatarea').innerHTML}`);
+                if (DEBUG) console.log(`Log: Chat: that: pushkey = ${pushkey}`);
+                if (DEBUG) console.log(`Log: Chat: that: html = ${$('#chatarea').innerHTML}`);
             }
             /* this delay makes sure the entire chatarea is loaded before it's scrolled to place
              * it's not smooth scrolled, that's the 3rd parameter

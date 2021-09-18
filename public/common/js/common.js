@@ -5,9 +5,21 @@ import {
     generateUserToken,
     uploadSessionLogs,
     log,
+    err,
     dialog,
     menu
 } from '/common/js/modules.js';
+
+/* Uncomment to start displaying logs in the console.
+ * setVariable('DEBUG', true);
+ */
+ 
+/* On error of any kind, catch it and upload it.
+ * Includes both exceptions and syntax errors.
+ */
+window.onerror = (error) => {
+    err(`window: ${error}`);
+}
 
 // global onclick listeners
 document.body.addEventListener('click', (e) => {
