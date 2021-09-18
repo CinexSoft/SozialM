@@ -4,7 +4,7 @@ A shot at a social media platform
 ## WARNINGS
 
 ### No 0
-This `README` says exactly what you should do. `READ` it `WHOLE` and do as it says before you start contributing.
+This `README` says exactly what you should do. `READ` it `WHOLE` before you start contributing and do as it says.
 Otherwise, we all will `SUFFER`.
 
 ### No 1
