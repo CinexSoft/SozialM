@@ -6,7 +6,7 @@ import { getAuth } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.
 // firebase init
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-export const firebaseConfig = {
+export const FirebaseConfig = {
     apiKey: 'AIzaSyBeOE11fAnnEQTimqK8VClhlWMzyOu3ob8',
     authDomain: 'sozialnmedien.firebaseapp.com',
     databaseURL: 'https://sozialnmedien-default-rtdb.firebaseio.com',
@@ -17,12 +17,15 @@ export const firebaseConfig = {
     measurementId: 'G-MFG92Y4C4F',
 };
 
+// if hosted on localhost, use FB emulator for database on port 9000
+if (location.href.includes('localhost')) FirebaseConfig.databaseURL = 'http://localhost:9000?ns=sozialnmedien';
+
 // Initialize Firebase
-export const App = initializeApp(firebaseConfig);
+export const App = initializeApp(FirebaseConfig);
 export const Analytics = getAnalytics(App);
 export const Database = getDatabase();
 export const Auth = getAuth();
 
 // database root
-export const DBROOT = '/Ci4j82hg96y36rfi96vfrwog7h85f4jh870bpgw52fekftt95hjo7d2i3jgie64k';
-console.log('Log: firebase initialised');
+export const DB_ROOT = '/Ci4j82hg96y36rfi96vfrwog7h85f4jh870bpgw52fekftt95hjo7d2i3jgie64k';
+console.log('Log: firebaseinit.js loaded');

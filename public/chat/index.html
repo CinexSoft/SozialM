@@ -16,7 +16,7 @@
     <link rel="icon" type="image/x-icon" href="https://sozialnmedien.web.app/favicon.ico"/>
     <title>Chat</title>
     <script>
-        let CHATROOT = '/chat/ejs993ejiei3/';
+        let CHAT_ROOT = '/chat/ejs993ejiei3/';
             CHATROOMID = 'ejs993ejiei3';
         // checks if user is logged in
         if (!localStorage.getItem('Auth.user')) {
@@ -30,7 +30,7 @@
             // checking if chat root exists
             if (localStorage.getItem('Chat.roomid')) {
                 console.log('Log: chat root found');
-                CHATROOT = '/chat/' + localStorage.getItem('Chat.roomid') + '/';
+                CHAT_ROOT = '/chat/' + localStorage.getItem('Chat.roomid') + '/';
             }
             else {
                 console.log('Log: chat root not found, it must be created first, redirect to /inbox');
@@ -42,12 +42,16 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <!-- code highlighter library -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/github.min.css">
-    <!-- global css -->
+    <!-- global stylesheets -->
+    <link rel="stylesheet" href="/common/css/colors.css">
     <link rel="stylesheet" href="/common/css/common.css">
+    <link rel="stylesheet" href="/common/css/keyframes.css">
+    <link rel="stylesheet" href="/common/css/markdown.css">
+    <link rel="stylesheet" href="/common/css/overlays.css">
     <!-- this stylesheet -->
     <link rel="stylesheet" href="/chat/styles.css">
 </head>
-<body>
+<body class="prim_bg">
     <!-- 3 types of overlays -->
     <div class="menuRoot" id="menuRoot">
         <div class="menu" id="menu">
@@ -82,9 +86,9 @@
         </div>
     </div>
     <div class="root">
-        <div class="titlebar prim_bg">
+        <div class="titlebar acc_bg">
             <img class="backarrow" src="/common/res/backarrow100white.png">
-            <img class="dp" src="/common/res/defaultdp.png">
+            <img class="dp acc_bg" src="/common/res/defaultdp.png">
             <h class="title" id="roomid">Demo Chat</h>
             <script>                
                 if (CHATROOMID != 'default') {
@@ -94,7 +98,7 @@
         </div>
         <div class="chatbg">
             <div class="chatarea markdown" id="chatarea">
-                <div class="info">
+                <div class="info sec_bg">
                     <p class="fa fa-info-circle">&ensp;Messages in this chat are only server-to-end encrypted</p>
                 </div>
             </div>
@@ -103,7 +107,7 @@
             </div>
             <div class="msgbox">
                 <textarea id="txtmsg" placeholder="Message" rows="5"></textarea>
-                <button id="btnsend"><i class="fa fa-paper-plane"></i></button>
+                <button id="btnsend" class="control_bg"><i class="fa fa-paper-plane"></i></button>
             </div>
         </div>
     </div>

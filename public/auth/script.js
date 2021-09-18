@@ -1,11 +1,11 @@
 import { Auth } from '/common/js/firebaseinit.js';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.js';
-import { log, err, $, checkForApkUpdates } from '/common/js/modules.js';
+import { PRIMARY_BGCOLOR, CONTROL_COLOR, FG_COLOR, log, err, $, checkForApkUpdates } from '/common/js/modules.js';
 
 checkForApkUpdates();
 
 // root visibility flag
-let ROOTFLAG = 'login';
+let VISIBILE_ROOT = 'login';
 
 // reset colors
 const resetColors = () => {
@@ -22,50 +22,45 @@ const resetColors = () => {
         $('#signup_pass').parentNode,
         $('#signup_pass_c').parentNode,
     ]) {
-        element.style.color = '#333';
-        element.style.borderColor = '#ece5dd';
+        element.style.color = FG_COLOR;
+        element.style.borderColor = PRIMARY_BGCOLOR;
     }
     for (let element of [$('#login_pass'), $('#signup_pass'), $('#signup_pass_c')]) {
-        element.style.color = '#333';
+        element.style.color = FG_COLOR;
     }
 }
 
 // called when the eye-slash icon is pressed
 $(".switchlink")[0].addEventListener('click', (event) => {
     resetColors();
-    // if root of login visibile
-    if (ROOTFLAG == 'login') {
+    if (VISIBILE_ROOT == 'login') {
         $('#login').style.display = 'none';
         $('.swinfo')[0].innerHTML = 'Already have an account? ';
         $('.switchlink')[0].innerHTML = 'Log In';
-        ROOTFLAG = 'signup';
-        log('ROOTFLAG = ' + ROOTFLAG);
-    }
-    // if root of signup visibile
-    else if (ROOTFLAG == 'signup') {
+        VISIBILE_ROOT = 'signup';
+    } else if (VISIBILE_ROOT == 'signup') {
         $('#signup').style.display = 'none';
         $('.swinfo')[0].innerHTML = 'Don\'t have an account? ';
         $('.switchlink')[0].innerHTML = 'Sign Up';
-        ROOTFLAG = 'login';
-        log('ROOTFLAG = ' + ROOTFLAG);
+        VISIBILE_ROOT = 'login';
     }
-    document.getElementById(ROOTFLAG).style.display = 'block';
+    log(`Auth: switch root: VISIBILE_ROOT = ${VISIBILE_ROOT}`);
+    document.getElementById(VISIBILE_ROOT).style.display = 'block';
 });
 
 // toggle password visibility
 for (let element of $(".fa-eye-slash")) element.addEventListener('click', (event) => {
     for (let element of $('.password')) {
-        log('togglePass(): type = ' + element.type);
+        log(`Auth: togglePassVisibility: type = ${element.type}`);
         if (element.type == 'password') {
             element.type = 'text';
             for (let element of $('.fa-eye-slash')) {
                 element.style.color = '#aaa';
             }
-        }
-        else if (element.type == 'text') {
+        } else if (element.type == 'text') {
             element.type = 'password';
             for (let element of $('.fa-eye-slash')) {
-                element.style.color = '#128c7e';
+                element.style.color = CONTROL_COLOR;
             }
         }
     }
@@ -84,10 +79,10 @@ $('#btn_login').addEventListener('click', (e) => {
     $('#login_info').style.color = '#555';
     $('#login_info').innerHTML = 'Logging you in, please wait...';
     $('#login_info').style.display = 'block';
-    let email = $('#login_email').value;
-    let password = $('#login_pass').value;
+    const email = $('#login_email').value;
+    const password = $('#login_pass').value;
     signInWithEmailAndPassword(Auth, email, password).then((userCredential) => {
-        let user = userCredential.user;
+        const user = userCredential.user;
         localStorage.setItem('Auth.user', JSON.stringify(user));
         location.href = '/';
     })
@@ -96,8 +91,7 @@ $('#btn_login').addEventListener('click', (e) => {
         const innernodes = [];
         if (error.code.includes('mail')) {
             nodes.push($('#login_email'));
-        }
-        else if (error.code.includes('pass')) {
+        } else if (error.code.includes('pass')) {
             nodes.push($('#login_pass').parentNode);
             innernodes.push($('#login_pass'));
         }
@@ -111,7 +105,7 @@ $('#btn_signup').addEventListener('click', (e) => {
     $('#signup_info').style.color = '#555';
     $('#signup_info').innerHTML = 'Signing you up, please wait...';
     $('#signup_info').style.display = 'block';
-    let email = $('#signup_email').value;
+    const email = $('#signup_email').value;
     if ($('#signup_pass').value != $('#signup_pass_c').value) {
         handleError('signup', {
             message: 'Passwords don\'t match',
@@ -127,9 +121,9 @@ $('#btn_signup').addEventListener('click', (e) => {
         ]);
         return;
     }
-    let password = $('#signup_pass').value;
+    const password = $('#signup_pass').value;
     createUserWithEmailAndPassword(Auth, email, password).then((userCredential) => {
-        let user = userCredential.user;
+        const user = userCredential.user;
         localStorage.setItem('Auth.user', JSON.stringify(user));
         location.href = '/';
     })
@@ -151,17 +145,17 @@ $('#btn_signup').addEventListener('click', (e) => {
 
 // login or signup error handler
 const handleError = (state, { code, message, }, nodes, innernodes) => {
-    log('nodes = ' + nodes);
-    err(state + ': code: ' + code + ' msg: ' + message);
-    $('#' + state + '_info').style.color = 'red';
+    log(`Auth: nodes = ${nodes}`);
+    err(`Auth: ${state}: code: ${code} msg: {message}`);
+    $(`#${state}_info`).style.color = 'red';
     let outputmsg = code != 'auth/invalid-argument'
                     && code != 'auth/internal-error'
                     ? message : 'Internal error. Please report this to support';
     if (outputmsg.length > 64) {
         outputmsg = outputmsg.slice(0, 65) + '...';
     }
-    $('#' + state + '_info').innerHTML = outputmsg;
-    $('#' + state + '_info').style.display = 'block';
+    $(`#${state}_info`).innerHTML = outputmsg;
+    $(`#${state}_info`).style.display = 'block';
     for (let element of nodes) {
         element.style.color = 'red';
         element.style.borderColor = 'tomato';

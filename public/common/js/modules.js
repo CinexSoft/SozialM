@@ -1,7 +1,6 @@
-import { Database, DBROOT } from '/common/js/firebaseinit.js';
-import { ref, update } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js';
-
-/* modules.js
+/**
+ * modules.js
+ *
  * WARNING:
  * Before making modifications to this file, make absolutely sure that
  * you've used the functions and their respective flags (if any) properly.
@@ -12,182 +11,296 @@ import { ref, update } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-d
  * works for each and every webpage.
  */
 
-// global theme colors
-const ACCENT_PRIMARY_BGCOLOR = '#075E54';
-const ACCENT_SECONDARY_BGCOLOR = '#dcf8c6';
-const ACCENT_TERTIARY_BGCOLOR = '#ece5dd';
-const ACCENT_FG_COLOR = '#ffffff';
+import { Auth, Database, DB_ROOT } from '/common/js/firebaseinit.js';
+import { onAuthStateChanged as firebaseOnAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.js';
+import {
+    ref as firebaseDBRef,
+    update as firebaseDBUpdate,
+} from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js';
 
-// user id
-export let USERID = '';
-export let USERTOKEN = '';
-
-// flags
-export let DEBUG = !true;            // prints debug logs in console
-export let LOADTHEME = !true;        // deprecated
-
-/* checks if android interface exists
- * The `Android` WebAppInterface is a class available
- * in the Android web app of this project. The interface allows the
- * website to use Android features through javascript without requiring
- * a complete Android app to be developed.
- * The interface is available only when this webpage is loaded on the Android
- * web app.
+/* 
+ * Global theme colors.
+ * These can be used to modify the accent of the website.
+ * It was meant to provide users with custom control over
+ * how their account looks and feels.
  */
-export const EXISTSANDROIDINTERFACE = typeof Android !== 'undefined'
-                             && typeof Android.isSozialnMedienWebapp === 'function'
-                             && Android.isSozialnMedienWebapp();
+export const ACCENT_BGCOLOR = document.body.style.getPropertyValue('--accent-bgcolor');
+export const PRIMARY_BGCOLOR = document.body.style.getPropertyValue('--primary-bgcolor');
+export const SECONDARY_BGCOLOR = document.body.style.getPropertyValue('--secondary-bgcolor');
+export const CHAT_BUBBLE_BGCOLOR = document.body.style.getPropertyValue('--chat-bubble-bgcolor');
+export const CONTROL_COLOR = document.body.style.getPropertyValue('--control-color');
+export const FG_COLOR = document.body.style.getPropertyValue('--fg-color');
+export const DARK_FG_COLOR = document.body.style.getPropertyValue('--dark-fg-color');
 
-// overlay controls
-export const overlay = {
+/**
+ * Used to recognise a user.
+ * @type {String} Stores UID from Firebase Auth.
+ */
+export let USER_ID = '';
+
+/**
+ * USER_TOKEN is a random 64 bit alphanumeric string that is used to recognise a device until browser cookies get cleared.
+ * The token is used to then identify the logs taken for a session.
+ * If user signs in, the logs under a token also contain the user id.
+ * @type {String}
+ */
+export let USER_TOKEN = '';
+
+/**
+ * Flag
+ * @type {Boolean} If true, prints debug info in the console.
+ */
+export let DEBUG = !true;
+
+/**
+ * Flag
+ * @type {Boolean} If true, reloads the theme/accent colors based on usage of function loadTheme().
+ */
+let LOAD_THEME = !true;
+
+/**
+ * Checks if the Android WebAppInterface exists.
+ * The `Android` WebAppInterface is a class available in the Android APK of this project.
+ * The interface allows the website to use Android features through javascript without requiring an independent Android app to be developed.
+ * The interface is available only when this webpage is loaded on the Android APK.
+ * @type {Boolean}
+ */
+export const EXISTS_ANDROID_INTERFACE = typeof Android !== 'undefined'
+                                     && typeof Android.isSozialnMedienWebapp === 'function'
+                                     && Android.isSozialnMedienWebapp();
+
+/**
+ * Contains global data for behavior of overlays viz menus and dialogs.
+ * The time taken for an overlay to animate out is Overlay.animation_duration ms.
+ * Vlaue of instance_open needs to be set to true everytime an overlay opens and to false everytime an overlay closes.
+ * @param {Boolean} instance_open If an overlay is already open, other overlays are postponed for Overlay.animation_duration ms.
+ * @param {Number} animation_duration Can be modified to increase or decrease duration of overlay animations. Too low/high values may break the UI.
+ * 
+ * How low/high is too low/high?
+ *      0 ms and over 5000 milliseconds is too low/high.
+ *
+ * @param {Function} setInstanceOpen Setter for scripts that import this module script.
+ * @param {Function} setAnimDuration Setter for scripts that import modules.js.
+ */
+export const Overlay = {
     instance_open: false,
     animation_duration: 250,
+    /**
+     * @deprecated The value associated is automatically handled by dialog.hide() and menu.hide().
+     * Setter for scripts that import modules.js. Please do not use this function as the process has been made automatic.
+     * @param {Boolean} val Is set to true if an overlay is opened. Reverse is true.
+     */
     setInstanceOpen(val) {
         this.instance_open = val;
     },
+    /**
+     * Setter for scripts that import modules.js.
+     * @param {Number} val Duration of all overlay animations.
+     */
     setAnimDuration(val) {
         this.animation_duration = val;
     },
 }
 
+/**
+ * Setters for global variables
+ * This is for scripts that import modules.js.
+ * @param {String} variable Variable name - case sensitive.
+ * @param {*} value New value of variable.
+ */
 export const setVariable = (variable, value) => {
-    switch (variable.toLowerCase) {
-        case 'debug':
+    switch (variable) {
+        case 'DEBUG':
             DEBUG = value;
             break;
-        case 'loadtheme':
-            LOADTHEME = value;
+        case 'LOAD_THEME':
+            LOAD_THEME = value;
             break;
+        case 'ACCENT_BGCOLOR':
+            ACCENT_BGCOLOR = value;
+            break;
+        case 'PRIMARY_BGCOLOR':
+            PRIMARY_BGCOLOR = value;
+            break;
+        case 'SECONDARY_BGCOLOR':
+            ACCENT_SECONDARY_BGCOLOR = value;
+            break;
+        case 'CHAT_BUBBLE_BGCOLOR':
+            CHAT_BUBBLE_BGCOLOR = value;
+            break;
+        case 'CONTROL_COLOR':
+            CONTROL_COLOR = value;
+            break;
+        default:
+            throw `Error: for variable ${variable}, no such variable in module.js, note that variables are case-sensitive`;
     }
 }
 
-// logger data
-export const SESSIONLOGS = {};
+// Object to hold logs with nanosecond timestamps as keys
+const SessionLogs = {};
 
-// returns a local timestamp in ms since Unix epoch or in ns since app launch
+/**
+ * Returns a local timestamp in ms since Unix epoch or in ns since app launch.
+ * @param {Boolean} nanosec If true returns nanosecond time since app launch. If false, returns milliseconds time since Unix epoch.
+ */
 export const getTimeStamp = (nanosec = false) => {
     if (!nanosec) return new Date().getTime();
     else return Math.floor(performance.now() * 1000);
 }
 
-// gets current time zone, date time in Continent/City YYYY-MM-DD @ HH:MM:SS format
-export const getLongDateTime = (flag = true) => {
+/**
+ * Gets current time zone, date time or return a date object
+ * @return {String} Current date in Continent/City/YYYY-MM-DD @ HH:MM:SS format.
+ * @return {Object} Date object (conditional).
+ */
+export const getLongDateTime = (long_time = true) => {
     let date_ob = new Date();
-    if (!flag) {
-        return date_ob;
-    }
+    if (!long_time) return date_ob;
     let date = ('0' + date_ob.getDate()).slice(-2);
     let month = ('0' + (date_ob.getMonth() + 1)).slice(-2);
     let year = date_ob.getFullYear();
     let hours = ('0' + date_ob.getHours()).slice(-2);
     let minutes = ('0' + date_ob.getMinutes()).slice(-2);
     let seconds = ('0' + date_ob.getSeconds()).slice(-2);
-    return Intl.DateTimeFormat().resolvedOptions().timeZone + '/' + year + '-' + month + '-' + date + ' @ ' + hours + ':' + minutes + ':' + seconds;
+    return `${Intl.DateTimeFormat().resolvedOptions().timeZone}/${year}-${month}-${date} @ ${hours}:${minutes}:${seconds}`;
 }
 
 // session time token
-export const SESSIONTOKEN = getLongDateTime();
+const SESSION_TOKEN = getLongDateTime();
 
-// console functions
+/**
+ * Console log function.
+ * Apart from wrapping console.log, it also allows the logs to be uploaded to database.
+ * @param {String} val The stuff to be printed
+ */
 export const log = (val) => {
-    if (DEBUG) console.log('Log: ' + val);
+    if (DEBUG) console.log(`Log: module.js: ${val}`);
     // write logs in local database
-    SESSIONLOGS[getTimeStamp(true)] = val;
+    SessionLogs[getTimeStamp(true)] = val;
 }
 
+/**
+ * Console error function
+ * Apart from wrapping console.error, it also allows the logs to be uploaded to database.
+ * @param {String} val The stuff to be printed
+ */
 export const err = (val) => {
-    if (DEBUG) console.error('Err: ' + val);
+    if (DEBUG) console.error(`Err: ${val}`);
     // write logs in local database
-    SESSIONLOGS[getTimeStamp(true)] = '[ERR]: ' + val;
+    SessionLogs[getTimeStamp(true)] = `[ERR]: ${val}`;
 }
 
+/**
+ * Console warn function
+ * Apart from wrapping console.warn, it also allows the logs to be uploaded to database.
+ * @param {String} val The stuff to be printed
+ */
 export const wrn = (val) => {
-    if (DEBUG) console.warn('Wrn: ' + val);
+    if (DEBUG) console.warn(`Wrn: ${val}`);
     // write logs in local database
-    SESSIONLOGS[getTimeStamp(true)] = '[WRN]: ' + val;
+    SessionLogs[getTimeStamp(true)] = `[WRN]: ${val}`;
 }
 
-/* Uploads debug logs to the database
- * for debugging
+/**
+ * Uploads debug logs to the database for debugging.
  */
 export const uploadSessionLogs = () => {
-    update(ref(Database, DBROOT + '/records/sessionlogs/' + USERTOKEN + '/' + SESSIONTOKEN), SESSIONLOGS)
-    .then(() => {
-        if (false) console.log('Log: logs written to database');
-    })
-    .catch((error) => {
-        err(error);
+    firebaseDBUpdate(firebaseDBRef(Database, `${DB_ROOT}/records/sessionlogs/${USER_TOKEN}/${SESSION_TOKEN}`), SessionLogs).then(() => {
+        // do nothing
+    }).catch((error) => {
+        err(`module.js: ${error}`);
     });
 }
 
-// creates a random `length` sized bit token
+/**
+ * Creates a random `length` sized token.
+ * @param {Number} length Optional, default value = 64. Size of token.
+ * @return {String} The token of given size.
+ */
 export const generateToken = (length = 64) => {
-    let a = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'.split('');
-    let b = [];
+    let arrayOfChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'.split('');
+    let outputToken = [];
     for (let i = 0; i < length; i++) {
-        let j = (Math.random() * (a.length - 1)).toFixed(0);
-        b[i] = a[j];
+        let j = (Math.random() * (arrayOfChars.length - 1)).toFixed(0);
+        outputToken[i] = arrayOfChars[j];
     }
-    return b.join('');
+    return outputToken.join('');
 }
 
-// generates a user token to recognise a device
+/**
+ * Creates the user token and stores it in the global variable USER_TOKEN.
+ */
 export const generateUserToken = () => {
-    if (localStorage.getItem('User.token')) {
-        USERTOKEN = localStorage.getItem('User.token');
-        log('new token generated');
+    if (!localStorage.getItem('User.token')) {
+        USER_TOKEN = generateToken();
+        localStorage.setItem('User.token', USER_TOKEN);
+        log(`module.js: user: new token = ${USER_TOKEN}`);
     }
-    else {
-        USERTOKEN = generateToken();
-        log('new: user token = ' + USERTOKEN);
-        localStorage.setItem('User.token', USERTOKEN);
-    }
+    USER_TOKEN = localStorage.getItem('User.token');
 }
 
-// user id is used to mark a message
-export const getUserID = () => {
-    if (localStorage.getItem('Auth.user')) {
-        USERID = JSON.parse(localStorage.getItem('Auth.user')).uid;
-        log('user: id = ' + USERID);
-    }
+/**
+ * Gets current user info from Firebase Auth and stores the id in the global variable USER_ID.
+ */
+export const getUserInfo = () => {
+    firebaseOnAuthStateChanged(Auth, (user) => {
+        if (!user) {
+            err('module.js: user not signed in');
+            return;
+        }
+        USER_ID = user.uid;
+        localStorage.setItem('Auth.user', JSON.stringify(user));
+        log(`module.js: user: id = ${USER_ID}`);
+    });
 }
 
-// replace unsupported firebase characters with something else
+/**
+ * Replace certain special characters of a string with 'ASCII[character_code]'.
+ * @param {String} str The string to be encoded.
+ * @return {String} The encoded string.
+ */
 export const encode = (str) => {
-    let spChars = '\n\r!"#$%&\'./<=>@[\\]{}';
-    for (let c of spChars) {
-        str = str.replaceAll(c, 'ASCII' + c.charCodeAt(0));
+    let specialChars = '\n\r!"#$%&\'./<=>@[\\]{}';
+    for (let character of specialChars) {
+        str = str.replaceAll(character, `ASCII${character.charCodeAt(0)}`);
     }
-    if (DEBUG) console.log('Log: encode(): str = ' + str);
+    if (DEBUG) console.log(`Log: module.js: encode(): str = ${str}`);
     return str;
 }
 
-// data decoder function, replace encoded chars with special characters
+/**
+ * Decode string from 'ASCII[character_code]' format to something more readable.
+ * @param {String} str The string to be decoded.
+ * @return {String} The decoded string.
+ */
 export const decode = (str) => {
-    let spChars = '\n\r!"#$%&\'./<=>@[\\]{}';
-    for (let c of spChars) {
-        str = str.replaceAll('ASCII' + c.charCodeAt(0), c);
+    let specialChars = '\n\r!"#$%&\'./<=>@[\\]{}';
+    for (let character of specialChars) {
+        str = str.replaceAll(`ASCII${character.charCodeAt(0)}`, character);
     }
-    if (DEBUG) console.log('Log: decode(): str = ' + str);
+    if (DEBUG) console.log(`Log: module.js: decode(): str = ${str}`);
     return str;
 }
 
-// download a file
-export const download = (directurl, filename) => {
-    filename = filename || 'sozialnmedien_' + getTimeStamp() + '.bin';
-    if (EXISTSANDROIDINTERFACE) {
+/**
+ * Download a file using the Android WebAppInterface.
+ * @param {String} directurl The direct URL to the file.
+ * @param {String} filename Optional, but recommended otherwise the file extension is set to '.bin'.
+ * @throws {Error} android interface doesn't exist.
+ */
+export const download = (directurl, filename = `sozialnmedien_${getTimeStamp()}.bin`) => { 
+    if (EXISTS_ANDROID_INTERFACE) {
         try {
             Android.download(directurl, filename);
-            log('[AND]: download(): through Android WepAppInterface');
-        }
-        catch (error) {
-            err(error);
+            log('[AND]: module.js: download(): through Android WepAppInterface');
+        } catch (error) {
+            err(`module.js: ${error}`);
             throw error;
         }
         return;
     }
-    err('android interface doesn\'t exist');
-    throw 'android interface doesn\'t exist';
+    err('module.js: android interface doesn\'t exist');
+    throw 'Error: android interface doesn\'t exist';
     let element = document.createElement('a');
     element.setAttribute('href', directurl);
     element.setAttribute('download', filename);
@@ -197,28 +310,31 @@ export const download = (directurl, filename) => {
     document.body.removeChild(element);
 }
 
-// copy text
-export const copyPlainTxt = (copytext) => {
+/**
+ * Copy some text.
+ * @param {String} str The string to be copied.
+ */
+export const copyPlainTxt = (copytext = '') => {
     copytext = copytext.replace(/<br>/g, '\n').replace(/<[^>]*>/g, '');
-    navigator.clipboard.writeText(copytext)
-    .then(() => {
-        log('text copied to clipboard');
-    })
-    .catch((error) => {
-        err(error);
-        if (EXISTSANDROIDINTERFACE) {
+    navigator.clipboard.writeText(copytext).then(() => {
+        log('module.js: text copied to clipboard');
+    }).catch((error) => {
+        err(`module.js: ${error}`);
+        if (EXISTS_ANDROID_INTERFACE) {
             Android.copyToClipboard(copytext);
-            log('[AND]: copyPlainTxt(): through Android WepAppInterface');
+            log('[AND]: module.js: copyPlainTxt(): through Android WepAppInterface');
             Android.showToast('Text copied!');
-        }
-        else {
-            err('android interface doesn\'t exist');
+        } else {
+            err('module.js: android interface doesn\'t exist');
             dialog.display('alert', 'Oops!', 'Copy text to clipboard failed');
         }
     });
 }
 
-// detect browser
+/**
+ * Get the name of the current browser.
+ * @return {String} Name of current browser.
+ */
 export const getBrowser = () => {
     if (navigator.userAgent.matches(/Opera|OPR/)) {
         return 'opera';
@@ -238,12 +354,15 @@ export const getBrowser = () => {
     return 'unknown';
 }
 
-// js element selector function, inspired by JQuery
+/**
+ * Select HTML element/s from the document root using CSS syntax.
+ * @param {String} val The CSS representation of the element.
+ * @return {Node} The HTML element or,
+ * @return {HTMLCollection} A collection of similar HTML elements.
+ */
 export const $ = (val) => {
     val = val.trim();
-    if (/ |,|\[|\]|>|:/.test(val)) {
-        return document.querySelectorAll(val);
-    }
+    if (/ |,|\[|\]|>|:/.test(val)) return document.querySelectorAll(val);
     switch (val.charAt(0)) {
         case '#':
             return document.getElementById(val.substring(1));
@@ -254,12 +373,16 @@ export const $ = (val) => {
     }
 }
 
-// get child element using css selectors
+/**
+ * Select HTML element/s from an HTML node using CSS syntax.
+ * @param {Node} element The element from which other elements will be selected.
+ * @param {String} val The CSS representation of the element.
+ * @return {Node} The HTML element or,
+ * @return {HTMLCollection} A collection of similar HTML elements.
+ */
 export const getChildElement = (element, val) => {
     val = val.trim();
-    if (/ |,|\[|\]|>|:/.test(val)) {
-        return element.querySelectorAll(val);
-    }
+    if (/ |,|\[|\]|>|:/.test(val)) return element.querySelectorAll(val);
     switch (val.charAt(0)) {
         case '#':
             return document.getElementById(val.substring(1));
@@ -270,12 +393,17 @@ export const getChildElement = (element, val) => {
     }
 }
 
-// checks if the parent has the passed child
-export const hasElementAsParent = (child, parent) => {
+/**
+ * Checks if the given child has the given parent.
+ * @param {Node} child The child in concern.
+ * @param {Node} parent The parent in concern.
+ * @return {Boolean} If true, the given child has the given parent.
+ */
+export const childHasParent = (child, parent) => {
     let node = child.parentNode;
     while (node != null) {
         if (node == parent) {
-            log('node ' + node.nodeName + ' has parent = ' + parent.nodeName);
+            log(`module.js: ${node.nodeName} of class = ${node.className} has parent ${parent.nodeName} of class = ${parent.className}`);
             return true;
         }
         node = node.parentNode;
@@ -283,23 +411,21 @@ export const hasElementAsParent = (child, parent) => {
     return false;
 }
 
-/*!
- * JavaScript detach - v0.2 - 5/18/2011
- * http://benalman.com/
- *
- * Copyright (c) 2011 'Cowboy' Ben Alman
- * Dual licensed under the MIT and GPL licenses.
- * http://benalman.com/about/license/
+/**
+ * Takes an HTML string, converts it to a node and attatches it to the element passed.
+ * This is done by detaching and reattaching the element to its parent to improve performance.
+ * @param {Node} element The element to which HTML will be appended.
+ * @param {String} str The HTML string.
+ * @param {Boolean} reversed  Prepends the HTML to the node.
  */
-// Visit: https://gist.github.com/cowboy/938767
-export const appendHTMLString = (element, str, reversed = false) => {
+export const appendHTMLString = (element, str = '', reversed = false) => {
     let parent =  element.parentNode;
     let next = element.nextSibling;
-    if (!parent) return;                              // No parent node? Abort!
-    parent.removeChild(element);                      // Detach node from DOM.
-    if (!reversed) element.innerHTML += str;          // append html string
-    else element.innerHTML = str + element.innerHTML; // reversed append html
-    parent.insertBefore(element, next);               // Re-attach node to DOM.
+    if (!parent) return;                                   // No parent node? Abort!
+    parent.removeChild(element);                           // Detach node from DOM.
+    if (!reversed) element.innerHTML += str;               // append html string
+    else element.innerHTML = `${str}${element.innerHTML}`; // reversed append html
+    parent.insertBefore(element, next);                    // Re-attach node to DOM.
 }
 
 /* ----------------------------------------- TODO -------------------------------------------
@@ -308,216 +434,253 @@ export const appendHTMLString = (element, str, reversed = false) => {
  */
 
 // alertDialog
-export const alertDialog = {
-    // default button is close
-    display(title, message, button = 'Close', func) {
+const alertDialog = {
+    // default button is Close
+    display(title = 'Alert!', message = '', button = 'Close', func) {
         if (typeof button != 'string') {
-            throw 'Error: typeof button title is '+ (typeof button) + ', expected string';
+            throw `Error: typeof button title = ${typeof button}, expected String`;
         }
         if (func && typeof func != 'function') {
-            throw 'Error: typeof func is '+ (typeof func) + ', expected function';
+            throw `Error: typeof func = ${typeof func}, expected function`;
         }
         // delay when one overlay is already open
         let timeout = 0;
-        if (overlay.instance_open) {
-            timeout = overlay.animation_duration;
-        }
+        if (Overlay.instance_open) timeout = Overlay.animation_duration;
         setTimeout(() => {
-            log('alertDialog display(): timeout = ' + timeout);
+            log(`module.js: alertDialog display(): timeout = ${timeout}`);
             getChildElement($('#alertDialog'), 'h2')[0].innerHTML = title.replace(/\n/g, '<br>');;
             getChildElement($('#alertDialog'), 'div')[0].innerHTML = message.replace(/\n/g, '<br>');
             $('#alertDialog_btn').innerHTML = button;
-            $('#alertDialog_btn').addEventListener('click', (e) => {
-                if (func != undefined) {
-                    func();
-                }
-            // removes event listener once action is complete
-            }, { once: true });
-            $('#alertDialogRoot').style.animation = 'fadeIn ' + overlay.animation_duration + 'ms forwards';
-            $('#alertDialog').style.animation = 'scaleIn ' + overlay.animation_duration + 'ms forwards';
-            overlay.instance_open = true;
+            // once: true removes listener after it fires atmost once
+            if (func) $('#alertDialog_btn').addEventListener('click', func, { once: true });
+            $('#alertDialogRoot').style.animation = `fadeIn ${Overlay.animation_duration}ms forwards`;
+            $('#alertDialog').style.animation = `scaleIn ${Overlay.animation_duration}ms forwards`;
+            Overlay.instance_open = true;
         }, timeout);
     },
     hide(func) {
-        $('#alertDialogRoot').style.animation = 'fadeOut ' + overlay.animation_duration + 'ms forwards';
-        $('#alertDialog').style.animation = 'scaleOut ' + overlay.animation_duration + 'ms forwards';
+        $('#alertDialogRoot').style.animation = `fadeOut ${Overlay.animation_duration}ms forwards`;
+        $('#alertDialog').style.animation = `scaleOut ${Overlay.animation_duration}ms forwards`;
         setTimeout(() => {
-            overlay.instance_open = false;
-        }, overlay.animation_duration);
+            Overlay.instance_open = false;
+        }, Overlay.animation_duration);
         // additional function
-        if (func != undefined) {
-            if (typeof func != 'function') {
-                throw 'Error: typeof func is '+ (typeof func) + ', expected function';
-            }
-            func();
+        if (!func) return;
+        if (typeof func != 'function') {
+            throw `Error: typeof func = ${typeof func}, expected function`;
+            return;
         }
+        func.call();
     }
 }
 
 // actionDialog
-export const actionDialog = {
-    // default button is close
-    display(title, message, button = 'OK', func) {
+const actionDialog = {
+    onClickFunction: undefined,
+    // default button is Ok
+    display(title = 'Alert!', message = '', button = 'OK', func) {
         if (typeof button != 'string') {
-            throw 'Error: typeof button title is '+ (typeof button) + ', expected string';
+            throw `Error: typeof button title = ${typeof button}, expected String`;
         }
         if (!func || typeof func != 'function') {
-            throw 'Error: typeof func is '+ (typeof func) + ', expected function';
+            throw `Error: typeof func = ${typeof func}, expected function`;
         }
         // delay when one overlay is already open
         let timeout = 0;
-        if (overlay.instance_open) {
-            timeout = overlay.animation_duration;
-        }
+        // remove previous button click listener if any
+        if (this.onClickFunction) $('#actionDialog_btnOk').removeEventListener('click', this.onClickFunction);
+        // the function to run on button click
+        this.onClickFunction = func;
+        if (Overlay.instance_open) timeout = Overlay.animation_duration;
         setTimeout(() => {
-            log('actionDialog: display(): timeout = ' + timeout);
+            log(`module.js: actionDialog display(): timeout = ${timeout}`);
             getChildElement($('#actionDialog'), 'h2')[0].innerHTML = title.replace(/\n/g, '<br>');;
             getChildElement($('#actionDialog'), '.content')[0].innerHTML = message.replace(/\n/g, '<br>');
-            $('#actionDialog_btnOk').innerHTML = button;
-            $('#actionDialog_btnOk').addEventListener('click', (e) => {
-                if (func != undefined) {
-                    func();
-                }
-            // removes event listener once action is complete
-            }, { once: true });
-            $('#actionDialogRoot').style.animation = 'fadeIn ' + overlay.animation_duration + 'ms forwards';
-            $('#actionDialog').style.animation = 'scaleIn ' + overlay.animation_duration + 'ms forwards';
-            overlay.instance_open = true;
+            $('#actionDialog_btnOk').innerHTML = button;    
+            if (this.onClickFunction) $('#actionDialog_btnOk').addEventListener('click', this.onClickFunction);
+            $('#actionDialogRoot').style.animation = `fadeIn ${Overlay.animation_duration}ms forwards`;
+            $('#actionDialog').style.animation = `scaleIn ${Overlay.animation_duration}ms forwards`;
+            Overlay.instance_open = true;
         }, timeout);
     },
     hide(func) {
-        $('#actionDialogRoot').style.animation = 'fadeOut ' + overlay.animation_duration + 'ms forwards';
-        $('#actionDialog').style.animation = 'scaleOut ' + overlay.animation_duration + 'ms forwards';
+        $('#actionDialogRoot').style.animation = `fadeOut ${Overlay.animation_duration}ms forwards`;
+        $('#actionDialog').style.animation = `scaleOut ${Overlay.animation_duration}ms forwards`;
+        // remove button click listeners while hiding dialog, if any
+        if (this.onClickFunction) $('#actionDialog_btnOk').removeEventListener('click', this.onClickFunction);
         setTimeout(() => {
-            overlay.instance_open = false;
-        }, overlay.animation_duration);
+            Overlay.instance_open = false;
+        }, Overlay.animation_duration);
         // additional function
-        if (func != undefined) { 
-            if (typeof func != 'function') {
-                throw 'Error: typeof func is '+ (typeof func) + ', expected function';
-            }
-            func();
+        if (!func) return;
+        if (typeof func != 'function') {
+            throw `Error: typeof func = ${typeof func}, expected function`;
+            return;
         }
+        func.call();
     }
 }
 
 /*--------------------------------------- TODO START -------------------------------------------*/
 
-// dialog
+/**
+ * Represents a dialog.
+ * Needs the code for a dialog in the HTML document.
+ */
 export const dialog = {
+    /**
+     * Display the dialog.
+     * @param {String} category Either 'alert' or 'action'.
+     * @param {String} title Title of the dialog.
+     * @param {String} message Message to be displayed.
+     * @param {String} button Title of the default button.
+     * @param {Function} func Optional for 'alert' category, function to run if default is button clicked.
+     * @throws {Error} If category is invalid.
+     * @throws {Error} If no function is provided for 'action' category.
+     */
     display(category, title, message, button, func) {
         if (category == 'alert') {
             alertDialog.display(title, message, button, func);
-        }
-        else if (category == 'action') {
+        } else if (category == 'action') {
             actionDialog.display(title, message, button, func);
-        }
+        } else throw `Error: dialog category = ${category}, expected 'alert' or 'action'`;
     },
+    /**
+     * Hide the dialog.
+     * @param {String} category Either 'alert' or 'action'.
+     * @param {Function} func Optional, function to run once dialog is closed.
+     * @throws {Error} If category is invalid.
+     */
     hide(category, func) {
         if (category == 'alert') {
             alertDialog.hide(func);
-        }
-        else if (category == 'action') {
+        } else if (category == 'action') {
             actionDialog.hide(func);
-        }
+        } else throw `Error: dialog category = ${category}, expected 'alert' or 'action'`;
     }
 }
 
 /*--------------------------------------- TODO END --------------------------------------------*/
 
-// menu alertDialog
+/**
+ * Represents a menu.
+ * Needs the code for a menu in the HTML document.
+ */
 export const menu = {
+    /**
+     * Display the menu.
+     * @param {String} title Optional, default value = 'Menu'. Title of the menu dialog.
+     */
     display(title = 'Menu') {
         // delay when one overlay is already open
         let timeout = 0;
-        if (overlay.instance_open) {
-            timeout = overlay.animation_duration;
-        }
+        if (Overlay.instance_open) timeout = Overlay.animation_duration;
         setTimeout(() => {
-            log('menu: timeout = ' + timeout);
+            log(`module.js: menu: timeout = ${timeout}`);
             getChildElement($('#menu'), 'h2')[0].innerHTML = title.replace(/\n/g, '<br>');;
-            $('#menuRoot').style.animation = 'fadeIn ' + overlay.animation_duration + 'ms forwards';
-            $('#menu').style.animation = 'scaleIn ' + overlay.animation_duration + 'ms forwards';
-            overlay.instance_open = true;
+            $('#menuRoot').style.animation = `fadeIn ${Overlay.animation_duration}ms forwards`;
+            $('#menu').style.animation = `scaleIn ${Overlay.animation_duration}ms forwards`;
+            Overlay.instance_open = true;
         }, timeout);
     },
+    /**
+     * Hide the menu dialog.
+     */
     hide() {
-        $('#menuRoot').style.animation = 'fadeOut ' + overlay.animation_duration + 'ms forwards';
-        $('#menu').style.animation = 'scaleOut ' + overlay.animation_duration + 'ms forwards';
+        $('#menuRoot').style.animation = `fadeOut ${Overlay.animation_duration}ms forwards`;
+        $('#menu').style.animation = `scaleOut ${Overlay.animation_duration}ms forwards`;
         setTimeout(() => {
-            overlay.instance_open = false;
-        }, overlay.animation_duration);
+            Overlay.instance_open = false;
+        }, Overlay.animation_duration);
     }
 }
 
-// looks for updates to android app
+/** 
+ * Looks for updates to the android app and opens an alert dialog if update is available.
+ */
 export const checkForApkUpdates = () => {
-    if (EXISTSANDROIDINTERFACE) {
-        let val;
-        try {
-            val = Android.updateAvailable();
-            switch (val) {
-                case 'true':
-                    log('alertDialog: launch: update available');
-                    dialog.display('alert', 'Update available', 'A new version of this Android app is available.', 'Download', () => {
-                        setTimeout(() => {
-                            Android.showToast('Downloading app, look into your notification panel');
-                            Android.download('https://sozialnmedien.web.app/downloads/chat.app.web.sozialnmedien.apk', 'chat.app.web.sozialnmedien.apk');
-                        }, 500);
-                        dialog.hide('alert');
-                        log('[AND]: downloaded Android app');
-                    });
+    if (!EXISTS_ANDROID_INTERFACE) return;
+    log('[APK]: module.js: checking for update');
+    try { 
+        switch (Android.updateAvailable()) {
+            case 'true':
+                log('module.js: alertDialog: launch: update available');
+                dialog.display('alert', 'Update available', 'A new version of this Android app is available.', 'Download', () => {
+                   setTimeout(() => {
+                        Android.showToast('Downloading app, look into your notification panel');
+                        Android.download('https://sozialnmedien.web.app/downloads/chat.app.web.sozialnmedien.apk', 'chat.app.web.sozialnmedien.apk');
+                    }, 500);
+                    dialog.hide('alert');
+                    log('[AND]: module.js: downloaded Android app');
+                });
                 break;
-                case 'failed':
-                    err('update check failed');
+            case 'failed':
+                err('module.js: update check failed');
                 break;
-            }
         }
-        catch (error) {
-            err(error);
-        }
+    }
+    catch (error) {
+        err(`module.js: ${error}`);
     }
 }
 
-// smooth scroll
-export const smoothScroll = (element, flag = true, notsmooth) => {
+/**
+ * Scrolls down a view smoothly if amount of element below viewport is less than 720 pixels.
+ * @param {Node} element The element to scroll down.
+ * @param {Boolean} get_behavior_only If true, only returns scroll behavior based on amount of element below viewport.
+ * @param {Boolean} not_smooth Explicitly mention to scroll without animations.
+ * @return {String} The scroll behavior (conditional).
+ */
+export const smoothScroll = (element, get_behavior_only = true, not_smooth) => {
     // check if down scrollable part of element is < 720 px
-    if (!notsmooth && element.scrollHeight - (document.body.clientHeight - 110) - element.scrollTop < 720) {
-        if (!flag) return 'smooth';
+    if (!not_smooth && element.scrollHeight - (document.body.clientHeight - 110) - element.scrollTop < 720) {
+        if (!get_behavior_only) return 'smooth';
         element.style.scrollBehavior = 'smooth';
-    }
-    else {
-        if (!flag) return 'auto';
+    } else {
+        if (!get_behavior_only) return 'auto';
         element.style.scrollBehavior = 'auto';
     }
-    log('smoothscroll(): element = ' + element.nodeName + ' class = ' + element.className + ' diff = ' + (element.scrollHeight - element.scrollTop));
+    log(`module.js: smoothscroll(): element = ${element.nodeName} class = ${element.className} diff = ${element.scrollHeight - element.scrollTop}`);
     element.scrollTop = element.scrollHeight;
 }
 
-/* @deprecated
- * This function was supposed to reload the dynamic accent colors
- * of the newly added chat bubbles. But currently we're using
- * a all teal accent (WhatsApp theme). So this won't be needed.
+/**
+ * @deprecated Apparently unnecessary function.
+ * This function was supposed to reload the dynamic accent colors of the newly added chat bubbles.
+ * But currently we're using an all-teal accent (former WhatsApp brand colors).
+ * So this won't be needed.
  */
 export const loadTheme = () => {
-    if (!LOADTHEME) return;
+    if (!LOAD_THEME) return;
+    // custom accents: primary background color
+    for (let element of $('.acc_bg')) {
+        element.style.backgroundColor = ACCENT_BGCOLOR;
+        element.style.borderColor = ACCENT_BGCOLOR;
+        element.style.color = DARK_FG_COLOR;
+    }
     // custom accents: primary background color
     for (let element of $('.prim_bg')) {
-        element.style.backgroundColor = ACCENT_PRIMARY_BGCOLOR;
-        element.style.borderColor = ACCENT_PRIMARY_BGCOLOR;
-        element.style.color = ACCENT_FG_COLOR;
+        element.style.backgroundColor = PRIMARY_BGCOLOR;
+        element.style.borderColor = PRIMARY_BGCOLOR;
+        element.style.color = FG_COLOR;
     }
-    // custom accents: secondary background color without alpha
+    // custom accents: secondary background color
     for (let element of $('.sec_bg')) {
-        element.style.backgroundColor = ACCENT_SECONDARY_BGCOLOR;
-        element.style.borderColor = ACCENT_SECONDARY_BGCOLOR;
-        element.style.color = '#222';
+        element.style.backgroundColor = SECONDARY_BGCOLOR;
+        element.style.borderColor = SECONDARY_BGCOLOR;
+        element.style.color = FG_COLOR;
     }
-    // custom accents: tertiary background color without alpha
-    for (let element of $('.tert_bg')) {
-        element.style.backgroundColor = ACCENT_TERTIARY_BGCOLOR;
-        element.style.borderColor = ACCENT_TERTIARY_BGCOLOR;
-        element.style.color = '#222';
+    // custom accents: chat bubble background color
+    for (let element of $('.chatbubble_bg')) {
+        element.style.backgroundColor = CHAT_BUBBLE_BGCOLOR;
+        element.style.borderColor = CHAT_BUBBLE_BGCOLOR;
+        element.style.color = FG_COLOR;
     }
-    log('loadTheme(): loaded');
+    // custom accents: controls background color
+    for (let element of $('.control_bg')) {
+        element.style.backgroundColor = CONTROL_COLOR;
+        element.style.borderColor = CONTROL_COLOR;
+        element.style.color = DARK_FG_COLOR;
+    }
+    log('module.js: loadTheme(): loaded');
 }

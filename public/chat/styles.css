@@ -1,6 +1,3 @@
-body {
-    background-color: #ece5dd;
-}
 .alertDialogRoot {
     visibility: visible;
 }
@@ -15,7 +12,7 @@ body {
 .titlebar {
     height: 54px;
     display: flex;
-    flex-direction: row;l
+    flex-direction: row;
 }
 .backarrow,
 .dp {
@@ -24,7 +21,6 @@ body {
     border: 0px;
     border-radius: 50px;
     margin: auto 5px auto;
-    background-color: #075E54;
     cursor: pointer;
 }
 .backarrow {
@@ -52,8 +48,7 @@ body {
     width: 75%;
     max-width: 400px;
     padding: 5px 5px 5px;
-    background-color: #fff5c4;
-    border: 1px solid #fff5c4;
+    border: 0;
     box-shadow: 1px 1px 2px #aaa;
     border-radius: 10px;
 }
@@ -89,7 +84,39 @@ body {
 .chatarea .bubbles blockquote {
     cursor: pointer;
 }
-.markdown img {
+.chatarea .bubbles blockquote img {
+    width: 90px;
+    height: auto;
+    margin: 0 0 10px 0;
+}
+.chatarea .bubbles blockquote {
+    border: 0;
+    border-left: 5px solid var(--accent-bgcolor);
+    background-color: #f0f0f0;
+    transition-duration: 200ms;
+}
+.chatarea .bubbles .this blockquote {
+    border: 0;
+    border-left: 5px solid purple;
+    background-color: #cce8b6;
+}
+.chatarea .bubbles .this blockquote:active {
+    background-color: #bcd8a6;
+}
+.chatarea .bubbles .that blockquote:active {
+    background-color: #d8d8d8;
+}
+.chatarea .bubbles pre code {
+    border: 0;
+    border-left: 5px solid var(--accent-bgcolor);
+    background-color: #f0f0f0;
+}
+.chatarea .bubbles .this pre code {
+    border: 0;
+    border-left: 5px solid purple;
+    background-color: #cce8b6;
+}
+.chatarea .bubble img {
     transition-duration: 250ms;
     cursor: pointer;
 }
@@ -156,20 +183,16 @@ body {
     margin-left: auto;
     padding-top: 4px;
     padding-right: 9px;
-    border: 2px solid #128c7e;
+    border: 0;
     border-radius: 50px;
     color: #eee;
-    background-color: #128c7e;
     font-size: 23px;
     box-shadow: 1px 1px 2px #aaa;
 }
 .msgbox button:active {
-    font-size: 20px;
+    font-size: 22px;
 }
 @media only screen and (orientation: landscape) and (min-height: 640px) {
-    body {
-        
-    }
     .root,
     .titlebar,
     .msgpreview,
@@ -188,7 +211,7 @@ body {
 /* animations */
 @keyframes highlight {
     0% {
-        background-color: #52dcce;
+        background-color: var(--highlight-select-color);
     }
     100% {
         background-color: transparent;
