@@ -451,12 +451,8 @@ const alertDialog = {
             getChildElement($('#alertDialog'), 'h2')[0].innerHTML = title.replace(/\n/g, '<br>');;
             getChildElement($('#alertDialog'), 'div')[0].innerHTML = message.replace(/\n/g, '<br>');
             $('#alertDialog_btn').innerHTML = button;
-            if (func) {
-                // add listener for click event
-                $('#alertDialog_btn').addEventListener('click', func);
-                // once clicked, remove click listener
-                $('#alertDialog_btn').removeEventListener('click', func);
-            }
+            // once: true removes listener after it fires atmost once
+            if (func) $('#alertDialog_btn').addEventListener('click', func, { once: true });
             $('#alertDialogRoot').style.animation = `fadeIn ${Overlay.animation_duration}ms forwards`;
             $('#alertDialog').style.animation = `scaleIn ${Overlay.animation_duration}ms forwards`;
             Overlay.instance_open = true;
@@ -480,6 +476,7 @@ const alertDialog = {
 
 // actionDialog
 const actionDialog = {
+    onClickFunction: undefined,
     // default button is Ok
     display(title = 'Alert!', message = '', button = 'OK', func) {
         if (typeof button != 'string') {
@@ -490,18 +487,17 @@ const actionDialog = {
         }
         // delay when one overlay is already open
         let timeout = 0;
+        // remove previous button click listener if any
+        if (this.onClickFunction) $('#actionDialog_btnOk').removeEventListener('click', this.onClickFunction);
+        // the function to run on button click
+        this.onClickFunction = func;
         if (Overlay.instance_open) timeout = Overlay.animation_duration;
         setTimeout(() => {
             log(`module.js: actionDialog display(): timeout = ${timeout}`);
             getChildElement($('#actionDialog'), 'h2')[0].innerHTML = title.replace(/\n/g, '<br>');;
             getChildElement($('#actionDialog'), '.content')[0].innerHTML = message.replace(/\n/g, '<br>');
-            $('#actionDialog_btnOk').innerHTML = button;
-            if (func) {
-                // add listener for click event
-                $('#actionDialog_btnOk').addEventListener('click', func);
-                // once clicked, remove click listener
-                $('#actionDialog_btnOk').removeEventListener('click', func);
-            }
+            $('#actionDialog_btnOk').innerHTML = button;    
+            if (this.onClickFunction) $('#actionDialog_btnOk').addEventListener('click', this.onClickFunction);
             $('#actionDialogRoot').style.animation = `fadeIn ${Overlay.animation_duration}ms forwards`;
             $('#actionDialog').style.animation = `scaleIn ${Overlay.animation_duration}ms forwards`;
             Overlay.instance_open = true;
@@ -510,6 +506,8 @@ const actionDialog = {
     hide(func) {
         $('#actionDialogRoot').style.animation = `fadeOut ${Overlay.animation_duration}ms forwards`;
         $('#actionDialog').style.animation = `scaleOut ${Overlay.animation_duration}ms forwards`;
+        // remove button click listeners while hiding dialog, if any
+        if (this.onClickFunction) $('#actionDialog_btnOk').removeEventListener('click', this.onClickFunction);
         setTimeout(() => {
             Overlay.instance_open = false;
         }, Overlay.animation_duration);
