@@ -174,7 +174,7 @@ const SESSION_TOKEN = getLongDateTime();
  * @param {String} val The stuff to be printed
  */
 export const log = (val) => {
-    if (DEBUG) console.log(`Log: ${val}`);
+    if (DEBUG) console.log(`Log: module.js: ${val}`);
     // write logs in local database
     SessionLogs[getTimeStamp(true)] = val;
 }
@@ -208,7 +208,7 @@ export const uploadSessionLogs = () => {
     firebaseDBUpdate(firebaseDBRef(Database, `${DB_ROOT}/records/sessionlogs/${USER_TOKEN}/${SESSION_TOKEN}`), SessionLogs).then(() => {
         // do nothing
     }).catch((error) => {
-        err(error);
+        err(`module.js: ${error}`);
     });
 }
 
@@ -234,7 +234,7 @@ export const generateUserToken = () => {
     if (!localStorage.getItem('User.token')) {
         USER_TOKEN = generateToken();
         localStorage.setItem('User.token', USER_TOKEN);
-        log(`user: new token = ${USER_TOKEN}`);
+        log(`module.js: user: new token = ${USER_TOKEN}`);
     }
     USER_TOKEN = localStorage.getItem('User.token');
 }
@@ -245,12 +245,12 @@ export const generateUserToken = () => {
 export const getUserInfo = () => {
     firebaseOnAuthStateChanged(Auth, (user) => {
         if (!user) {
-            err('user: not signed in');
+            err('module.js: user not signed in');
             return;
         }
         USER_ID = user.uid;
         localStorage.setItem('Auth.user', JSON.stringify(user));
-        log(`user: id = ${USER_ID}`);
+        log(`module.js: user: id = ${USER_ID}`);
     });
 }
 
@@ -264,7 +264,7 @@ export const encode = (str) => {
     for (let character of specialChars) {
         str = str.replaceAll(character, `ASCII${character.charCodeAt(0)}`);
     }
-    if (DEBUG) console.log(`Log: encode(): str = ${str}`);
+    if (DEBUG) console.log(`Log: module.js: encode(): str = ${str}`);
     return str;
 }
 
@@ -278,7 +278,7 @@ export const decode = (str) => {
     for (let character of specialChars) {
         str = str.replaceAll(`ASCII${character.charCodeAt(0)}`, character);
     }
-    if (DEBUG) console.log(`Log: decode(): str = ${str}`);
+    if (DEBUG) console.log(`Log: module.js: decode(): str = ${str}`);
     return str;
 }
 
@@ -292,14 +292,14 @@ export const download = (directurl, filename = `sozialnmedien_${getTimeStamp()}.
     if (EXISTS_ANDROID_INTERFACE) {
         try {
             Android.download(directurl, filename);
-            log('[AND]: download(): through Android WepAppInterface');
+            log('[AND]: module.js: download(): through Android WepAppInterface');
         } catch (error) {
-            err(error);
+            err(`module.js: ${error}`);
             throw error;
         }
         return;
     }
-    err('android interface doesn\'t exist');
+    err('module.js: android interface doesn\'t exist');
     throw 'Error: android interface doesn\'t exist';
     let element = document.createElement('a');
     element.setAttribute('href', directurl);
@@ -317,15 +317,15 @@ export const download = (directurl, filename = `sozialnmedien_${getTimeStamp()}.
 export const copyPlainTxt = (copytext = '') => {
     copytext = copytext.replace(/<br>/g, '\n').replace(/<[^>]*>/g, '');
     navigator.clipboard.writeText(copytext).then(() => {
-        log('text copied to clipboard');
+        log('module.js: text copied to clipboard');
     }).catch((error) => {
-        err(error);
+        err(`module.js: ${error}`);
         if (EXISTS_ANDROID_INTERFACE) {
             Android.copyToClipboard(copytext);
-            log('[AND]: copyPlainTxt(): through Android WepAppInterface');
+            log('[AND]: module.js: copyPlainTxt(): through Android WepAppInterface');
             Android.showToast('Text copied!');
         } else {
-            err('android interface doesn\'t exist');
+            err('module.js: android interface doesn\'t exist');
             dialog.display('alert', 'Oops!', 'Copy text to clipboard failed');
         }
     });
@@ -403,7 +403,7 @@ export const childHasParent = (child, parent) => {
     let node = child.parentNode;
     while (node != null) {
         if (node == parent) {
-            log(`${node.nodeName} of class = ${node.className} has parent ${parent.nodeName} of class = ${parent.className}`);
+            log(`module.js: ${node.nodeName} of class = ${node.className} has parent ${parent.nodeName} of class = ${parent.className}`);
             return true;
         }
         node = node.parentNode;
@@ -447,17 +447,16 @@ const alertDialog = {
         let timeout = 0;
         if (Overlay.instance_open) timeout = Overlay.animation_duration;
         setTimeout(() => {
-            log(`alertDialog display(): timeout = ${timeout}`);
+            log(`module.js: alertDialog display(): timeout = ${timeout}`);
             getChildElement($('#alertDialog'), 'h2')[0].innerHTML = title.replace(/\n/g, '<br>');;
             getChildElement($('#alertDialog'), 'div')[0].innerHTML = message.replace(/\n/g, '<br>');
             $('#alertDialog_btn').innerHTML = button;
-            // function to be passed to event listener
-            const runFunction = () => {
-                // removes event listener once action is complete
-                $('#alertDialog_btn').removeEventListener('click', runFunction);
-                func.call();
+            if (func) {
+                // add listener for click event
+                $('#alertDialog_btn').addEventListener('click', func);
+                // once clicked, remove click listener
+                $('#alertDialog_btn').removeEventListener('click', func);
             }
-            if (func) $('#alertDialog_btn').addEventListener('click', runFunction, { once: true });
             $('#alertDialogRoot').style.animation = `fadeIn ${Overlay.animation_duration}ms forwards`;
             $('#alertDialog').style.animation = `scaleIn ${Overlay.animation_duration}ms forwards`;
             Overlay.instance_open = true;
@@ -493,17 +492,16 @@ const actionDialog = {
         let timeout = 0;
         if (Overlay.instance_open) timeout = Overlay.animation_duration;
         setTimeout(() => {
-            log(`actionDialog display(): timeout = ${timeout}`);
+            log(`module.js: actionDialog display(): timeout = ${timeout}`);
             getChildElement($('#actionDialog'), 'h2')[0].innerHTML = title.replace(/\n/g, '<br>');;
             getChildElement($('#actionDialog'), '.content')[0].innerHTML = message.replace(/\n/g, '<br>');
             $('#actionDialog_btnOk').innerHTML = button;
-            // function to be passed to event listener
-            const runFunction = () => {
-                // removes event listener once action is complete
-                $('#actionDialog_btnOk').removeEventListener('click', runFunction);
-                func.call();
+            if (func) {
+                // add listener for click event
+                $('#actionDialog_btnOk').addEventListener('click', func);
+                // once clicked, remove click listener
+                $('#actionDialog_btnOk').removeEventListener('click', func);
             }
-            if (func) $('#actionDialog_btnOk').addEventListener('click', runFunction, { once: true });
             $('#actionDialogRoot').style.animation = `fadeIn ${Overlay.animation_duration}ms forwards`;
             $('#actionDialog').style.animation = `scaleIn ${Overlay.animation_duration}ms forwards`;
             Overlay.instance_open = true;
@@ -580,7 +578,7 @@ export const menu = {
         let timeout = 0;
         if (Overlay.instance_open) timeout = Overlay.animation_duration;
         setTimeout(() => {
-            log(`menu: timeout = ${timeout}`);
+            log(`module.js: menu: timeout = ${timeout}`);
             getChildElement($('#menu'), 'h2')[0].innerHTML = title.replace(/\n/g, '<br>');;
             $('#menuRoot').style.animation = `fadeIn ${Overlay.animation_duration}ms forwards`;
             $('#menu').style.animation = `scaleIn ${Overlay.animation_duration}ms forwards`;
@@ -604,27 +602,27 @@ export const menu = {
  */
 export const checkForApkUpdates = () => {
     if (!EXISTS_ANDROID_INTERFACE) return;
-    log('[APK]: checking for update');
+    log('[APK]: module.js: checking for update');
     try { 
         switch (Android.updateAvailable()) {
             case 'true':
-                log('alertDialog: launch: update available');
+                log('module.js: alertDialog: launch: update available');
                 dialog.display('alert', 'Update available', 'A new version of this Android app is available.', 'Download', () => {
                    setTimeout(() => {
                         Android.showToast('Downloading app, look into your notification panel');
                         Android.download('https://sozialnmedien.web.app/downloads/chat.app.web.sozialnmedien.apk', 'chat.app.web.sozialnmedien.apk');
                     }, 500);
                     dialog.hide('alert');
-                    log('[AND]: downloaded Android app');
+                    log('[AND]: module.js: downloaded Android app');
                 });
                 break;
             case 'failed':
-                err('update check failed');
+                err('module.js: update check failed');
                 break;
         }
     }
     catch (error) {
-        err(error);
+        err(`module.js: ${error}`);
     }
 }
 
@@ -644,7 +642,7 @@ export const smoothScroll = (element, get_behavior_only = true, not_smooth) => {
         if (!get_behavior_only) return 'auto';
         element.style.scrollBehavior = 'auto';
     }
-    log(`smoothscroll(): element = ${element.nodeName} class = ${element.className} diff = ${element.scrollHeight - element.scrollTop}`);
+    log(`module.js: smoothscroll(): element = ${element.nodeName} class = ${element.className} diff = ${element.scrollHeight - element.scrollTop}`);
     element.scrollTop = element.scrollHeight;
 }
 
@@ -686,5 +684,5 @@ export const loadTheme = () => {
         element.style.borderColor = CONTROL_COLOR;
         element.style.color = DARK_FG_COLOR;
     }
-    log('loadTheme(): loaded');
+    log('module.js: loadTheme(): loaded');
 }

@@ -55,6 +55,7 @@ It also makes code big and slow.
 - Keep `HTML`, `CSS` and `JavaScript` files seperate for faster page loading.
 - JavaScript code should be kept modular.
 - Only link (or import) those CSS files (or JS modules) that you'll need.
+- `CSS`, `res` and `JS` must be linked via absolute path.
 - Keep your code as flat as possible. Avoid nested structures wherever possible.
 - Use `const` over `let` wherever possible. This way a variable will be defined only once and you won't need to track any changes made to it.
 - Don't use numbers in expressions all of a sudden. Explain their purpose by either commenting or by representing them with an identifier.
