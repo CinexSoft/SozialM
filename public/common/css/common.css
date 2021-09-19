@@ -3,10 +3,15 @@
     outline: none;
 }
 html {
+    width: 100vw;
+    height: 100vh;
     scroll-behavior: smooth;
     -webkit-tap-highlight-color: rgba(100, 100, 100, 0.1);
+    -moz-tap-highlight-color: rgba(100, 100, 100, 0.1);
 }
 body {
+    width: 100vw;
+    height: 100vh;
     margin: 0;
     font-family: Helvetica, Roboto, sans-serif;
     font-size: 90%;
@@ -30,13 +35,18 @@ button, a, .fa {
 .nohighlight,
 blockquote, img, button,
 .fa {
-    -webkit-tap-highlight-color: rgba(0,0,0,0);    /* prevent a blue highlight */
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);         /* prevent a blue highlight on WebKit */
+    -moz-tap-highlight-color: rgba(0, 0, 0, 0);            /* by default firefox doesn't highlight links, unnecessary */
 }
 /* ----------------- ANCHORS -----------------------*/
 a {
     color: dodgerblue;
-    text-decoration: none;
+    text-decoration: none !important;
     -webkit-tap-highlight-color: initial;
+    -moz-tap-highlight-color: initial;
+}
+a:active {
+    text-decoration: underline !important;
 }
 a:visited {
     color: dodgerblue;

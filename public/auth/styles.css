@@ -23,6 +23,7 @@ body {
     top: 10%;
     width: 270px;
     height: fit-content;
+    height: -moz-fit-content;
     background: white;
     padding: 7px 25px 7px;
     border-radius: 10px;
@@ -115,7 +116,7 @@ body {
  */
 @media only screen and (min-width: 400px) {
     .root {
-        zoom: 1.15;
+        transform: scale(1.15);
     }
 }
 /* if height is below 480px, which is too short, hide the footer and heading

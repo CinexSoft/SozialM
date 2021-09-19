@@ -21,6 +21,7 @@
     padding-bottom: 0px;
     max-width: 300px;
     max-height: fit-content;
+    height: -moz-fit-content;      /* mozilla doesn't support fit-content */
     background-color: #fff;
     border-radius: 10px;
     text-align: center;
@@ -43,9 +44,9 @@
     margin: 0;
     padding: 10px 20px 10px;
     word-wrap: break-word;
-    display: flex;           /* establish flex container */
-    flex-direction: column;  /* make main axis vertical */
-    justify-content: center; /* center items vertically in this case */
+    display: flex;                 /* establish flex container */
+    flex-direction: column;        /* make main axis vertical */
+    justify-content: center;       /* center items vertically in this case */
 }
 .alertDialog button,
 .actionDialog button,
@@ -134,5 +135,11 @@
     .actionDialogRoot .actionDialog,
     .menuRoot .menu {
         zoom: 1.1;
+    }
+    /* firefox doesn't support zoom */
+    .alertDialogRoot,
+    .actionDialogRoot,
+    .menuRoot {
+        -moz-transform: scale(1.1);
     }
 }
