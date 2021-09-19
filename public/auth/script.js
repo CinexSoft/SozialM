@@ -1,6 +1,6 @@
 import { Auth } from '/common/js/firebaseinit.js';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.js';
-import { PRIMARY_BGCOLOR, CONTROL_COLOR, FG_COLOR, log, err, $, checkForApkUpdates } from '/common/js/modules.js';
+import { Colors, log, err, $, checkForApkUpdates } from '/common/js/modules.js';
 
 checkForApkUpdates();
 
@@ -22,11 +22,11 @@ const resetColors = () => {
         $('#signup_pass').parentNode,
         $('#signup_pass_c').parentNode,
     ]) {
-        element.style.color = FG_COLOR;
-        element.style.borderColor = PRIMARY_BGCOLOR;
+        element.style.color = Colors.FG_COLOR;
+        element.style.borderColor = Colors.PRIMARY_BGCOLOR;
     }
     for (let element of [$('#login_pass'), $('#signup_pass'), $('#signup_pass_c')]) {
-        element.style.color = FG_COLOR;
+        element.style.color = Colors.FG_COLOR;
     }
 }
 
@@ -60,7 +60,7 @@ for (let element of $(".fa-eye-slash")) element.addEventListener('click', (event
         } else if (element.type == 'text') {
             element.type = 'password';
             for (let element of $('.fa-eye-slash')) {
-                element.style.color = CONTROL_COLOR;
+                element.style.color = Colors.CONTROL_COLOR;
             }
         }
     }

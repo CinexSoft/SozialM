@@ -18,19 +18,65 @@ import {
     update as firebaseDBUpdate,
 } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js';
 
-/* 
+/**
  * Global theme colors.
  * These can be used to modify the accent of the website.
  * It was meant to provide users with custom control over
  * how their account looks and feels.
+ * CSS definitions: `/common/css/colors.css`
+ *
+ * Available Colors:
+ - ACCENT_BGCOLOR
+ - PRIMARY_BGCOLOR
+ - SECONDARY_BGCOLOR
+ - CHAT_BUBBLE_BGCOLOR
+ - HIGHLIGHT_SELECT_COLOR
+ - CONTROL_COLOR
+ - FG_COLOR
+ - DARK_FG_COLOR
  */
-export const ACCENT_BGCOLOR = document.body.style.getPropertyValue('--accent-bgcolor');
-export const PRIMARY_BGCOLOR = document.body.style.getPropertyValue('--primary-bgcolor');
-export const SECONDARY_BGCOLOR = document.body.style.getPropertyValue('--secondary-bgcolor');
-export const CHAT_BUBBLE_BGCOLOR = document.body.style.getPropertyValue('--chat-bubble-bgcolor');
-export const CONTROL_COLOR = document.body.style.getPropertyValue('--control-color');
-export const FG_COLOR = document.body.style.getPropertyValue('--fg-color');
-export const DARK_FG_COLOR = document.body.style.getPropertyValue('--dark-fg-color');
+export const Colors = {
+    /**
+     * @type {String} Hex string with a `#` or `RGB()`. Do not use `RGBA()`.
+     * Custom CSS Property: --accent-bgcolor
+     */
+    ACCENT_BGCOLOR: document.body.style.getPropertyValue('--accent-bgcolor');
+    /**
+     * @type {String} Hex string with a `#` or `RGB()`. Do not use `RGBA()`.
+     * Custom CSS Property: --primary-bgcolor
+     */
+    PRIMARY_BGCOLOR: document.body.style.getPropertyValue('--primary-bgcolor');
+    /**
+     * @type {String} Hex string with a `#` or `RGB()`. Do not use `RGBA()`.
+     * Custom CSS Property: --secondary-bgcolor
+     */
+    SECONDARY_BGCOLOR: document.body.style.getPropertyValue('--secondary-bgcolor');
+    /**
+     * @type {String} Hex string with a `#` or `RGB()`. Do not use `RGBA()`.
+     * Custom CSS Property: --chat-bubble-bgcolor
+     */
+    CHAT_BUBBLE_BGCOLOR: document.body.style.getPropertyValue('--chat-bubble-bgcolor');
+    /**
+     * @type {String} Hex string with a `#` or `RGB()`. Do not use `RGBA()`.
+     * Custom CSS Property: --highlight-select-color
+     */
+    HIGHLIGHT_SELECT_COLOR: document.body.style.getPropertyValue('--highlight-select-color');
+    /**
+     * @type {String} Hex string with a `#` or `RGB()`. Do not use `RGBA()`.
+     * Custom CSS Property: --control-color
+     */
+    CONTROL_COLOR: document.body.style.getPropertyValue('--control-color');
+    /**
+     * @type {String} Hex string with a `#` or `RGB()`. Do not use `RGBA()`.
+     * Custom CSS Property: --fg-color
+     */
+    FG_COLOR: document.body.style.getPropertyValue('--fg-color');
+    /**
+     * @type {String} Hex string with a `#` or `RGB()`. Do not use `RGBA()`.
+     * Custom CSS Property: --dark-fg-color
+     */
+    DARK_FG_COLOR: document.body.style.getPropertyValue('--dark-fg-color');
+}
 
 /**
  * Used to recognise a user.
@@ -72,18 +118,20 @@ export const EXISTS_ANDROID_INTERFACE = typeof Android !== 'undefined'
 /**
  * Contains global data for behavior of overlays viz menus and dialogs.
  * The time taken for an overlay to animate out is Overlay.animation_duration ms.
- * Vlaue of instance_open needs to be set to true everytime an overlay opens and to false everytime an overlay closes.
- * @param {Boolean} instance_open If an overlay is already open, other overlays are postponed for Overlay.animation_duration ms.
- * @param {Number} animation_duration Can be modified to increase or decrease duration of overlay animations. Too low/high values may break the UI.
- * 
+ * Value of instance_open needs to be set to true everytime an overlay opens and to false everytime an overlay closes.
+ * This has been made automatic when using dialog and menu functions.
+ *
  * How low/high is too low/high?
  *      0 ms and over 5000 milliseconds is too low/high.
- *
- * @param {Function} setInstanceOpen Setter for scripts that import this module script.
- * @param {Function} setAnimDuration Setter for scripts that import modules.js.
  */
 export const Overlay = {
+    /**
+     * @type {Boolean} If an overlay is already open, other overlays are postponed for Overlay.animation_duration ms.
+     */
     instance_open: false,
+    /**
+     * @type {Number} Can be modified to increase or decrease duration of overlay animations. Too low/high values may break the UI.
+     */
     animation_duration: 250,
     /**
      * @deprecated The value associated is automatically handled by dialog.hide() and menu.hide().
@@ -103,9 +151,14 @@ export const Overlay = {
 }
 
 /**
- * Setters for global variables
+ * Setter for global variables.
+ *
+ * Available values:
+ - DEBUG
+ - LOAD_THEME
+ *
  * This is for scripts that import modules.js.
- * @param {String} variable Variable name - case sensitive.
+ * @param {String} variable Variable identifier - case sensitive.
  * @param {*} value New value of variable.
  */
 export const setVariable = (variable, value) => {
@@ -115,21 +168,6 @@ export const setVariable = (variable, value) => {
             break;
         case 'LOAD_THEME':
             LOAD_THEME = value;
-            break;
-        case 'ACCENT_BGCOLOR':
-            ACCENT_BGCOLOR = value;
-            break;
-        case 'PRIMARY_BGCOLOR':
-            PRIMARY_BGCOLOR = value;
-            break;
-        case 'SECONDARY_BGCOLOR':
-            ACCENT_SECONDARY_BGCOLOR = value;
-            break;
-        case 'CHAT_BUBBLE_BGCOLOR':
-            CHAT_BUBBLE_BGCOLOR = value;
-            break;
-        case 'CONTROL_COLOR':
-            CONTROL_COLOR = value;
             break;
         default:
             throw `Error: for variable ${variable}, no such variable in module.js, note that variables are case-sensitive`;
@@ -141,7 +179,9 @@ const SessionLogs = {};
 
 /**
  * Returns a local timestamp in ms since Unix epoch or in ns since app launch.
- * @param {Boolean} nanosec If true returns nanosecond time since app launch. If false, returns milliseconds time since Unix epoch.
+ * @param {Boolean} nanosec Optional, if true returns nanosecond time since app launch. If false, returns milliseconds time since Unix epoch.
+ * @return {Number} Milliseconds time since Unix epoch.
+ * @return {Number} Nanosecond time since app launch (conditional).
  */
 export const getTimeStamp = (nanosec = false) => {
     if (!nanosec) return new Date().getTime();
@@ -149,7 +189,8 @@ export const getTimeStamp = (nanosec = false) => {
 }
 
 /**
- * Gets current time zone, date time or return a date object
+ * Gets current time zone, date time or return a date object.
+ * @param {Boolean} Optional, if false returns a date object
  * @return {String} Current date in Continent/City/YYYY-MM-DD @ HH:MM:SS format.
  * @return {Object} Date object (conditional).
  */
@@ -246,6 +287,7 @@ export const getUserInfo = () => {
     firebaseOnAuthStateChanged(Auth, (user) => {
         if (!user) {
             err('module.js: user not signed in');
+            localStorage.removeItem('Auth.user');
             return;
         }
         USER_ID = user.uid;
@@ -336,21 +378,11 @@ export const copyPlainTxt = (copytext = '') => {
  * @return {String} Name of current browser.
  */
 export const getBrowser = () => {
-    if (navigator.userAgent.matches(/Opera|OPR/)) {
-        return 'opera';
-    }
-    if (navigator.userAgent.indexOf('Chrome') != -1 ) {
-        return 'chrome';
-    }
-    if (navigator.userAgent.indexOf('Safari') != -1) {
-        return 'safari';
-    }
-    if (navigator.userAgent.indexOf('Firefox') != -1 ){
-        return 'firefox';
-    }
-    if ((navigator.userAgent.indexOf('MSIE') != -1 ) || (!!document.documentMode == true)) {
-        return 'IE';
-    }
+    if (navigator.userAgent.match(/Opera|OPR/)) return 'opera';
+    if (navigator.userAgent.includes('Chrome')) return 'chrome';
+    if (navigator.userAgent.includes('Safari')) return 'safari';
+    if (navigator.userAgent.includes('Firefox')) return 'firefox';
+    if (navigator.userAgent.indexOf('MSIE') != -1> || !!document.documentMode == true) return 'IE';
     return 'unknown';
 }
 
@@ -455,14 +487,14 @@ const alertDialog = {
             if (func) $('#alertDialog_btn').addEventListener('click', func, { once: true });
             $('#alertDialogRoot').style.animation = `fadeIn ${Overlay.animation_duration}ms forwards`;
             $('#alertDialog').style.animation = `scaleIn ${Overlay.animation_duration}ms forwards`;
-            Overlay.instance_open = true;
+            Overlay.setInstanceOpen(true);
         }, timeout);
     },
     hide(func) {
         $('#alertDialogRoot').style.animation = `fadeOut ${Overlay.animation_duration}ms forwards`;
         $('#alertDialog').style.animation = `scaleOut ${Overlay.animation_duration}ms forwards`;
         setTimeout(() => {
-            Overlay.instance_open = false;
+            Overlay.setInstanceOpen(false);
         }, Overlay.animation_duration);
         // additional function
         if (!func) return;
@@ -500,7 +532,7 @@ const actionDialog = {
             if (this.onClickFunction) $('#actionDialog_btnOk').addEventListener('click', this.onClickFunction);
             $('#actionDialogRoot').style.animation = `fadeIn ${Overlay.animation_duration}ms forwards`;
             $('#actionDialog').style.animation = `scaleIn ${Overlay.animation_duration}ms forwards`;
-            Overlay.instance_open = true;
+            Overlay.setInstanceOpen(true);
         }, timeout);
     },
     hide(func) {
@@ -509,7 +541,7 @@ const actionDialog = {
         // remove button click listeners while hiding dialog, if any
         if (this.onClickFunction) $('#actionDialog_btnOk').removeEventListener('click', this.onClickFunction);
         setTimeout(() => {
-            Overlay.instance_open = false;
+            Overlay.setInstanceOpen(false);
         }, Overlay.animation_duration);
         // additional function
         if (!func) return;
@@ -580,7 +612,7 @@ export const menu = {
             getChildElement($('#menu'), 'h2')[0].innerHTML = title.replace(/\n/g, '<br>');;
             $('#menuRoot').style.animation = `fadeIn ${Overlay.animation_duration}ms forwards`;
             $('#menu').style.animation = `scaleIn ${Overlay.animation_duration}ms forwards`;
-            Overlay.instance_open = true;
+            Overlay.setInstanceOpen(true);
         }, timeout);
     },
     /**
@@ -590,7 +622,7 @@ export const menu = {
         $('#menuRoot').style.animation = `fadeOut ${Overlay.animation_duration}ms forwards`;
         $('#menu').style.animation = `scaleOut ${Overlay.animation_duration}ms forwards`;
         setTimeout(() => {
-            Overlay.instance_open = false;
+            Overlay.setInstanceOpen(false);
         }, Overlay.animation_duration);
     }
 }
@@ -652,7 +684,7 @@ export const smoothScroll = (element, get_behavior_only = true, not_smooth) => {
  */
 export const loadTheme = () => {
     if (!LOAD_THEME) return;
-    // custom accents: primary background color
+    // custom accents: accent background color
     for (let element of $('.acc_bg')) {
         element.style.backgroundColor = ACCENT_BGCOLOR;
         element.style.borderColor = ACCENT_BGCOLOR;
