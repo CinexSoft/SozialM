@@ -40,42 +40,42 @@ export const Colors = {
      * @type {String} Hex string with a `#` or `RGB()`. Do not use `RGBA()`.
      * Custom CSS Property: --accent-bgcolor
      */
-    ACCENT_BGCOLOR: document.body.style.getPropertyValue('--accent-bgcolor');
+    ACCENT_BGCOLOR: document.body.style.getPropertyValue('--accent-bgcolor'),
     /**
      * @type {String} Hex string with a `#` or `RGB()`. Do not use `RGBA()`.
      * Custom CSS Property: --primary-bgcolor
      */
-    PRIMARY_BGCOLOR: document.body.style.getPropertyValue('--primary-bgcolor');
+    PRIMARY_BGCOLOR: document.body.style.getPropertyValue('--primary-bgcolor'),
     /**
      * @type {String} Hex string with a `#` or `RGB()`. Do not use `RGBA()`.
      * Custom CSS Property: --secondary-bgcolor
      */
-    SECONDARY_BGCOLOR: document.body.style.getPropertyValue('--secondary-bgcolor');
+    SECONDARY_BGCOLOR: document.body.style.getPropertyValue('--secondary-bgcolor'),
     /**
      * @type {String} Hex string with a `#` or `RGB()`. Do not use `RGBA()`.
      * Custom CSS Property: --chat-bubble-bgcolor
      */
-    CHAT_BUBBLE_BGCOLOR: document.body.style.getPropertyValue('--chat-bubble-bgcolor');
+    CHAT_BUBBLE_BGCOLOR: document.body.style.getPropertyValue('--chat-bubble-bgcolor'),
     /**
      * @type {String} Hex string with a `#` or `RGB()`. Do not use `RGBA()`.
      * Custom CSS Property: --highlight-select-color
      */
-    HIGHLIGHT_SELECT_COLOR: document.body.style.getPropertyValue('--highlight-select-color');
+    HIGHLIGHT_SELECT_COLOR: document.body.style.getPropertyValue('--highlight-select-color'),
     /**
      * @type {String} Hex string with a `#` or `RGB()`. Do not use `RGBA()`.
      * Custom CSS Property: --control-color
      */
-    CONTROL_COLOR: document.body.style.getPropertyValue('--control-color');
+    CONTROL_COLOR: document.body.style.getPropertyValue('--control-color'),
     /**
      * @type {String} Hex string with a `#` or `RGB()`. Do not use `RGBA()`.
      * Custom CSS Property: --fg-color
      */
-    FG_COLOR: document.body.style.getPropertyValue('--fg-color');
+    FG_COLOR: document.body.style.getPropertyValue('--fg-color'),
     /**
      * @type {String} Hex string with a `#` or `RGB()`. Do not use `RGBA()`.
      * Custom CSS Property: --dark-fg-color
      */
-    DARK_FG_COLOR: document.body.style.getPropertyValue('--dark-fg-color');
+    DARK_FG_COLOR: document.body.style.getPropertyValue('--dark-fg-color'),
 }
 
 /**
@@ -382,7 +382,7 @@ export const getBrowser = () => {
     if (navigator.userAgent.includes('Chrome')) return 'chrome';
     if (navigator.userAgent.includes('Safari')) return 'safari';
     if (navigator.userAgent.includes('Firefox')) return 'firefox';
-    if (navigator.userAgent.indexOf('MSIE') != -1> || !!document.documentMode == true) return 'IE';
+    if (navigator.userAgent.indexOf('MSIE') != -1 || !!document.documentMode == true) return 'IE';
     return 'unknown';
 }
 
