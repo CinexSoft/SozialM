@@ -52,6 +52,7 @@ It also makes code big and slow.
 - Important styles can be found in `public/common/css/`.
 - Important modules can be found in `public/common/js/modules.js`.
 - All colors used can be found in `public/common/css/colors.css` and `public/common/js/modules.js`.
+- Instead of hardcoding color values, use `var(--color-name)` in CSS, or import a color from `public/common/js/modules.js` for JS.
 - Keep `HTML`, `CSS` and `JavaScript` files seperate for faster page loading.
 - JavaScript code should be kept modular.
 - Only link (or import) those CSS files (or JS modules) that you'll need.

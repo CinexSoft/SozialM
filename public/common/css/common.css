@@ -3,15 +3,11 @@
     outline: none;
 }
 html {
-    width: 100vw;
-    height: 100vh;
     scroll-behavior: smooth;
     -webkit-tap-highlight-color: rgba(100, 100, 100, 0.1);
     -moz-tap-highlight-color: rgba(100, 100, 100, 0.1);
 }
 body {
-    width: 100vw;
-    height: 100vh;
     margin: 0;
     font-family: Helvetica, Roboto, sans-serif;
     font-size: 90%;
