@@ -63,12 +63,11 @@
     width: 100%;
     margin: 10px 0 10px;
 }
-.markdown font.code {
+.markdown p code {
     font-family: monospace;
     border-radius: 2.5px;
-    padding-left: 3px;
-    padding-right: 3px;
-    color: #000;
+    padding-left: 2.5px;
+    padding-right: 2.5px;
 }
 .markdown pre {
     display: block;

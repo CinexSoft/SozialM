@@ -88,37 +88,46 @@
     max-width: 70%;
     margin-left: auto;
 }
-.chatarea .bubbles blockquote {
+.markdown p code {
+    font-size: 1.2em;
+    border-radius: 2.5px;
+    padding: 0.5px 2.5px 0.5px;
+    background-color: #e8e8e8;
+}
+.markdown .this p code {
+    background-color: #cbe5b3;
+}
+.markdown blockquote {
     cursor: pointer;
 }
-.chatarea .bubbles blockquote img {
+.markdown blockquote img {
     width: 90px;
     height: auto;
     margin: 0 0 10px 0;
 }
-.chatarea .bubbles blockquote {
+.markdown blockquote {
     border: 0;
     border-left: 5px solid var(--accent-bgcolor);
     background-color: #f0f0f0;
     transition-duration: 200ms;
 }
-.chatarea .bubbles .this blockquote {
+.markdown .this blockquote {
     border: 0;
     border-left: 5px solid purple;
     background-color: #cce8b6;
 }
-.chatarea .bubbles .this blockquote:active {
+.markdown .this blockquote:active {
     background-color: #bcd8a6;
 }
-.chatarea .bubbles .that blockquote:active {
+.markdown .that blockquote:active {
     background-color: #d8d8d8;
 }
-.chatarea .bubbles pre code {
+.markdown pre code {
     border: 0;
     border-left: 5px solid var(--accent-bgcolor);
     background-color: #f0f0f0;
 }
-.chatarea .bubbles .this pre code {
+.markdown .this pre code {
     border: 0;
     border-left: 5px solid purple;
     background-color: #cce8b6;
