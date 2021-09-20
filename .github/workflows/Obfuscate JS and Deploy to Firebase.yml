@@ -31,5 +31,5 @@ jobs:
           git config --global user.name "CinexSoft"
           git config --global user.email "cinexsoft@gmail.com"
           git add -A
-          git commit -m "Javascript codes obfuscated"
+          git commit -m "Obfuscated JS and deployed to Firebase"
           git push
