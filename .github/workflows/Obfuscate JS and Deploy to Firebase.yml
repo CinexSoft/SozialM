@@ -9,16 +9,12 @@ jobs:
     steps:
       - name: Get repository from repo server to runner
         uses: actions/checkout@v2
-
       - name: Obfuscate codes
         run: |
           npm i -g javascript-obfuscator
-          touch ./identifier.cache.json
-          mkdir -p ./production/public
-          rm -rf ./production/public
+          touch ./.cache/obfuscator/identifier.cache.json
           cp -r ./development/public ./production/
-          javascript-obfuscator ./production/public/ --identifier-names-cache-path identifier.cache.json --output ./production/public/
-
+          javascript-obfuscator ./production/public/ --identifier-names-cache-path ./.cache/obfuscator/identifier.cache.json --output ./production/public/
       - name: Firebase deploy
         uses: w9jds/firebase-action@master
         with:
@@ -28,7 +24,9 @@ jobs:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           PROJECT_ID: sozialnmedien
           PROJECT_PATH: ./production
-
+      - name: Delete production files
+        run: |
+            rm -rf ./production/public/*
       - name: Git commit and push
         run: |
           git config --global user.name "CinexSoft"
