@@ -1,10 +1,10 @@
-name: Obfuscate JS and Deploy
+name: Obfuscate JS and Deploy to Firebase
 on:
   push:
     branches: [ "main" ]
 
 jobs:
-  obfuscate_and_deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Get repository from repo server to runner
@@ -24,7 +24,7 @@ jobs:
           args: deploy 
           # repoToken: '${{ secrets.GITHUB_TOKEN }}'
         env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SOZIALNMEDIEN }}
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           PROJECT_ID: sozialnmedien
           PROJECT_PATH: ./production
 

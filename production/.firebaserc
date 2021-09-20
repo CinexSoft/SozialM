@@ -1,7 +1,6 @@
 {
   "projects": {
-    "default": "sozialnmedien",
-    "emulate": "sozialnmedien"
+    "production": "sozialnmedien"
   },
   "targets": {}
 }
