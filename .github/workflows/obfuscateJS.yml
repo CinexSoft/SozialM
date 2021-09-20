@@ -31,6 +31,7 @@ jobs:
                   mkdir -p ./production/public
                   cp -r ./development/public ./production/public
                   javascript-obfuscator ./production/public/ --identifier-names-cache-path identifier.cache.json --output ./production/public/
+                  cd ./production
             # deploy to Firebase
             - name: Firebase deploy
               uses: FirebaseExtended/action-hosting-deploy@v0
@@ -39,8 +40,6 @@ jobs:
                   firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_SOZIALNMEDIEN }}'
                   channelId: live
                   projectId: sozialnmedien
-              env:
-                  PROJECT_PATH: ./production
             # git commit and push
             - name: Git commit and push
               run: |
