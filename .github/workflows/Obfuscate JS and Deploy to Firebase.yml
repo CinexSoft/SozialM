@@ -26,10 +26,12 @@ jobs:
         run: |
             du -ha ./production/public/ | grep "\.js" | tee ./production/build.list
             rm -rf ./production/public/*
-      - name: Git commit and push
+      - name: Git add and commit
         run: |
           git config --global user.name "CinexSoft"
           git config --global user.email "cinexsoft@gmail.com"
           git add -A
-          git commit -m "Obfuscated JS and deployed to Firebase" 2> /dev/null
+          git commit -m "Obfuscated JS and deployed to Firebase"
+      - name: Git push
+        run: |
           git push
