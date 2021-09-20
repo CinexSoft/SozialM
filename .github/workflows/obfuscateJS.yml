@@ -33,7 +33,7 @@ jobs:
                   javascript-obfuscator production/public/ --identifier-names-cache-path identifier.cache.json --output production/public/
             # deploy to Firebase
             - name: Firebase deploy
-              uses: FirebaseExtended/action-deploy@v0
+              uses: FirebaseExtended/action-hosting-deploy@v0
               with:
                   repoToken: '${{ secrets.GITHUB_TOKEN }}'
                   firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_SOZIALNMEDIEN }}'
