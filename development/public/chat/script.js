@@ -103,7 +103,7 @@ document.addEventListener('keyup', (e) => {
     if (HTML) {
         $('#msgpreview').style.display = 'block';
         $('#txtmsg').style.borderRadius = '0 0 10px 10px';
-        $('#msgpreview').innerHTML = `<font class="header" color="#7d7d7d">Markdown preview</font>${HTML}`;
+        $('#msgpreview').innerHTML = `<font class="header" color="#7d7d7d">Markdown preview</font>${HtmlSanitizer.SanitizeHtml(HTML)}`;
         smoothScroll($('#msgpreview'));
     } else {
         $('#msgpreview').style.display = 'none';
@@ -137,7 +137,7 @@ window.addEventListener('resize', (e) => {
     // switches visibility of msgpreview
     const HTML = QUOTE_REPLY_TEXT + MDtoHTML.makeHtml($('#txtmsg').value.trim());
     if (HTML != '' && SOFTBOARD_OPEN) {
-        $('#msgpreview').innerHTML = `<font class="header" color="#7d7d7d">Markdown preview</font>${HTML}`;
+        $('#msgpreview').innerHTML = `<font class="header" color="#7d7d7d">Markdown preview</font>${HtmlSanitizer.SanitizeHtml(HTML)}`;
         $('#msgpreview').style.display = 'block';
         $('#txtmsg').style.borderRadius = '0 0 10px 10px';
         smoothScroll($('#msgpreview'));
@@ -194,7 +194,8 @@ $('#btnsend').addEventListener('click', (e) => {
         'Friday',
         'Saturday',
     ];
-    const messageHTML = MDtoHTML.makeHtml(msg);
+    // Convert and then sanitize html.
+    const messageHTML = HtmlSanitizer.SanitizeHtml(MDtoHTML.makeHtml(msg));
     /* this append is temporary and is overwritten when db update is fetched
      * which is why the class this has no pushkey id
      */
