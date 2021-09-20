@@ -1,4 +1,4 @@
-# SocialMediaPlatform
+# SozialnMedien
 A shot at a social media platform.
 
 Front-end only.
@@ -13,7 +13,7 @@ Otherwise, we all will `SUFFER`.
 Do NOT make changes directly to `MAIN`.
 Create a seperate branch `named after you` from `MAIN` for youself.
 
-Test you code using the Firebase emulator before pushing it.
+Test your code using the Firebase emulator before pushing it.
 
 ## Deployment
 - Firebase is used for hosting and database.
@@ -23,6 +23,7 @@ Test you code using the Firebase emulator before pushing it.
 - Once pushed or merged to `MAIN`, JavaScript is obfuscated to the `production channel` and automatically deployed.
 - To test the site, use `firebase emulators:start` in the `dev channel`.
 - Do NOT run `firebase deploy` in the `dev channel`. If done, `firebase deploy` will crash.
+- `WARN` others when making changes to the `obfuscator workflow`.
 - Project is hosted at [https://sozialnmedien.web.app](https://sozialnmedien.web.app).
 - Webview based APK [release](https://github.com/CinexSoft/SozialnMedienApk/releases/tag/v2021.09.20.16.50)
 
