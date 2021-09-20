@@ -15,19 +15,15 @@ Create a seperate branch `named after you` from `MAIN` for youself.
 
 Test you code using the Firebase emulator before pushing it.
 
-### No 2
-Please do not activate the code obfuscator workflow.
-It's very difficult to maintain branches with the obfuscator
-running on the main branch on every push.
-<br><br>
-It also makes code big and slow.
-
 ## Deployment
-- Firebase hosting and database
-- Project is hosted at [https://sozialnmedien.web.app](https://sozialnmedien.web.app)
-- Hosting rules at `firebase.json`
-- RTDb security rules at `database.rules.json`.
-- Webpage root at `public/`
+- Firebase is used for hosting and database.
+- Directory `production/` aliased the `production channel` is auto-maintained.
+- Do NOT touch the `production channel`.
+- Make changes to directory `development/`, aliased the `dev channel`. 
+- Once pushed or merged to `MAIN`, JavaScript is obfuscated to the `production channel` and automatically deployed.
+- To test the site, use `firebase emulators:start` in the `dev channel`.
+- Do NOT run `firebase deploy` in the `dev channel`. If done, `firebase deploy` will crash.
+- Project is hosted at [https://sozialnmedien.web.app](https://sozialnmedien.web.app).
 - Webview based APK [release](https://github.com/CinexSoft/SozialnMedienApk/releases/tag/v2021.09.15.14.50)
 
 ## Style Guide
