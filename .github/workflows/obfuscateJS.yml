@@ -29,7 +29,7 @@ jobs:
                   npm i -g javascript-obfuscator
                   touch identifier.cache.json
                   mkdir -p production/public
-                  cp -r development/public/* production/public/
+                  cp -r development/public production/public
                   javascript-obfuscator production/public/ --identifier-names-cache-path identifier.cache.json --output production/public/
             # deploy to Firebase
             - name: Firebase deploy
