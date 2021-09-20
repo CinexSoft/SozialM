@@ -1,4 +1,4 @@
-# SocialMediaPlatform
+# SozialnMedien
 A shot at a social media platform.
 
 Front-end only.
