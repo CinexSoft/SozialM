@@ -6,6 +6,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    continue-on-error: true
     steps:
       - name: Get repository from repo server to runner
         uses: actions/checkout@v2
