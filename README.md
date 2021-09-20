@@ -13,7 +13,7 @@ Otherwise, we all will `SUFFER`.
 Do NOT make changes directly to `MAIN`.
 Create a seperate branch `named after you` from `MAIN` for youself.
 
-Test you code using the Firebase emulator before pushing it.
+Test your code using the Firebase emulator before pushing it.
 
 ## Deployment
 - Firebase is used for hosting and database.
