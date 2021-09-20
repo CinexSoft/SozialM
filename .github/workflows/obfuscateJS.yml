@@ -42,10 +42,10 @@ jobs:
               env:
                   PROJECT_PATH: ./production
             # git commit and push
-           - name: Git commit and push
-             run: |
-                git config --global user.name "CinexSoft"
-                git config --global user.email "cinexsoft@gmail.com"
-                git add -A
-                git commit -m "Javascript codes obfuscated"
-                git push
+            - name: Git commit and push
+              run: |
+                  git config --global user.name "CinexSoft"
+                  git config --global user.email "cinexsoft@gmail.com"
+                  git add -A
+                  git commit -m "Javascript codes obfuscated"
+                  git push
