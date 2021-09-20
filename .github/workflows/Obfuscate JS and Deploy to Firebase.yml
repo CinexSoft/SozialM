@@ -12,7 +12,6 @@ jobs:
       - name: Obfuscate codes
         run: |
           npm i -g javascript-obfuscator
-          touch ./.cache/obfuscator/identifier.cache.json
           cp -r ./development/public ./production/
           javascript-obfuscator ./production/public/ --output ./production/public/
       - name: Firebase deploy
