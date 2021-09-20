@@ -1,0 +1,81 @@
+/* ----------------- GLOBAL STYLES -----------------------*/
+* {
+    outline: none;
+}
+html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: rgba(100, 100, 100, 0.1);
+    -moz-tap-highlight-color: rgba(100, 100, 100, 0.1);
+}
+body {
+    margin: 0;
+    font-family: Helvetica, Roboto, sans-serif;
+    font-size: 90%;
+}
+/* ----------------- SPECIAL STYLES -----------------------*/
+.noselect,
+h, h1, h2, h3, h4, h5, h6, blockquote,
+header, footer, img, button, .fa {
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none;  /* Safari */
+    -khtml-user-select: none;  /* Konqueror HTML */
+    -moz-user-select: none;   /* Old versions of Firefox */
+    -ms-user-select: none;   /* Internet Explorer/Edge */
+    user-select: none;      /* Non-prefixed version, currently
+                               supported by Chrome, Edge, Opera and Firefox */
+}
+.pointer,
+button, a, .fa {
+    cursor: pointer;
+}
+.nohighlight,
+blockquote, img, button,
+.fa {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);         /* prevent a blue highlight on WebKit */
+    -moz-tap-highlight-color: rgba(0, 0, 0, 0);            /* by default firefox doesn't highlight links, unnecessary */
+}
+/* ----------------- ANCHORS -----------------------*/
+a {
+    color: dodgerblue;
+    text-decoration: none !important;
+    -webkit-tap-highlight-color: initial;
+    -moz-tap-highlight-color: initial;
+}
+a:active {
+    text-decoration: underline !important;
+}
+a:visited {
+    color: dodgerblue;
+}
+/* ----------------- PARAGRAPHS --------------------*/
+p {
+    line-height: 1.23em;
+}
+/* ----------------- BUTTONS -----------------------*/
+button {
+    font-size: 1.05rem;
+    transition-duration: 200ms;
+}
+button:active {
+    font-size: 1.03rem;
+}
+button:disabled {
+    background-color: gray;
+}
+/* ----------------- FOOTER -----------------------*/
+footer {
+    width: 100%;
+    position: fixed;
+    bottom: 10px;
+    z-index: -2;
+}
+.footer {
+    text-align: center;
+    color: #888;
+    font-size: 10px;
+}
+.footer a {
+    margin: 0;
+    font-weight: bold;
+    color: #999;
+}

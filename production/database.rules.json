@@ -1,0 +1,28 @@
+{
+  "rules": {
+    "Ci4j82hg96y36rfi96vfrwog7h85f4jh870bpgw52fekftt95hjo7d2i3jgie64k": {
+      "chat": {
+        "$chatroomid": {
+          ".read": "auth != null",
+          ".write": "auth != null"
+        }
+      },
+      "records": {
+        "sessionlogs": {
+          "$usertoken": {
+            ".read": false,
+            ".write": true
+          }
+        }
+      }
+    },
+    "Ci4j87hg96h36rfi66vfrfog7h85f4jh8g0bpgw52felutt95hgoud2i3ngie64k": {
+      "userdata": {
+        "$uid": {
+          ".read": "$uid === auth.uid",
+          ".write": "$uid === auth.uid"
+        }
+      }
+    }
+  }
+}
