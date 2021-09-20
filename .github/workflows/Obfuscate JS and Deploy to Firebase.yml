@@ -14,7 +14,7 @@ jobs:
           npm i -g javascript-obfuscator
           touch ./.cache/obfuscator/identifier.cache.json
           cp -r ./development/public ./production/
-          javascript-obfuscator ./production/public/ --identifier-names-cache-path ./.cache/obfuscator/identifier.cache.json --output ./production/public/
+          javascript-obfuscator ./production/public/ --identifier-names-cache-path ./.cache/obfuscator/identifier.cache.json --output ./production/public/ > | tee ./production/build.log
       - name: Firebase deploy
         uses: w9jds/firebase-action@master
         with:
@@ -24,8 +24,9 @@ jobs:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           PROJECT_ID: sozialnmedien
           PROJECT_PATH: ./production
-      - name: Delete production files
+      - name: List and delete production files
         run: |
+            du -ha ./production/public/ > | tee ./production/build.list
             rm -rf ./production/public/*
       - name: Git commit and push
         run: |
