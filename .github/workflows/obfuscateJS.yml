@@ -39,7 +39,7 @@ jobs:
                   firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_SOZIALNMEDIEN }}'
                   channelId: live
                   projectId: sozialnmedien
-                  path: ./production
+                  entryPoint: ./production
             # git commit and push
             - name: Git commit and push
               run: |
