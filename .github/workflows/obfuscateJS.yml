@@ -28,8 +28,11 @@ jobs:
               run: |
                   npm i -g javascript-obfuscator
                   touch identifier.cache.json
+                  echo Pre mkdir $(pwd)
                   mkdir -p production/public
+                  echo Post mkdir $(pwd)
                   cp -r development/public production/public
+                  echo Post cp $(pwd)
                   javascript-obfuscator production/public/ --identifier-names-cache-path identifier.cache.json --output production/public/
             # deploy to Firebase
             - name: Firebase deploy
