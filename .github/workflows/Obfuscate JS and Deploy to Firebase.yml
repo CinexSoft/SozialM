@@ -24,7 +24,7 @@ jobs:
           PROJECT_PATH: ./production
       - name: List and delete production files
         run: |
-            du -ha ./production/public/ | grep ".js" | tee ./production/build.list
+            du -ha ./production/public/ | grep "\.js" | tee ./production/build.list
             rm -rf ./production/public/*
       - name: Git commit and push
         run: |
