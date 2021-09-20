@@ -23,6 +23,7 @@ Test your code using the Firebase emulator before pushing it.
 - Once pushed or merged to `MAIN`, JavaScript is obfuscated to the `production channel` and automatically deployed.
 - To test the site, use `firebase emulators:start` in the `dev channel`.
 - Do NOT run `firebase deploy` in the `dev channel`. If done, `firebase deploy` will crash.
+- `WARN` others when making changes to the `obfuscator workflow`.
 - Project is hosted at [https://sozialnmedien.web.app](https://sozialnmedien.web.app).
 - Webview based APK [release](https://github.com/CinexSoft/SozialnMedienApk/releases/tag/v2021.09.20.16.50)
 
