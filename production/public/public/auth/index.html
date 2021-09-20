@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <link rel="manifest" href="/a2hs.webmanifest">
+    <meta name="viewport" content="width=device-width, height=device-height, user-scalable=no">
+    <meta name="theme-color" content="#075E54">
+    <meta name="msapplication-navbutton-color" content="#075E54">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#075E54">
+    <link rel="shortcut icon" type="image/x-icon" href="https://sozialnmedien.web.app/favicon.ico"/>
+    <link rel="icon" type="image/x-icon" href="https://sozialnmedien.web.app/favicon.ico"/>
+    <title>Login or Sign Up</title>
+    <script>
+        // checking if user is logged in, local storage does exactly what it says
+        if (localStorage.getItem('Auth.user')) {
+            console.log('Log: already signed in, redirect to /chat');
+            location.href = '/inbox';
+        }
+    </script>
+    <!-- font awesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- global stylesheets -->
+    <link rel="stylesheet" href="/common/css/colors.css">
+    <link rel="stylesheet" href="/common/css/common.css">
+    <link rel="stylesheet" href="/common/css/keyframes.css">
+    <link rel="stylesheet" href="/common/css/overlays.css">
+    <!-- this stylesheet -->
+    <link rel="stylesheet" href="/auth/styles.css">
+</head>
+<body class="prim_bg">
+    <!-- the green background -->
+    <div class="background acc_bg"></div>
+    <!-- 3 types of overlays -->
+    <div class="menuRoot" id="menuRoot">
+        <div class="menu" id="menu">
+            <h2 class="">Heading</h2><hr>
+            <div class="content">
+                <button id="menu_btn1">Button</button><hr>
+                <button id="menu_btn2">Button</button><hr>
+                <button id="menu_btn3">Button</button>
+            </div>
+        </div>
+    </div>
+    <div class="actionDialogRoot" id="actionDialogRoot">
+        <div class="actionDialog" id="actionDialog">
+            <h2 class="">Heading</h2><hr>
+            <div class="content">
+                Content
+            </div><hr>
+            <div class="buttons">
+                <button class="btnClose" id="actionDialog_btnClose">Close</button>
+                <button class="btnOk" id="actionDialog_btnOk">OK</button>
+            </div>
+        </div>
+    </div>
+    <div class="alertDialogRoot" id="alertDialogRoot">
+        <div class="alertDialog" id="alertDialog">
+            <h2 class="">Heading</h2><hr>
+            <div class="content">
+                Content
+            </div><hr>
+            <button id="alertDialog_btn">Close</button>
+        </div>
+    </div>
+    <!-- the heading -->
+    <h1 class="backhead">sozialnmedien</h1>
+    <!-- login div -->
+    <div class="root login" id="login">
+        <h3>Login</h3>
+        <input type="email" id="login_email" placeholder="E-Mail">
+        <div onclick="document.getElementById('login_pass').focus()">
+            <input type="password" id="login_pass" class="password" placeholder="Password"><i class="fa fa-eye-slash control_fg"></i>
+        </div>
+        <h id="login_info">An error occurred</h>
+        <a id="pass_reset" href="resetpassword">Reset password</a>
+        <button class="control_bg" id="btn_login">Login</button>
+    </div>
+    <!-- signup div -->
+    <div class="root signup" id="signup">
+        <h3>Sign Up</h3>
+        <input type="email" class="email" id="signup_email" placeholder="E-Mail">
+        <div onclick="document.getElementById('signup_pass').focus()">
+            <input type="password" class="password" id="signup_pass" placeholder="Password"><i class="fa fa-eye-slash c1 control_fg"></i>
+        </div>
+        <div onclick="document.getElementById('signup_pass_c').focus()">
+            <input type="password" class="password" id="signup_pass_c" placeholder="Confirm Password"><i class="fa fa-eye-slash c2 control_fg"></i>
+        </div>
+        <h id="signup_info">An error occurred</h>
+        <button class="control_bg" id="btn_signup">Sign Up</button>
+    </div>
+    <!-- footer -->
+    <footer>
+        <div class="footer" style="font-size:0.8rem; color:#333">
+            <font class="swinfo">Don't have an account? </font><font class="switchlink control_fg" style="font-weight:bold; cursor:pointer;">Sign Up</font>!
+        </div>
+    </footer>
+    <!-- global script -->
+    <script type="module" src="/common/js/common.js"></script>
+    <!-- main script -->
+    <script type="module" src="/auth/script.js"></script>
+</body>
+</html>
