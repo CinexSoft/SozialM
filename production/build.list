@@ -1,4 +1,4 @@
-Built on Tue Sep 21 18:16:03 UTC 2021
+Built on Tue Sep 21 19:17:52 UTC 2021
 
 Readable code sizes:
 20K	./development/public/chat/script.js
@@ -13,7 +13,7 @@ Readable code sizes:
 
 Obfuscated code sizes:
 20K	./production/public/chat/script.js
-8.0K	./production/public/auth/script.js
+12K	./production/public/auth/script.js
 4.0K	./production/public/profile/script.js
 16K	./production/public/common/js/modules.js
 12K	./production/public/common/js/overlays.js
