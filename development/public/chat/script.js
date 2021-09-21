@@ -38,6 +38,7 @@ HtmlSanitizer.AllowedAttributes['alt'] = true;
 HtmlSanitizer.AllowedAttributes['id'] = true;
 HtmlSanitizer.AllowedAttributes['class'] = true;
 HtmlSanitizer.AllowedAttributes['download'] = true;
+HtmlSanitizer.AllowedSchemas.push('mailto:') ;
 
 // other variables
 let PREVIOUS_HEIGHT = document.body.clientHeight;

@@ -11,6 +11,10 @@
 .splashScreenRoot {
     visibility: visible;
 }
+.splashScreen .content {
+    font-size: 0.8rem;
+    text-align: justify;
+}
 .alertDialog,
 .actionDialog,
 .menu {
