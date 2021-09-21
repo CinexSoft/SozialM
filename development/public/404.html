@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <link rel="manifest" href="/a2hs.webmanifest">
+    <meta name="viewport" content="width=device-width, height=device-height, user-scalable=no">
+    <meta name="theme-color" content="#075E54">
+    <meta name="msapplication-navbutton-color" content="#075E54">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#075E54">
+    <link rel="shortcut icon" type="image/x-icon" href="https://sozialnmedien.web.app/favicon.ico"/>
+    <link rel="icon" type="image/x-icon" href="https://sozialnmedien.web.app/favicon.ico"/>
+    <title>Page not found</title>
+    <link rel="stylesheet" href="/common/css/colors.css">
+    <link rel="stylesheet" href="/common/css/common.css">
+    <style>
+        body {
+            overscroll: auto;
+            background-image: url("/common/res/whatsappbg.png");
+        }
+        .background {
+            position: absolute;
+            inset: 0;
+            bottom: 40%;
+            color: white;
+            transform: rotate(0);    /* initially I wanted to give the background a slant */
+        }
+        .backhead {
+            color: white;
+            position: absolute;
+            inset: 0;
+            top: 20px;
+            font-size: 2.5rem;
+            text-align: center;
+        }
+        .root {
+            position: relative;
+            inset: 0;
+            top: 30vh;
+            margin: auto;
+            width: 75%;
+            max-width: 720px;
+            max-height: 480px;
+            height: -moz-fit-content;
+            box-shadow: 1px 1px 2px #aaa;
+            border-radius: 10px;
+            padding: 20px 20px 40px ;
+            background-color: #fff;
+        }
+        .root h2 {
+            color: var(--control-color);
+        }
+        .root h1, h3 {
+            color: #555;
+        }
+        .root p {
+            font-size: 1rem;
+        }
+        .root hr {
+            color: #ddd;
+            border: 1px solid #eee;
+            background-color: #ddd;
+        }
+        .root ul {
+            padding: 0 0 0 20px;
+            width: 100%;
+            line-height: 22px;
+        }
+        @media only screen and (orientation: landscape) {
+            body {
+                height: 130vh;
+            }
+            .root {
+                min-height: fit-content;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- the green background -->
+    <div class="background acc_bg"></div>
+    <!-- the heading -->
+    <h1 class="backhead">sozialnmedien</h1>
+    <div class="root" id="root">
+        <h2>404</h2>
+        <h1>Page not found</h1>
+        <p>
+            Looks like the resource you requested doesn't exist.
+        </p>
+        <hr>
+        <h3>What can it mean?</h3>
+        <ul>
+            <li>The resource can be a page or a file.</li>
+            <li>The resource has been removed or renamed.</li>
+            <li>You probably have a typo in the URL.</li>
+        </ul>
+    </div>
+</body>
+</html>

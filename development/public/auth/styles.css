@@ -2,7 +2,7 @@ body {
     background-image: url("/common/res/whatsappbg.png");
 }
 .background {
-    position: fixed;
+    position: absolute;
     inset: 0;
     bottom: 40%;
     color: white;
@@ -18,7 +18,7 @@ body {
 }
 .root {
     margin: auto;
-    position: fixed;
+    position: absolute;
     inset: 0;
     top: 10%;
     width: 270px;
