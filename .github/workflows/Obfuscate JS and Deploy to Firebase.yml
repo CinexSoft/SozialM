@@ -17,7 +17,7 @@ jobs:
           du -ha ./development/public/       | grep "\.js" | tee -a ./production/build.list
           echo                               | tee -a ./production/build.list
           npm i -g javascript-obfuscator
-          cp -r ./development/* ./production/
+          cp -r ./development/public/* ./production/
           javascript-obfuscator ./production/public/ --output ./production/public/
       - name: Firebase deploy
         uses: w9jds/firebase-action@master
