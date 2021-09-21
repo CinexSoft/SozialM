@@ -1,4 +1,5 @@
 /* ----------------- OVERLAYS -----------------------*/
+.splashScreenRoot,
 .alertDialogRoot,
 .actionDialogRoot,
 .menuRoot {
@@ -10,6 +11,7 @@
     visibility: hidden;
     z-index: 100;
 }
+.splashScreen,
 .alertDialog,
 .actionDialog,
 .menu {
@@ -84,6 +86,18 @@
     border-radius: 2px;
     background-color: #eee;
 }
+/* --------------- SPLASHSCREEN ---------------------*/
+.splashScreenRoot {
+    background-color: var(--primary-bgcolor);
+    color: var(--control-color);
+}
+.splashScreen {
+    margin: 0;
+    border-radius: 0;
+    max-width: 100%;
+    max-height: 100%;
+    background-color: transparent;
+}
 /* --------------- ALERT DIALOG ---------------------*/
 .alertDialog div,
 .actionDialog div.content {
@@ -131,12 +145,14 @@
 }
 /* resizes alertDialog boxes for larger display width */
 @media only screen and (min-width: 400px) {
+    .splashScreenRoot .splashScreen,
     .alertDialogRoot .alertDialog,
     .actionDialogRoot .actionDialog,
     .menuRoot .menu {
         zoom: 1.1;
     }
     /* firefox doesn't support zoom */
+    .splashScreen,
     .alertDialogRoot,
     .actionDialogRoot,
     .menuRoot {

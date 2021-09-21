@@ -9,7 +9,6 @@ import {
     USER_ID,
     DEBUG,
     EXISTS_ANDROID_INTERFACE,
-    Overlay,
     getTimeStamp,
     getLongDateTime,
     log,
@@ -23,16 +22,22 @@ import {
     getChildElement,
     childHasParent,
     appendHTMLString,
-    dialog,
-    menu,
     checkForApkUpdates,
     smoothScroll,
     loadTheme,
 } from '/common/js/modules.js';
+import { Overlay, SplashScreen, Dialog, Menu, } from '/common/js/overlays.js'
 
 // Markdown converter
 const MDtoHTML = new showdown.Converter();
 MDtoHTML.setFlavor('github');
+
+// html sanitizer - additional tags and attributes
+HtmlSanitizer.AllowedTags['h'] = true;
+HtmlSanitizer.AllowedAttributes['alt'] = true;
+HtmlSanitizer.AllowedAttributes['id'] = true;
+HtmlSanitizer.AllowedAttributes['class'] = true;
+HtmlSanitizer.AllowedAttributes['download'] = true;
 
 // other variables
 let PREVIOUS_HEIGHT = document.body.clientHeight;
@@ -87,7 +92,7 @@ const startDBListener = () => {
             $('#chatarea').innerHTML.match(/code/i)) {
             hljs.highlightAll();
         }
-        dialog.hide('alert', () => {
+        SplashScreen.hide(() => {
             checkForApkUpdates();
         });
         loadTheme();
@@ -159,7 +164,7 @@ $('#btnsend').addEventListener('click', (e) => {
     }
     const msg = QUOTE_REPLY_TEXT + msgbackup.trim();
     if (msg.length > 1024 * 2) {
-        dialog.display('alert', 'Warning', 'Text exceeds limit of 2KB');
+        Dialog.display('alert', 'Warning', 'Text exceeds limit of 2KB');
         $('#txtmsg').value = msgbackup;
         return;
     }
@@ -255,22 +260,21 @@ document.body.addEventListener('click', (e) => {
     }
     // menu copy button click
     else if (e.target.id == 'menu_copy') {
-        menu.hide();
-        copyPlainTxt(LONG_PRESSED_ELEMENT.innerHTML);
+        Menu.hide(() => {
+            copyPlainTxt(LONG_PRESSED_ELEMENT.innerHTML);
+        });
     }
     // menu unsend button click
     else if (e.target.id == 'menu_unsend') {
-        menu.hide();
-        // this delay is to prevent a lag that occurrs when writing to db, within which the dialog is hidden
-        setTimeout(() => {
+        Menu.hide(() => {
             // unsend not possible if not sent by user
             if (ChatData[LONG_PRESSED_ELEMENT.id].uid != USER_ID) {
-                dialog.display('alert', 'Not allowed', 'You can unsend a message only if you have sent it.');
+                Dialog.display('alert', 'Not allowed', 'You can unsend a message only if you have sent it.');
                 return;
             }
             // unsend not possible after 1 hour
             if (getTimeStamp() - parseInt(ChatData[LONG_PRESSED_ELEMENT.id].time.stamp) > 3600000) {
-                dialog.display('alert', 'Not allowed', 'You can only unsend a message within 1 hour of sending it.');
+                Dialog.display('alert', 'Not allowed', 'You can only unsend a message within 1 hour of sending it.');
                 return;
             }
             firebaseDBUpdate(firebaseDBRef(Database, DB_ROOT + CHAT_ROOT), {
@@ -280,45 +284,48 @@ document.body.addEventListener('click', (e) => {
             }).catch((error) => {
                 err(error);
             });
-        }, Overlay.animation_duration);
+        });
     }
     // menu reply button click
     else if (e.target.id == 'menu_reply') {
-        menu.hide();
-        QUOTE_REPLY_TEXT = `<blockquote id="tm_${LONG_PRESSED_ELEMENT.id}">${getChildElement(LONG_PRESSED_ELEMENT, 'div')[0].innerHTML}</blockquote>\n\n`;
-        $('#txtmsg').focus();
+        Menu.hide(() => {
+            QUOTE_REPLY_TEXT = `<blockquote id="tm_${LONG_PRESSED_ELEMENT.id}">${getChildElement(LONG_PRESSED_ELEMENT, 'div')[0].innerHTML}</blockquote>\n\n`;
+            $('#txtmsg').focus();
+        });
     }
     // menu details button click
     else if (e.target.id == 'menu_details') {
-        menu.hide();
-        const message = ChatData[LONG_PRESSED_ELEMENT.id];
-        const time = message.time;
-        // innerHTML of dialog
-        const infoHTML = '<table style="width:100%; text-align:left">'
-                       +     `<tr><td>Sent by: </td><td><pre style="margin:0; padding:0; font-family:sans-serif; overflow:auto; width:180px;">${ChatData[LONG_PRESSED_ELEMENT.id].uid == USER_ID ? 'You' : ChatData[LONG_PRESSED_ELEMENT.id].uid}</pre></td></tr>`
-                       +     `<tr><td>Sent on: </td><td>${time.dayname.slice(0, 3)}, ${time.monthname.slice(0, 3)} ${time.date}, ${time.year}</td></tr>`
-                       +     `<tr><td>Sent at: </td><td><pre style="margin:0; padding:0; font-family:sans-serif; overflow:auto; width:180px;">${time.time}</pre></td></tr>`
-                       + '</table>'
-        // display dialog
-        dialog.display('action', 'Message details', infoHTML, 'Advanced', () => {
-            dialog.hide('action');
-            /* display excess JSON of chat
-             * WARNING: Take care when modifying the regex and order of replace function.
-             */
-            dialog.display('alert', 'Message details',
-                '<pre style="overflow:auto; text-align:left;">'
-                    + decode(
-                        JSON.stringify(message, null, 4)
-                        .replace(/\n    /g, '\n')
-                        .replace(/"|'|,/g, '')
-                    )
-                    .replace (/</g, '&lt;')
-                    .replace(/>/g, '&gt;')
-                    .replace(/\n}/g, '')
-                    .replace(/{\n\S/g, '')
-                    .replace(/{/g, '')
-                + '</pre>'
-            );
+        Menu.hide(() => {
+            const message = ChatData[LONG_PRESSED_ELEMENT.id];
+            const time = message.time;
+            // innerHTML of dialog
+            const infoHTML = '<table style="width:100%; text-align:left">'
+                           +     `<tr><td>Sent by: </td><td><pre style="margin:0; padding:0; font-family:sans-serif; overflow:auto; width:180px;">${ChatData[LONG_PRESSED_ELEMENT.id].uid == USER_ID ? 'You' : ChatData[LONG_PRESSED_ELEMENT.id].uid}</pre></td></tr>`
+                           +     `<tr><td>Sent on: </td><td>${time.dayname.slice(0, 3)}, ${time.monthname.slice(0, 3)} ${time.date}, ${time.year}</td></tr>`
+                           +     `<tr><td>Sent at: </td><td><pre style="margin:0; padding:0; font-family:sans-serif; overflow:auto; width:180px;">${time.time}</pre></td></tr>`
+                           + '</table>'
+            // display dialog
+            Dialog.display('action', 'Message details', infoHTML, 'Advanced', () => {
+                Dialog.hide('action', () => {
+                    /* display excess JSON of chat
+                     * WARNING: Take care when modifying the regex and order of replace function.
+                     */
+                    Dialog.display('alert', 'Message details',
+                        '<pre style="overflow:auto; text-align:left;">'
+                            + decode(
+                                JSON.stringify(message, null, 4)
+                                    .replace(/\n    /g, '\n')
+                                    .replace(/"|'|,/g, '')
+                            )
+                            .replace (/</g, '&lt;')
+                            .replace(/>/g, '&gt;')
+                            .replace(/\n}/g, '')
+                            .replace(/{\n\S/g, '')
+                            .replace(/{/g, '')
+                        + '</pre>'
+                    );
+                });
+            });
         });
     }
     /* ------------------------------------- DO NOT TOUCH THIS ELSE IF BLOCK ----------------------------
@@ -369,7 +376,7 @@ document.body.addEventListener('pointerdown', (e) => {
             e.target.style.transform = 'scale(1)';
             clearTimeout(LONGPRESS_TIMER);
             // show menu
-            menu.display();
+            Menu.display();
         }, 600);
     }
     // image long pressed
@@ -386,18 +393,17 @@ document.body.addEventListener('pointerdown', (e) => {
             LONG_PRESSED_ELEMENT = parent_bubble;
             parent_bubble.style.transform = 'scale(1)';
             clearTimeout(LONGPRESS_TIMER);
-            if (EXISTS_ANDROID_INTERFACE) dialog.display('action', 'Download image', 'Do you wish to download this image?', 'Download', () => {
-                dialog.hide('action');
-                setTimeout(() => {
+            if (EXISTS_ANDROID_INTERFACE) Dialog.display('action', 'Download image', 'Do you wish to download this image?', 'Download', () => {
+                Dialog.hide('action', () => {
                     try {
                         Android.showToast('Look into your notification panel for download progress');
-                        download(e.target.src, `${e.target.alt.trim()}_sozialnmedien_${getTimeStamp()}.png`);
+                        download(e.target.src, `${e.target.alt.trim() ? e.target.alt.trim() : 'image'}_sozialnmedien_${getTimeStamp()}.png`);
                     }
                     catch (error) {
-                        dialog.display('alert', 'Download failed', `Failed to download file. Click <a href="${e.target.src}">here</a> to visit file in browser.`);
+                        Dialog.display('alert', 'Download failed', `Failed to download file. Click <a href="${e.target.src}">here</a> to visit file in browser.`);
                         return;
                     }
-                }, 1000);
+                });
             });
         }, 600);
     }
@@ -431,7 +437,7 @@ document.body.addEventListener('touchmove', (e) => {
 });
 
 /* Although deprecated, this function is used because
- * the 'Loading chats' dialog is not shown using dialog.display().
+ * the 'Loading chats' dialog is not shown using Dialog.display().
  * Instead it's shown using CSS style 'visibility: visible'.
  * This is done to make the dialog visible immediately after the page
  * is loaded.

@@ -8,7 +8,7 @@
 ::-moz-scrollbar {
   width: 0;
 }
-.alertDialogRoot {
+.splashScreenRoot {
     visibility: visible;
 }
 .alertDialog,
@@ -74,18 +74,17 @@
 }
 .chatarea .bubbles div {
     border: 0;
+    max-width: 85%;
     border-radius: 10px;
     padding: 5px;
     word-wrap: break-word;
     cursor: text;
 }
 .chatarea .that {
-    max-width: 70%;
     margin-right: auto;
     background-color: #fafafa;
 }
 .chatarea .this {
-    max-width: 70%;
     margin-left: auto;
 }
 .markdown p code {
@@ -99,11 +98,13 @@
 }
 .markdown blockquote {
     cursor: pointer;
+    text-align: justify;
 }
 .markdown blockquote img {
-    width: 90px;
+    width: 70px;
     height: auto;
-    margin: 0 0 10px 0;
+    margin: 0 0 0 10px;
+    float: right;
 }
 .markdown blockquote {
     border: 0;

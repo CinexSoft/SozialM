@@ -12,6 +12,7 @@
  */
 
 import { Auth, Database, DB_ROOT } from '/common/js/firebaseinit.js';
+import { Dialog } from '/common/js/overlays.js'
 import { onAuthStateChanged as firebaseOnAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.js';
 import {
     ref as firebaseDBRef,
@@ -116,41 +117,6 @@ export const EXISTS_ANDROID_INTERFACE = typeof Android !== 'undefined'
                                      && Android.isSozialnMedienWebapp();
 
 /**
- * Contains global data for behavior of overlays viz menus and dialogs.
- * The time taken for an overlay to animate out is Overlay.animation_duration ms.
- * Value of instance_open needs to be set to true everytime an overlay opens and to false everytime an overlay closes.
- * This has been made automatic when using dialog and menu functions.
- *
- * How low/high is too low/high?
- *      0 ms and over 5000 milliseconds is too low/high.
- */
-export const Overlay = {
-    /**
-     * @type {Boolean} If an overlay is already open, other overlays are postponed for Overlay.animation_duration ms.
-     */
-    instance_open: false,
-    /**
-     * @type {Number} Can be modified to increase or decrease duration of overlay animations. Too low/high values may break the UI.
-     */
-    animation_duration: 250,
-    /**
-     * @deprecated The value associated is automatically handled by dialog.hide() and menu.hide().
-     * Setter for scripts that import modules.js. Please do not use this function as the process has been made automatic.
-     * @param {Boolean} val Is set to true if an overlay is opened. Reverse is true.
-     */
-    setInstanceOpen(val) {
-        this.instance_open = val;
-    },
-    /**
-     * Setter for scripts that import modules.js.
-     * @param {Number} val Duration of all overlay animations.
-     */
-    setAnimDuration(val) {
-        this.animation_duration = val;
-    },
-}
-
-/**
  * Setter for global variables.
  *
  * Available values:
@@ -170,7 +136,7 @@ export const setVariable = (variable, value) => {
             LOAD_THEME = value;
             break;
         default:
-            throw `Error: for variable ${variable}, no such variable in module.js, note that variables are case-sensitive`;
+            throw `Error: for variable ${variable}, no such variable in modules.js, note that variables are case-sensitive`;
     }
 }
 
@@ -215,7 +181,7 @@ const SESSION_TOKEN = getLongDateTime();
  * @param {String} val The stuff to be printed
  */
 export const log = (val) => {
-    if (DEBUG) console.log(`Log: module.js: ${val}`);
+    if (DEBUG) console.log(`Log: modules.js: ${val}`);
     // write logs in local database
     SessionLogs[getTimeStamp(true)] = val;
 }
@@ -249,7 +215,7 @@ export const uploadSessionLogs = () => {
     firebaseDBUpdate(firebaseDBRef(Database, `${DB_ROOT}/records/sessionlogs/${USER_TOKEN}/${SESSION_TOKEN}`), SessionLogs).then(() => {
         // do nothing
     }).catch((error) => {
-        err(`module.js: ${error}`);
+        err(`modules.js: ${error}`);
     });
 }
 
@@ -275,7 +241,7 @@ export const generateUserToken = () => {
     if (!localStorage.getItem('User.token')) {
         USER_TOKEN = generateToken();
         localStorage.setItem('User.token', USER_TOKEN);
-        log(`module.js: user: new token = ${USER_TOKEN}`);
+        log(`modules.js: user: new token = ${USER_TOKEN}`);
     }
     USER_TOKEN = localStorage.getItem('User.token');
 }
@@ -286,13 +252,13 @@ export const generateUserToken = () => {
 export const getUserInfo = () => {
     firebaseOnAuthStateChanged(Auth, (user) => {
         if (!user) {
-            err('module.js: user not signed in');
+            err('modules.js: user not signed in');
             localStorage.removeItem('Auth.user');
             return;
         }
         USER_ID = user.uid;
         localStorage.setItem('Auth.user', JSON.stringify(user));
-        log(`module.js: user: id = ${USER_ID}`);
+        log(`modules.js: user: id = ${USER_ID}`);
     });
 }
 
@@ -306,7 +272,7 @@ export const encode = (str) => {
     for (let character of specialChars) {
         str = str.replaceAll(character, `ASCII${character.charCodeAt(0)}`);
     }
-    if (DEBUG) console.log(`Log: module.js: encode(): str = ${str}`);
+    if (DEBUG) console.log(`Log: modules.js: encode(): str = ${str}`);
     return str;
 }
 
@@ -320,7 +286,7 @@ export const decode = (str) => {
     for (let character of specialChars) {
         str = str.replaceAll(`ASCII${character.charCodeAt(0)}`, character);
     }
-    if (DEBUG) console.log(`Log: module.js: decode(): str = ${str}`);
+    if (DEBUG) console.log(`Log: modules.js: decode(): str = ${str}`);
     return str;
 }
 
@@ -334,14 +300,14 @@ export const download = (directurl, filename = `sozialnmedien_${getTimeStamp()}.
     if (EXISTS_ANDROID_INTERFACE) {
         try {
             Android.download(directurl, filename);
-            log('[AND]: module.js: download(): through Android WepAppInterface');
+            log('[AND]: modules.js: download(): through Android WepAppInterface');
         } catch (error) {
-            err(`module.js: ${error}`);
+            err(`modules.js: ${error}`);
             throw error;
         }
         return;
     }
-    err('module.js: android interface doesn\'t exist');
+    err('modules.js: android interface doesn\'t exist');
     throw 'Error: android interface doesn\'t exist';
     let element = document.createElement('a');
     element.setAttribute('href', directurl);
@@ -359,16 +325,16 @@ export const download = (directurl, filename = `sozialnmedien_${getTimeStamp()}.
 export const copyPlainTxt = (copytext = '') => {
     copytext = copytext.replace(/<br>/g, '\n').replace(/<[^>]*>/g, '');
     navigator.clipboard.writeText(copytext).then(() => {
-        log('module.js: text copied to clipboard');
+        log('modules.js: text copied to clipboard');
     }).catch((error) => {
-        err(`module.js: ${error}`);
+        err(`modules.js: ${error}`);
         if (EXISTS_ANDROID_INTERFACE) {
             Android.copyToClipboard(copytext);
-            log('[AND]: module.js: copyPlainTxt(): through Android WepAppInterface');
+            log('[AND]: modules.js: copyPlainTxt(): through Android WepAppInterface');
             Android.showToast('Text copied!');
         } else {
-            err('module.js: android interface doesn\'t exist');
-            dialog.display('alert', 'Oops!', 'Copy text to clipboard failed');
+            err('modules.js: android interface doesn\'t exist');
+            Dialog.display('alert', 'Oops!', 'Copy text to clipboard failed');
         }
     });
 }
@@ -435,7 +401,7 @@ export const childHasParent = (child, parent) => {
     let node = child.parentNode;
     while (node != null) {
         if (node == parent) {
-            log(`module.js: ${node.nodeName} of class = ${node.className} has parent ${parent.nodeName} of class = ${parent.className}`);
+            log(`modules.js: ${node.nodeName} of class = ${node.className} has parent ${parent.nodeName} of class = ${parent.className}`);
             return true;
         }
         node = node.parentNode;
@@ -460,199 +426,32 @@ export const appendHTMLString = (element, str = '', reversed = false) => {
     parent.insertBefore(element, next);                    // Re-attach node to DOM.
 }
 
-/* ----------------------------------------- TODO -------------------------------------------
- * The alert and action dialogs need to be made into a single
- * object named dialog.
- */
-
-// alertDialog
-const alertDialog = {
-    // default button is Close
-    display(title = 'Alert!', message = '', button = 'Close', func) {
-        if (typeof button != 'string') {
-            throw `Error: typeof button title = ${typeof button}, expected String`;
-        }
-        if (func && typeof func != 'function') {
-            throw `Error: typeof func = ${typeof func}, expected function`;
-        }
-        // delay when one overlay is already open
-        let timeout = 0;
-        if (Overlay.instance_open) timeout = Overlay.animation_duration;
-        setTimeout(() => {
-            log(`module.js: alertDialog display(): timeout = ${timeout}`);
-            getChildElement($('#alertDialog'), 'h2')[0].innerHTML = title.replace(/\n/g, '<br>');;
-            getChildElement($('#alertDialog'), 'div')[0].innerHTML = message.replace(/\n/g, '<br>');
-            $('#alertDialog_btn').innerHTML = button;
-            // once: true removes listener after it fires atmost once
-            if (func) $('#alertDialog_btn').addEventListener('click', func, { once: true });
-            $('#alertDialogRoot').style.animation = `fadeIn ${Overlay.animation_duration}ms forwards`;
-            $('#alertDialog').style.animation = `scaleIn ${Overlay.animation_duration}ms forwards`;
-            Overlay.setInstanceOpen(true);
-        }, timeout);
-    },
-    hide(func) {
-        $('#alertDialogRoot').style.animation = `fadeOut ${Overlay.animation_duration}ms forwards`;
-        $('#alertDialog').style.animation = `scaleOut ${Overlay.animation_duration}ms forwards`;
-        setTimeout(() => {
-            Overlay.setInstanceOpen(false);
-        }, Overlay.animation_duration);
-        // additional function
-        if (!func) return;
-        if (typeof func != 'function') {
-            throw `Error: typeof func = ${typeof func}, expected function`;
-            return;
-        }
-        func.call();
-    }
-}
-
-// actionDialog
-const actionDialog = {
-    onClickFunction: undefined,
-    // default button is Ok
-    display(title = 'Alert!', message = '', button = 'OK', func) {
-        if (typeof button != 'string') {
-            throw `Error: typeof button title = ${typeof button}, expected String`;
-        }
-        if (!func || typeof func != 'function') {
-            throw `Error: typeof func = ${typeof func}, expected function`;
-        }
-        // delay when one overlay is already open
-        let timeout = 0;
-        // remove previous button click listener if any
-        if (this.onClickFunction) $('#actionDialog_btnOk').removeEventListener('click', this.onClickFunction);
-        // the function to run on button click
-        this.onClickFunction = func;
-        if (Overlay.instance_open) timeout = Overlay.animation_duration;
-        setTimeout(() => {
-            log(`module.js: actionDialog display(): timeout = ${timeout}`);
-            getChildElement($('#actionDialog'), 'h2')[0].innerHTML = title.replace(/\n/g, '<br>');;
-            getChildElement($('#actionDialog'), '.content')[0].innerHTML = message.replace(/\n/g, '<br>');
-            $('#actionDialog_btnOk').innerHTML = button;    
-            if (this.onClickFunction) $('#actionDialog_btnOk').addEventListener('click', this.onClickFunction);
-            $('#actionDialogRoot').style.animation = `fadeIn ${Overlay.animation_duration}ms forwards`;
-            $('#actionDialog').style.animation = `scaleIn ${Overlay.animation_duration}ms forwards`;
-            Overlay.setInstanceOpen(true);
-        }, timeout);
-    },
-    hide(func) {
-        $('#actionDialogRoot').style.animation = `fadeOut ${Overlay.animation_duration}ms forwards`;
-        $('#actionDialog').style.animation = `scaleOut ${Overlay.animation_duration}ms forwards`;
-        // remove button click listeners while hiding dialog, if any
-        if (this.onClickFunction) $('#actionDialog_btnOk').removeEventListener('click', this.onClickFunction);
-        setTimeout(() => {
-            Overlay.setInstanceOpen(false);
-        }, Overlay.animation_duration);
-        // additional function
-        if (!func) return;
-        if (typeof func != 'function') {
-            throw `Error: typeof func = ${typeof func}, expected function`;
-            return;
-        }
-        func.call();
-    }
-}
-
-/*--------------------------------------- TODO START -------------------------------------------*/
-
-/**
- * Represents a dialog.
- * Needs the code for a dialog in the HTML document.
- */
-export const dialog = {
-    /**
-     * Display the dialog.
-     * @param {String} category Either 'alert' or 'action'.
-     * @param {String} title Title of the dialog.
-     * @param {String} message Message to be displayed.
-     * @param {String} button Title of the default button.
-     * @param {Function} func Optional for 'alert' category, function to run if default is button clicked.
-     * @throws {Error} If category is invalid.
-     * @throws {Error} If no function is provided for 'action' category.
-     */
-    display(category, title, message, button, func) {
-        if (category == 'alert') {
-            alertDialog.display(title, message, button, func);
-        } else if (category == 'action') {
-            actionDialog.display(title, message, button, func);
-        } else throw `Error: dialog category = ${category}, expected 'alert' or 'action'`;
-    },
-    /**
-     * Hide the dialog.
-     * @param {String} category Either 'alert' or 'action'.
-     * @param {Function} func Optional, function to run once dialog is closed.
-     * @throws {Error} If category is invalid.
-     */
-    hide(category, func) {
-        if (category == 'alert') {
-            alertDialog.hide(func);
-        } else if (category == 'action') {
-            actionDialog.hide(func);
-        } else throw `Error: dialog category = ${category}, expected 'alert' or 'action'`;
-    }
-}
-
-/*--------------------------------------- TODO END --------------------------------------------*/
-
-/**
- * Represents a menu.
- * Needs the code for a menu in the HTML document.
- */
-export const menu = {
-    /**
-     * Display the menu.
-     * @param {String} title Optional, default value = 'Menu'. Title of the menu dialog.
-     */
-    display(title = 'Menu') {
-        // delay when one overlay is already open
-        let timeout = 0;
-        if (Overlay.instance_open) timeout = Overlay.animation_duration;
-        setTimeout(() => {
-            log(`module.js: menu: timeout = ${timeout}`);
-            getChildElement($('#menu'), 'h2')[0].innerHTML = title.replace(/\n/g, '<br>');;
-            $('#menuRoot').style.animation = `fadeIn ${Overlay.animation_duration}ms forwards`;
-            $('#menu').style.animation = `scaleIn ${Overlay.animation_duration}ms forwards`;
-            Overlay.setInstanceOpen(true);
-        }, timeout);
-    },
-    /**
-     * Hide the menu dialog.
-     */
-    hide() {
-        $('#menuRoot').style.animation = `fadeOut ${Overlay.animation_duration}ms forwards`;
-        $('#menu').style.animation = `scaleOut ${Overlay.animation_duration}ms forwards`;
-        setTimeout(() => {
-            Overlay.setInstanceOpen(false);
-        }, Overlay.animation_duration);
-    }
-}
-
 /** 
  * Looks for updates to the android app and opens an alert dialog if update is available.
  */
 export const checkForApkUpdates = () => {
     if (!EXISTS_ANDROID_INTERFACE) return;
-    log('[APK]: module.js: checking for update');
+    log('[APK]: modules.js: checking for update');
     try { 
         switch (Android.updateAvailable()) {
             case 'true':
-                log('module.js: alertDialog: launch: update available');
-                dialog.display('alert', 'Update available', 'A new version of this Android app is available.', 'Download', () => {
+                log('modules.js: alertDialog: launch: update available');
+                Dialog.display('alert', 'Update available', 'A new version of this Android app is available.', 'Download', () => {
                    setTimeout(() => {
                         Android.showToast('Downloading app, look into your notification panel');
                         Android.download('https://sozialnmedien.web.app/downloads/chat.app.web.sozialnmedien.apk', 'chat.app.web.sozialnmedien.apk');
                     }, 500);
-                    dialog.hide('alert');
-                    log('[AND]: module.js: downloaded Android app');
+                    Dialog.hide('alert');
+                    log('[AND]: modules.js: downloaded Android app');
                 });
                 break;
             case 'failed':
-                err('module.js: update check failed');
+                err('modules.js: update check failed');
                 break;
         }
     }
     catch (error) {
-        err(`module.js: ${error}`);
+        err(`modules.js: ${error}`);
     }
 }
 
@@ -672,7 +471,7 @@ export const smoothScroll = (element, get_behavior_only = true, not_smooth) => {
         if (!get_behavior_only) return 'auto';
         element.style.scrollBehavior = 'auto';
     }
-    log(`module.js: smoothscroll(): element = ${element.nodeName} class = ${element.className} diff = ${element.scrollHeight - element.scrollTop}`);
+    log(`modules.js: smoothscroll(): element = ${element.nodeName} class = ${element.className} diff = ${element.scrollHeight - element.scrollTop}`);
     element.scrollTop = element.scrollHeight;
 }
 
@@ -714,5 +513,5 @@ export const loadTheme = () => {
         element.style.borderColor = CONTROL_COLOR;
         element.style.color = DARK_FG_COLOR;
     }
-    log('module.js: loadTheme(): loaded');
+    log('modules.js: loadTheme(): loaded');
 }

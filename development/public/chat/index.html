@@ -18,7 +18,7 @@
     <title>Chat</title>
     <script>
         let CHAT_ROOT = '/chat/ejs993ejiei3/';
-            CHATROOMID = 'ejs993ejiei3';
+            CHAT_ROOM_ID = 'ejs993ejiei3';
         // checks if user is logged in
         if (!localStorage.getItem('Auth.user')) {
             console.log('Log: not signed in, redirect to /auth');
@@ -26,8 +26,8 @@
         }
         else {
             // this prompt is a temporary code while the inbox is being built
-            CHATROOMID = prompt('Enter new or existing ID of the chat room', 'default') || 'default';
-            localStorage.setItem('Chat.roomid', CHATROOMID == 'default' ? 'ejs993ejiei3' : CHATROOMID.replace(/[^A-Za-z0-9]/g, ''));
+            CHAT_ROOM_ID = prompt('Enter new or existing ID of the chat room', 'default') || 'default';
+            localStorage.setItem('Chat.roomid', CHAT_ROOM_ID == 'default' ? 'ejs993ejiei3' : CHAT_ROOM_ID.replace(/[^A-Za-z0-9]/g, ''));
             // checking if chat root exists
             if (localStorage.getItem('Chat.roomid')) {
                 console.log('Log: chat root found');
@@ -53,7 +53,7 @@
     <link rel="stylesheet" href="/chat/styles.css">
 </head>
 <body class="prim_bg">
-    <!-- 3 types of overlays -->
+    <!-- 4 types of overlays -->
     <div class="menuRoot" id="menuRoot">
         <div class="menu" id="menu">
             <h2 class="">Menu</h2><hr>
@@ -86,14 +86,19 @@
             <button id="alertDialog_btn">Close</button>
         </div>
     </div>
+    <div class="splashScreenRoot" id="splashScreenRoot">
+        <div class="splashScreen" id="splashScreen">
+            <!-- insides of splashscreen -->
+        </div>
+    </div>
     <div class="root">
         <div class="titlebar acc_bg">
             <img class="backarrow" src="/common/res/backarrow100white.png">
             <img class="dp acc_bg" src="/common/res/defaultdp.png">
             <h class="title" id="roomid">Demo Chat</h>
             <script>                
-                if (CHATROOMID != 'default') {
-                    document.getElementById('roomid').innerHTML = CHATROOMID.charAt(0).toUpperCase() + CHATROOMID.slice(1);
+                if (CHAT_ROOM_ID != 'default') {
+                    document.getElementById('roomid').innerHTML = CHAT_ROOM_ID.charAt(0).toUpperCase() + CHAT_ROOM_ID.slice(1);
                 }
             </script>
         </div>
