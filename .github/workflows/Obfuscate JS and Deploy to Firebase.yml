@@ -12,10 +12,10 @@ jobs:
         uses: actions/checkout@v2
       - name: Obfuscate codes
         run: |
-          echo -e "Built on: $(date)\n"      | tee ./production/build.list
+          echo -e "Built on $(date)\n"       | tee ./production/build.list
           echo "Readable code sizes:"        | tee -a ./production/build.list
           du -ha ./development/public/       | grep "\.js" | tee -a ./production/build.list
-          echo -e "\n"                       | tee -a ./production/build.list
+          echo                               | tee -a ./production/build.list
           npm i -g javascript-obfuscator
           cp -r ./development/public ./production/
           javascript-obfuscator ./production/public/ --output ./production/public/
@@ -31,13 +31,13 @@ jobs:
         run: |
             echo "Obfuscated code sizes:"     | tee -a ./production/build.list
             du -ha ./production/public/       | grep "\.js" | tee -a ./production/build.list
-            echo -e "\n"                      | tee -a ./production/build.list
+            echo                              | tee -a ./production/build.list
             rm -rf ./production/public/*
       - name: Git commit and push
         run: |
+          echo "Git commit and push:"                              | tee -a ./production/build.list
           git config --global user.name "CinexSoft"
           git config --global user.email "cinexsoft@gmail.com"
-          git add -A
-          echo "Git commit:"                                       | tee -a ./production/build.list
+          git add -A                                               | tee -a ./production/build.list
           git commit -m "Obfuscated JS and deployed to Firebase"   | tee -a ./production/build.list
-          git push
+          git push                                                 | tee -a ./production/build.list
