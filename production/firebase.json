@@ -1,6 +1,5 @@
 {
   "hosting": {
-    "predeploy": "printf \"\\033[1;31m\\nNOT ALLOWED\\033[0m\"; node -e \"console.error(\\': You cannot deploy website from development channel.\\nPlease push or merge your commits to origin/main for auto-deployment\\nRead the README for more info on deployment.\\'); process.exit(1);\"",
     "public": "public",
     "ignore": [
       "firebase.json",
