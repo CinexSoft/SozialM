@@ -91,8 +91,8 @@ const startDBListener = () => {
         }
         SplashScreen.hide(() => {
             checkForApkUpdates();
-            smoothScroll($('#chatarea'), true, true);
         });
+        smoothScroll($('#chatarea'), true, true);
         loadTheme();
         log('Chat: db update fetched');
     });
