@@ -385,10 +385,10 @@ document.body.addEventListener('pointerdown', (e) => {
         LONGPRESS_TIMER = setTimeout(() => {
             // shrink the parent slightly
             parent_bubble.style.transform = 'scale(0.93)';
+            LONG_PRESSED_ELEMENT = parent_bubble;
         }, 200);
         LONGPRESS_TIMEOUT = setTimeout(() => {
             log('Chat: long press triggered');
-            LONG_PRESSED_ELEMENT = parent_bubble;
             parent_bubble.style.transform = 'scale(1)';
             clearTimeout(LONGPRESS_TIMER);
             if (EXISTS_ANDROID_INTERFACE) Dialog.display('action', 'Download image', 'Do you wish to download this image?', 'Download', () => {
