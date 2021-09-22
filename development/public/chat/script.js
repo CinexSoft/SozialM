@@ -252,7 +252,7 @@ document.body.addEventListener('click', (e) => {
      */
     let highlight_target;
     // title bar back arrow click
-    if (e.target.className == 'backarrow') {
+    if (['backdiv', 'backarrow', 'dp acc_bg'].includes(e.target.className)) {
         log('Chat: history: going back');
         history.back();
     }

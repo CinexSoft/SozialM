@@ -25,20 +25,34 @@
     display: flex;
     flex-direction: row;
 }
+.backdiv {
+    cursor: pointer;
+    transition-duration: 100ms;
+    height: fit-content;
+    height: -moz-fit-content;
+    margin: auto 5px auto;
+    border-radius: 50px;
+    padding: 4px;
+    display: flex;
+    flex-direction: row;
+}
+.backdiv:active {
+    background-color: rgba(0,0,0,0.3);
+}
 .backarrow,
 .dp {
-    width: 35px;
-    height: 35px;
+    margin: auto 0 auto;
     border: 0px;
     border-radius: 50px;
-    margin: auto 5px auto;
-    cursor: pointer;
+}
+.dp {
+    width: 30px;
+    height: 30px;
 }
 .backarrow {
     width: 20px;
     height: 20px;
-    margin-left: 10px;
-    margin-right: 0;
+    margin-right: 3px;
 }
 .title {
     font-size: 1.3rem;
