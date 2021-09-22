@@ -17,21 +17,18 @@
     <link rel="icon" type="image/x-icon" href="https://sozialnmedien.web.app/favicon.ico"/>
     <title>Chat</title>
     <script>
-        let CHAT_ROOT = '/chat/ejs993ejiei3/';
-            CHAT_ROOM_ID = 'ejs993ejiei3';
+        let CHAT_ROOT, CHAT_ROOM_ID;
         // checks if user is logged in
         if (!localStorage.getItem('Auth.user')) {
             console.log('Log: not signed in, redirect to /auth');
             location.href = '/auth';
         }
         else {
-            // this prompt is a temporary code while the inbox is being built
-            CHAT_ROOM_ID = prompt('Enter new or existing ID of the chat room', 'default') || 'default';
-            localStorage.setItem('Chat.roomid', CHAT_ROOM_ID == 'default' ? 'ejs993ejiei3' : CHAT_ROOM_ID.replace(/[^A-Za-z0-9]/g, ''));
             // checking if chat root exists
             if (localStorage.getItem('Chat.roomid')) {
-                console.log('Log: chat root found');
-                CHAT_ROOT = '/chat/' + localStorage.getItem('Chat.roomid') + '/';
+                CHAT_ROOT = `/chat/${CHAT_ROOM_ID = localStorage.getItem('Chat.roomid')}/`;
+                console.log(`Log: chat root found: ${CHAT_ROOT}`);
+                localStorage.removeItem('Chat.roomid');
             }
             else {
                 console.log('Log: chat root not found, it must be created first, redirect to /inbox');
@@ -79,9 +76,9 @@
     </div>
     <div class="alertDialogRoot" id="alertDialogRoot">
         <div class="alertDialog" id="alertDialog">
-            <h2 class="">Please wait</h2><hr>
+            <h2 class="">Heading</h2><hr>
             <div class="content">
-                Your chats are being fetched. Once done, this message will self close.
+                Content
             </div><hr>
             <button id="alertDialog_btn">Close</button>
         </div>
@@ -110,7 +107,7 @@
             <img class="dp acc_bg" src="/common/res/defaultdp.png">
             <h class="title" id="roomid">Demo Chat</h>
             <script>                
-                if (CHAT_ROOM_ID != 'default') {
+                if (CHAT_ROOM_ID != 'ejs993ejiei3') {
                     document.getElementById('roomid').innerHTML = CHAT_ROOM_ID.charAt(0).toUpperCase() + CHAT_ROOM_ID.slice(1);
                 }
             </script>

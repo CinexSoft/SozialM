@@ -38,7 +38,7 @@ HtmlSanitizer.AllowedAttributes['alt'] = true;
 HtmlSanitizer.AllowedAttributes['id'] = true;
 HtmlSanitizer.AllowedAttributes['class'] = true;
 HtmlSanitizer.AllowedAttributes['download'] = true;
-HtmlSanitizer.AllowedSchemas.push('mailto:') ;
+HtmlSanitizer.AllowedSchemas.push('mailto:');
 
 // other variables
 let PREVIOUS_HEIGHT = document.body.clientHeight;
@@ -84,10 +84,6 @@ const startDBListener = () => {
                 if (DEBUG) console.log(`Log: Chat: that: pushkey = ${pushkey}`);
                 if (DEBUG) console.log(`Log: Chat: that: html = ${$('#chatarea').innerHTML}`);
             }
-            /* this delay makes sure the entire chatarea is loaded before it's scrolled to place
-             * it's not smooth scrolled, that's the 3rd parameter
-             */
-            smoothScroll($('#chatarea'), true, true);
         });
         if ($('#chatarea').innerHTML.match(/pre/i) &&
             $('#chatarea').innerHTML.match(/code/i)) {
@@ -95,6 +91,7 @@ const startDBListener = () => {
         }
         SplashScreen.hide(() => {
             checkForApkUpdates();
+            smoothScroll($('#chatarea'), true, true);
         });
         loadTheme();
         log('Chat: db update fetched');

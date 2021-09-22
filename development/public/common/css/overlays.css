@@ -26,7 +26,6 @@
     height: -moz-fit-content;      /* mozilla doesn't support fit-content */
     background-color: #fff;
     border-radius: 10px;
-    text-align: center;
     color: #333;
 }
 .splashScreen h2,
