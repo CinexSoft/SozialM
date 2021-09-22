@@ -90,9 +90,9 @@ const startDBListener = () => {
             hljs.highlightAll();
         }
         SplashScreen.hide(() => {
+            smoothScroll($('#chatarea'), true, true);
             checkForApkUpdates();
         });
-        smoothScroll($('#chatarea'), true, true);
         loadTheme();
         log('Chat: db update fetched');
     });
