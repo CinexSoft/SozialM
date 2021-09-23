@@ -42,7 +42,7 @@
     border-radius: 100px;
 }
 .markdown p {
-    margin: 7px auto 7px;
+    margin: 7px auto 6px;
 }
 .markdown blockquote {
     margin: 7px auto 7px;
@@ -66,7 +66,7 @@
     font-family: monospace;
     border-radius: 3px;
     padding: 0.5px 3px 0.5px;
-    background-color: #fafafa;
+    background-color: #FAFAFA;
 }
 .markdown pre {
     width: 100%;

@@ -32,6 +32,8 @@ import { Overlay, SplashScreen, Dialog, Menu, } from '/common/js/overlays.js'
 const MDtoHTML = new showdown.Converter();
 MDtoHTML.setFlavor('github');
 
+let MSG_UNSENT = false;
+
 // html sanitizer - additional tags and attributes
 HtmlSanitizer.AllowedTags['h'] = true;
 HtmlSanitizer.AllowedAttributes['alt'] = true;
@@ -84,19 +86,18 @@ const startDBListener = () => {
                 if (DEBUG) console.log(`Log: Chat: that: pushkey = ${pushkey}`);
                 if (DEBUG) console.log(`Log: Chat: that: html = ${$('#chatarea').innerHTML}`);
             }
-            smoothScroll($('#chatarea'), false, false);
+            if (!MSG_UNSENT) smoothScroll($('#chatarea'), false, false);
         });
         if ($('#chatarea').innerHTML.match(/pre/i) &&
             $('#chatarea').innerHTML.match(/code/i)) {
             hljs.highlightAll();
         }
         SplashScreen.hide(() => {
-            smoothScroll($('#chatarea'), false, false);
+            if (!MSG_UNSENT) smoothScroll($('#chatarea'), false, false);
             checkForApkUpdates();
         });
         loadTheme();
         log('Chat: db update fetched');
-        smoothScroll($('#chatarea'), false, false);
     });
 }
 
@@ -131,6 +132,8 @@ document.addEventListener('keyup', (e) => {
 
 // soft keyboard launch triggers window resize event
 window.addEventListener('resize', (e) => {
+    // reset value of this flag
+    MSG_UNSENT = false;
     // detects soft keyboard switch
     if (PREVIOUS_HEIGHT != document.body.clientHeight && PREVIOUS_WIDTH == document.body.clientWidth) {
         SOFTBOARD_OPEN = !SOFTBOARD_OPEN;
@@ -158,6 +161,8 @@ window.addEventListener('resize', (e) => {
 
 // on send button clicked
 $('#btnsend').addEventListener('click', (e) => {
+    // reset value of this flag
+    MSG_UNSENT = false;
     const msgbackup = $('#txtmsg').value;
     // if msgbackup is empty.
     if (!msgbackup.trim()) {
@@ -280,6 +285,7 @@ document.body.addEventListener('click', (e) => {
                 Dialog.display('alert', 'Not allowed', 'You can only unsend a message within 1 hour of sending it.');
                 return;
             }
+            MSG_UNSENT = true;
             firebaseDBUpdate(firebaseDBRef(Database, DB_ROOT + CHAT_ROOT), {
                 [LONG_PRESSED_ELEMENT.id]: null
             }).then(() => {
@@ -431,6 +437,8 @@ document.body.addEventListener('pointerup', (e) => {
 
 // swipe gesture listener
 document.body.addEventListener('touchmove', (e) => {
+    // reset value of this flag
+    MSG_UNSENT = false;
     log(`Chat: swiped: id = ${e.target.id} node = ${e.target.nodeName} class = ${e.target.className}`);
     if (LONG_PRESSED_ELEMENT) LONG_PRESSED_ELEMENT.style.transform = 'scale(1)';
     e.target.style.transform = 'scale(1)';

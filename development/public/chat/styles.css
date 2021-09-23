@@ -86,6 +86,7 @@
     padding: 1px 7px 1px;
     word-wrap: break-word;
     cursor: text;
+    font-size: 0.9rem
 }
 .chatarea .that {
     margin-right: auto;
@@ -98,11 +99,10 @@
     min-width: 200px;
 }
 .markdown p code {
-    font-size: 1.2em;
-    background-color: #e8e8e8;
+    background-color: #E8E8E8;
 }
 .markdown .this p code {
-    background-color: #cbe5b3;
+    background-color: #ceeab8;
 }
 .markdown blockquote {
     cursor: pointer;
@@ -118,29 +118,29 @@
 .markdown blockquote {
     border: 0;
     border-left: 5px solid var(--accent-bgcolor);
-    background-color: #f0f0f0;
+    background-color: #F0F0F0;
     transition-duration: 200ms;
 }
 .markdown .this blockquote {
     border: 0;
     border-left: 5px solid purple;
-    background-color: #cce8b6;
+    background-color: #ceeab8;
 }
 .markdown .this blockquote:active {
-    background-color: #bcd8a6;
+    background-color: #BCD8A6;
 }
 .markdown .that blockquote:active {
-    background-color: #d8d8d8;
+    background-color: #D8D8D8;
 }
 .markdown pre code {
     border: 0;
     border-left: 5px solid var(--accent-bgcolor);
-    background-color: #f0f0f0;
+    background-color: #F0F0F0;
 }
 .markdown .this pre code {
     border: 0;
     border-left: 5px solid purple;
-    background-color: #cce8b6;
+    background-color: #ceeab8;
 }
 .chatarea .bubble img {
     transition-duration: 250ms;
