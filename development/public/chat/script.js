@@ -84,17 +84,19 @@ const startDBListener = () => {
                 if (DEBUG) console.log(`Log: Chat: that: pushkey = ${pushkey}`);
                 if (DEBUG) console.log(`Log: Chat: that: html = ${$('#chatarea').innerHTML}`);
             }
+            smoothScroll($('#chatarea'), false, false);
         });
         if ($('#chatarea').innerHTML.match(/pre/i) &&
             $('#chatarea').innerHTML.match(/code/i)) {
             hljs.highlightAll();
         }
         SplashScreen.hide(() => {
-            smoothScroll($('#chatarea'), true, true);
+            smoothScroll($('#chatarea'), false, false);
             checkForApkUpdates();
         });
         loadTheme();
         log('Chat: db update fetched');
+        smoothScroll($('#chatarea'), false, false);
     });
 }
 
@@ -134,7 +136,10 @@ window.addEventListener('resize', (e) => {
         SOFTBOARD_OPEN = !SOFTBOARD_OPEN;
         log(`Chat: keyboard: switched? height diff = ${document.body.clientHeight - PREVIOUS_HEIGHT}`);
     }
-    if (document.body.clientHeight - PREVIOUS_HEIGHT < 0) $('#chatarea').scrollTop += Math.abs(document.body.clientHeight - PREVIOUS_HEIGHT);
+    if (document.body.clientHeight - PREVIOUS_HEIGHT < 0) {
+        $('#chatarea').style.scrollBehavior = 'smooth';
+        $('#chatarea').scrollTop += Math.abs(document.body.clientHeight - PREVIOUS_HEIGHT);
+    }
     PREVIOUS_WIDTH = document.body.clientWidth;
     PREVIOUS_HEIGHT = document.body.clientHeight;
     // switches visibility of msgpreview
@@ -203,7 +208,7 @@ $('#btnsend').addEventListener('click', (e) => {
      * which is why the class this has no pushkey id
      */
     appendHTMLString($('#chatarea'), `<div class="bubbles"><div class="this chatbubble_bg">${messageHTML}</div></div>`);
-    smoothScroll($('#chatarea'), true, true);
+    smoothScroll($('#chatarea'), false, false);
     // this delay is to prevent a lag that occurrs when writing to db, within which the dialog is hidden
     setTimeout(() => {
         const Date = getLongDateTime(false);
@@ -343,7 +348,7 @@ document.body.addEventListener('click', (e) => {
         log(`Chat: highlight: bubble target id = #${highlight_target.id}`);
         if (QUOTED_REPLY_HIGHLIGHT_TIMEOUT) clearTimeout(QUOTED_REPLY_HIGHLIGHT_TIMEOUT);
         highlight_target.style.animation = '';
-        const behavior = smoothScroll(highlight_target, false);
+        const behavior = smoothScroll(highlight_target, true);
         highlight_target.scrollIntoView(true, {
             behavior,
         });

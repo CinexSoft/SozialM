@@ -462,13 +462,13 @@ export const checkForApkUpdates = () => {
  * @param {Boolean} not_smooth Explicitly mention to scroll without animations.
  * @return {String} The scroll behavior (conditional).
  */
-export const smoothScroll = (element, get_behavior_only = true, not_smooth) => {
+export const smoothScroll = (element, get_behavior_only = false, smooth = true) => {
     // check if down scrollable part of element is < 720 px
-    if (!not_smooth && element.scrollHeight - (document.body.clientHeight - 110) - element.scrollTop < 720) {
-        if (!get_behavior_only) return 'smooth';
+    if (smooth && element.scrollHeight - (document.body.clientHeight - 110) - element.scrollTop < 720) {
+        if (get_behavior_only) return 'smooth';
         element.style.scrollBehavior = 'smooth';
     } else {
-        if (!get_behavior_only) return 'auto';
+        if (get_behavior_only) return 'auto';
         element.style.scrollBehavior = 'auto';
     }
     log(`modules.js: smoothscroll(): element = ${element.nodeName} class = ${element.className} diff = ${element.scrollHeight - element.scrollTop}`);

@@ -71,23 +71,6 @@
     padding-bottom: 5px;
     overflow: auto;
 }
-.chatarea .info {
-    margin: 15px auto 10px;
-    width: 75%;
-    max-width: 400px;
-    padding: 5px 5px 5px;
-    border: 0;
-    box-shadow: 1px 1px 2px #aaa;
-    border-radius: 10px;
-}
-.chatarea .info p {
-    color: #555;
-    width: 100%;
-    padding: 0;
-    text-align: center;
-    line-height: 12px;
-    font-size: 0.7rem;
-}
 .chatarea .bubbles {
     padding: 2.5px 10px 2.5px;
     width: calc(100% - 20px);
@@ -95,9 +78,12 @@
 }
 .chatarea .bubbles div {
     border: 0;
-    max-width: 85%;
+    min-width: 100px;
+    width: fit-content;
+    width: -moz-fit-content;
+    max-width: 80%;
     border-radius: 10px;
-    padding: 5px;
+    padding: 1px 7px 1px;
     word-wrap: break-word;
     cursor: text;
 }
@@ -108,10 +94,11 @@
 .chatarea .this {
     margin-left: auto;
 }
+.markdown blockquote {
+    min-width: 200px;
+}
 .markdown p code {
     font-size: 1.2em;
-    border-radius: 2.5px;
-    padding: 0.5px 2.5px 0.5px;
     background-color: #e8e8e8;
 }
 .markdown .this p code {
@@ -122,7 +109,8 @@
     text-align: justify;
 }
 .markdown blockquote img {
-    width: 70px;
+    min-width: 70px;
+    max-width: 70px;
     height: auto;
     margin: 0 0 0 10px;
     float: right;
@@ -157,6 +145,22 @@
 .chatarea .bubble img {
     transition-duration: 250ms;
     cursor: pointer;
+}
+.chatarea .info {
+    margin: 15px auto 10px;
+    width: 75%;
+    max-width: 400px;
+    padding: 2px;
+    border: 0;
+    box-shadow: 1px 1px 2px #aaa;
+    border-radius: 10px;
+}
+.chatarea .info p {
+    color: #555;
+    width: 100%;
+    padding: 0;
+    text-align: center;
+    font-size: 0.7rem;
 }
 .msgpreview {
     position: fixed;

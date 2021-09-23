@@ -22,7 +22,7 @@
     padding: 0;
     padding-bottom: 0px;
     max-width: 300px;
-    max-height: fit-content;
+    height: fit-content;
     height: -moz-fit-content;      /* mozilla doesn't support fit-content */
     background-color: #fff;
     border-radius: 10px;
@@ -49,6 +49,8 @@
     display: flex;                 /* establish flex container */
     flex-direction: column;        /* make main axis vertical */
     justify-content: center;       /* center items vertically in this case */
+    max-height: 50vh;
+    overflow: auto;
 }
 .alertDialog button,
 .actionDialog button,

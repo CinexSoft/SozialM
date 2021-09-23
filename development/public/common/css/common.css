@@ -54,7 +54,7 @@ p {
 /* ----------------- BUTTONS -----------------------*/
 button {
     font-size: 1.05rem;
-    transition-duration: 200ms;
+    transition-duration: 100ms;
 }
 button:active {
     font-size: 1.03rem;
