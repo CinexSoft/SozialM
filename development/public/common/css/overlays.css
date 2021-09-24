@@ -51,6 +51,7 @@
     justify-content: center;       /* center items vertically in this case */
     max-height: 50vh;
     overflow: auto;
+    text-align: center;
 }
 .alertDialog button,
 .actionDialog button,
