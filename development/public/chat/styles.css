@@ -234,7 +234,7 @@
 .msgbox button:active {
     font-size: 22px;
 }
-@media only screen and (orientation: landscape) and (min-height: 640px) {
+@media only screen and (orientation: landscape) and (min-height: 420px) {
     .root,
     .titlebar,
     .msgpreview,
