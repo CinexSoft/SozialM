@@ -60,7 +60,7 @@ const startDBListener = () => {
     firebaseOnRtdbDataChanged(firebaseDBRef(Database, DB_ROOT + CHAT_ROOT), (snapshot) => {
         // setting up html
         $('#chatarea').innerHTML = '<div class="info noselect sec_bg" style="font-family:sans-serif">'
-                                 + '<p class="fa fa-info-circle">&ensp;Messages in this chat are only server-to-end encrypted.</p>'
+                                 + '<p class="fa fa-info-circle">&ensp;Your chats are only server-to-end encrypted. Chats are stored without encryption on CinexSoft databases. We\'re yet to implement end-to-end encryption.</p>'
                                  + '</div>';
         snapshot.forEach(({ key }) => {
             const pushkey = key;
@@ -320,18 +320,23 @@ document.body.addEventListener('click', (e) => {
                      * WARNING: Take care when modifying the regex and order of replace function.
                      */
                     Dialog.display('alert', 'Message details',
-                        '<pre style="overflow:auto; text-align:left;">'
-                            + decode(
-                                JSON.stringify(message, null, 4)
-                                    .replace(/\n    /g, '\n')
-                                    .replace(/"|'|,/g, '')
-                            )
-                            .replace (/</g, '&lt;')
-                            .replace(/>/g, '&gt;')
-                            .replace(/\n}/g, '')
-                            .replace(/{\n\S/g, '')
-                            .replace(/{/g, '')
-                        + '</pre>'
+                       '<pre style="overflow:auto;text-align:left;font-family:sans-serif;font-size:0.8rem">'
+                           + '<b style="color:#777">User ID</b>\n'
+                           + `${message.uid}\n\n`
+                           + '<b style="color:#777">Push key</b>\n'
+                           + `${message.pushkey}\n\n`
+                           + '<b style="color:#777">HTML Code</b> '
+                           + '<code>\n'
+                               + `${decode(message.message.replace(/\n    /g, '\n')
+                                   .replace(/"|'|,/g, '')
+                               )
+                               .replace (/</g, '&lt;')
+                               .replace(/>/g, '&gt;')
+                               .replace(/\n}/g, '')
+                               .replace(/{\n\S/g, 'u')
+                               .replace(/{/g, '')}`
+                           + '</code>'
+                       + '</pre>'
                     );
                 });
             });

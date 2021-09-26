@@ -1,4 +1,4 @@
-/* ----------------- GLOBAL STYLES -----------------------*/
+/* ------------- GLOBAL STYLES ----------------------*/
 * {
     outline: none;
 }
@@ -9,10 +9,10 @@ html {
 }
 body {
     margin: 0;
-    font-family: Helvetica, Roboto, sans-serif;
+    font-family: Helvetica, sans-serif;
     font-size: 90%;
 }
-/* ----------------- SPECIAL STYLES -----------------------*/
+/* -------------- SPECIAL STYLES ---------------------*/
 .noselect,
 h, h1, h2, h3, h4, h5, h6, blockquote,
 header, footer, img, button, .fa {
@@ -34,7 +34,7 @@ blockquote, img, button,
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);         /* prevent a blue highlight on WebKit */
     -moz-tap-highlight-color: rgba(0, 0, 0, 0);            /* by default firefox doesn't highlight links, unnecessary */
 }
-/* ----------------- ANCHORS -----------------------*/
+/* ------------------ ANCHORS ----------------------*/
 a {
     color: dodgerblue;
     text-decoration: none !important;
@@ -51,8 +51,13 @@ a:visited {
 p {
     line-height: 1.23em;
     margin: 5px auto 5px;
+    font-family: Helvetica, sans-serif;
 }
-/* ----------------- BUTTONS -----------------------*/
+/* -------------------- CODE -----------------------*/
+pre {
+    font-family: monospace;
+}
+/* ------------------- BUTTONS ---------------------*/
 button {
     font-size: 1.05rem;
     transition-duration: 100ms;
@@ -63,7 +68,7 @@ button:active {
 button:disabled {
     background-color: gray;
 }
-/* ----------------- FOOTER -----------------------*/
+/* ------------------- FOOTER ----------------------*/
 footer {
     width: 100%;
     position: fixed;
