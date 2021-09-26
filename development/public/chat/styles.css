@@ -64,7 +64,6 @@
 .chatbg {
     height: calc(100vh - 55px);
     max-height: calc(100vh - 55px);
-    background-image: url("/common/res/whatsappbg.png");
 }
 .chatarea {
     height: calc(100vh - 55px - 55px - 2px);
@@ -150,10 +149,14 @@
     margin: 15px auto 10px;
     width: 75%;
     max-width: 400px;
-    padding: 2px;
+    padding: 2px 5px 2px;
     border: 0;
     box-shadow: 1px 1px 2px #aaa;
     border-radius: 10px;
+    cursor: initial;
+}
+.chatarea .info i {
+    cursor: initial;
 }
 .chatarea .info p {
     color: #555;
@@ -161,6 +164,7 @@
     padding: 0;
     text-align: center;
     font-size: 0.7rem;
+    cursor: initial;
 }
 .msgpreview {
     position: fixed;
@@ -234,7 +238,7 @@
 .msgbox button:active {
     font-size: 22px;
 }
-@media only screen and (orientation: landscape) and (min-height: 640px) {
+@media only screen and (orientation: landscape) and (min-height: 420px) {
     .root,
     .titlebar,
     .msgpreview,

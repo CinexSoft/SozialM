@@ -20,6 +20,13 @@ body {
     color: var(--fg-color);
     border-color: var(--primary-bgcolor);
 }
+.prim_img_bg {
+    background: var(--primary-bgcolor) url("/common/res/whatsappbg.png") no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
 .sec_bg {
     background-color: var(--secondary-bgcolor);
     color: var(--fg-color);
