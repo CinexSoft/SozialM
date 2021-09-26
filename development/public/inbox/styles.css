@@ -1,7 +1,3 @@
-body {
-    background-color: var(--primary-bgcolor);
-    background-image: url("/common/res/whatsappbg.png");
-}
 .alertDialog p {
     margin: 2.5px;
     text-align: justify;

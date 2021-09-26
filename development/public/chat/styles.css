@@ -64,7 +64,6 @@
 .chatbg {
     height: calc(100vh - 55px);
     max-height: calc(100vh - 55px);
-    background-image: url("/common/res/whatsappbg.png");
 }
 .chatarea {
     height: calc(100vh - 55px - 55px - 2px);
