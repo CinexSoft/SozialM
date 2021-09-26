@@ -176,6 +176,9 @@ $('#btnsend').addEventListener('click', (e) => {
         $('#txtmsg').value = msgbackup;
         return;
     }
+    // Convert and then sanitize html.
+    const messageHTML = HtmlSanitizer.SanitizeHtml(MDtoHTML.makeHtml(msg));
+    if (!messageHTML.trim()) return;
     QUOTE_REPLY_TEXT = '';
     $('#txtmsg').value = '';
     $('#msgpreview').innerHTML = '<font class="header" color="#7d7d7d">Markdown preview</font>';
@@ -207,8 +210,6 @@ $('#btnsend').addEventListener('click', (e) => {
         'Friday',
         'Saturday',
     ];
-    // Convert and then sanitize html.
-    const messageHTML = HtmlSanitizer.SanitizeHtml(MDtoHTML.makeHtml(msg));
     /* this append is temporary and is overwritten when db update is fetched
      * which is why the class this has no pushkey id
      */
