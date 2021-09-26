@@ -108,8 +108,8 @@
     padding: 7px 20px 7px;
     color: white;
 }
-/* if screen width is over 400px, zoom the root slightly
- * They'll zoom out if width decreases below 400px
+/* if screen width is over 400px, scale the root slightly
+ * They'll scale out if width decreases below 400px
  */
 @media only screen and (min-width: 400px) {
     .root {

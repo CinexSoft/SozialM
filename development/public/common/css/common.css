@@ -50,6 +50,7 @@ a:visited {
 /* ----------------- PARAGRAPHS --------------------*/
 p {
     line-height: 1.23em;
+    margin: 5px auto 5px;
 }
 /* ----------------- BUTTONS -----------------------*/
 button {

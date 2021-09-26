@@ -1,6 +1,7 @@
 import { Auth } from '/common/js/firebaseinit.js';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.js';
 import { Colors, log, err, $, checkForApkUpdates } from '/common/js/modules.js';
+import { Dialog } from '/common/js/overlays.js';
 
 checkForApkUpdates();
 
@@ -70,6 +71,15 @@ for (let element of $(".fa-eye-slash")) element.addEventListener('click', (event
 document.body.addEventListener('click', (event) => {
     if (['INPUT', 'DIV'].includes(event.target.nodeName)) {
         resetColors();
+    } else if (event.target.id == 'pass_reset') {
+        Dialog.display('action', 'Reset Password',
+            '<p style="text-align:justify">The Reset Password UI isn\'t yet ready. Please send an e-mail to <a id="mail_cinexsoft" href="mailto:cinexsoft@gmail.com">CinexSoft</a> and we\'ll send you a reset link to your registered email address.</p>' +
+            '<p style="text-align:justify">You might need to wait from a couple of hours to about 2 days for the link. If it doesn\'t arrive, request a reset again.</p>',
+            'Open mail',
+            () => {
+                $('#mail_cinexsoft').click();
+            }
+        );
     }
 });
 

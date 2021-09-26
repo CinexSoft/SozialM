@@ -98,8 +98,8 @@
 .splashScreen {
     border-radius: 0;
     width: 90%;
-    max-width: 420px;
-    -moz-max-width: 420px;
+    max-width: 320px;
+    -moz-max-width: 320px;
     background-color: transparent;
     text-align: left;
 }
@@ -154,17 +154,7 @@
 }
 /* resizes alertDialog boxes for larger display width */
 @media only screen and (min-width: 400px) {
-    .splashScreenRoot .splashScreen,
-    .alertDialogRoot .alertDialog,
-    .actionDialogRoot .actionDialog,
-    .menuRoot .menu {
-        zoom: 1.1;
-    }
-    /* firefox doesn't support zoom */
-    .splashScreen,
-    .alertDialogRoot,
-    .actionDialogRoot,
-    .menuRoot {
-        -moz-transform: scale(1.1);
+    .splashScreenRoot .splashScreen {
+        transform: scale(1.1);
     }
 }
