@@ -9,13 +9,13 @@
  * works for each and every webpage.
  */
 
-import { Database, DB_ROOT } from '/common/js/firebaseinit.js';
-import { DEBUG } from '/common/js/variables.js';
-import { getTimeStamp, getLongDateTime, } from '/common/js/variables.js';
 import {
     ref as firebaseDBRef,
     update as firebaseDBUpdate,
 } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js';
+import { Database, DB_ROOT } from '/common/js/firebaseinit.js';
+import { getTimeStamp, getLongDateTime, } from '/common/js/generalfunc.js';
+import { DEBUG } from '/common/js/variables.js';
 
 // Object to hold logs with nanosecond timestamps as keys
 const SessionLogs = {};

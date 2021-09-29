@@ -1,32 +1,31 @@
-import { Database, DB_ROOT } from '/common/js/firebaseinit.js';
 import {
     ref as firebaseDBRef,
     push as firebaseDBPush,
     update as firebaseDBUpdate,
     onValue as firebaseOnRtdbDataChanged,
 } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js';
+import { loadTheme, } from '/common/js/colors.js';
 import {
-    USER_ID,
-    DEBUG,
-    EXISTS_ANDROID_INTERFACE,
+    $,
+    getChildElement,
+    childHasParent,
+    appendHTMLString,
+    smoothScroll,
+} from '/common/js/domfunc.js';
+import { Database, DB_ROOT, } from '/common/js/firebaseinit.js';
+import { 
     getTimeStamp,
     getLongDateTime,
-    log,
-    err,
     encode,
     decode,
     download,
     copyPlainTxt,
     getBrowser,
-    $,
-    getChildElement,
-    childHasParent,
-    appendHTMLString,
     checkForApkUpdates,
-    smoothScroll,
-    loadTheme,
-} from '/common/js/modules.js';
-import { Overlay, SplashScreen, Dialog, Menu, } from '/common/js/overlays.js'
+} from '/common/js/generalfunc.js';
+import { log, err, } '/common/js/logging.js';
+import { Overlay, SplashScreen, Dialog, Menu, } from '/common/js/overlays.js';
+import { USER_ID, DEBUG, EXISTS_ANDROID_INTERFACE, } from '/common/js/variables.js';
 
 // Markdown converter
 const MDtoHTML = new showdown.Converter();
@@ -88,8 +87,8 @@ const startDBListener = () => {
             }
             if (!MSG_UNSENT) smoothScroll($('#chatarea'), false, false);
         });
-        if ($('#chatarea').innerHTML.match(/pre/i) &&
-            $('#chatarea').innerHTML.match(/code/i)) {
+        if (/pre/i.test($('#chatarea').innerHTML) &&
+           /code/i.test($('#chatarea').innerHTML)) {
             hljs.highlightAll();
         }
         SplashScreen.hide(() => {
@@ -125,7 +124,8 @@ document.addEventListener('keyup', (e) => {
         $('#msgpreview').innerHTML = '<font class="header" color="#7d7d7d">Markdown preview</font><font color="#7d7d7d">Preview appears here</font>';
     }
     // if html contains code, run highlighter
-    if (HTML.match(/pre/i) && HTML.match(/code/i)) {
+    if (/pre/i.test(HTML) &&
+       /code/i.test(HTML)) {
         hljs.highlightAll();
     }
 });

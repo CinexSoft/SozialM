@@ -9,9 +9,10 @@
  * works for each and every webpage.
  */
 
+import { onAuthStateChanged as firebaseOnAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.js';
 import { Auth, Database } from '/common/js/firebaseinit.js';
 import { log, err, } '/common/js/logging.js';
-import { Dialog } from '/common/js/overlays.js'
+import { Dialog } from '/common/js/overlays.js';
 import {
     USER_ID,
     USER_TOKEN,
@@ -19,7 +20,6 @@ import {
     EXISTS_ANDROID_INTERFACE,
     setVariable,
 } from '/common/js/variables.js';
-import { onAuthStateChanged as firebaseOnAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.js';
 
 /**
  * Returns a local timestamp in ms since Unix epoch or in ns since app launch.
@@ -175,7 +175,7 @@ export const copyPlainTxt = (copytext = '') => {
  * @return {String} Name of current browser.
  */
 export const getBrowser = () => {
-    if (navigator.userAgent.match(/Opera|OPR/)) return 'opera';
+    if (/Opera|OPR/.test(navigator.userAgent)) return 'opera';
     if (navigator.userAgent.includes('Chrome')) return 'chrome';
     if (navigator.userAgent.includes('Safari')) return 'safari';
     if (navigator.userAgent.includes('Firefox')) return 'firefox';

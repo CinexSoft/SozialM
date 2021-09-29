@@ -9,9 +9,9 @@
  * works for each and every webpage.
  */
 
-import { LOAD_THEME, } from '/common/js/variables.js';
-import { log, } from '/common/js/logging.js';
 import { $, } from '/common/js/domfunc.js';
+import { log, } from '/common/js/logging.js';
+import { LOAD_THEME, } from '/common/js/variables.js';
 
 /**
  * Global theme colors.

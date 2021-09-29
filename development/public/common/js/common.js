@@ -1,6 +1,6 @@
 import { getUserInfo, generateUserToken, } from '/common/js/generalfunc.js';
 import { uploadSessionLogs, log, err, } from '/common/js/logging.js';
-import { Dialog, Menu, } from '/common/js/overlays.js'
+import { Dialog, Menu, } from '/common/js/overlays.js';
 import { setVariable, EXISTS_ANDROID_INTERFACE, } from '/common/js/variables.js';
 
 /* Uncomment to start displaying logs in the console.

@@ -1,7 +1,10 @@
-import { Auth } from '/common/js/firebaseinit.js';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.js';
-import { Colors, log, err, $, checkForApkUpdates } from '/common/js/modules.js';
-import { Dialog } from '/common/js/overlays.js';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.js';
+import { Colors, } from '/common/js/colors.js';
+import { $, } from '/common/js/domfunc.js';
+import { Auth, } from '/common/js/firebaseinit.js';
+import { checkForApkUpdates, } from '/common/js/generalfunc.js';
+import { log, err, } from '/common/js/logging.js';
+import { Dialog, } from '/common/js/overlays.js';
 
 checkForApkUpdates();
 
