@@ -1,10 +1,22 @@
+import { Database, DB_ROOT, } from '/common/js/firebaseinit.js';
 import {
     ref as firebaseDBRef,
     push as firebaseDBPush,
     update as firebaseDBUpdate,
     onValue as firebaseOnRtdbDataChanged,
 } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js';
-import { loadTheme, } from '/common/js/colors.js';
+import { USER_ID, DEBUG, EXISTS_ANDROID_INTERFACE, } from '/common/js/variables.js';
+import { log, err, } from '/common/js/logging.js';
+import { 
+    getTimeStamp,
+    getLongDateTime,
+    encode,
+    decode,
+    downloadFile,
+    copyPlainTxt,
+    getBrowser,
+    checkForApkUpdates,
+} from '/common/js/generalfunc.js';
 import {
     $,
     getChildElement,
@@ -12,26 +24,12 @@ import {
     appendHTMLString,
     smoothScroll,
 } from '/common/js/domfunc.js';
-import { Database, DB_ROOT, } from '/common/js/firebaseinit.js';
-import { 
-    getTimeStamp,
-    getLongDateTime,
-    encode,
-    decode,
-    download,
-    copyPlainTxt,
-    getBrowser,
-    checkForApkUpdates,
-} from '/common/js/generalfunc.js';
-import { log, err, } '/common/js/logging.js';
+import { loadTheme, } from '/common/js/colors.js';
 import { Overlay, SplashScreen, Dialog, Menu, } from '/common/js/overlays.js';
-import { USER_ID, DEBUG, EXISTS_ANDROID_INTERFACE, } from '/common/js/variables.js';
 
 // Markdown converter
 const MDtoHTML = new showdown.Converter();
 MDtoHTML.setFlavor('github');
-
-let MSG_UNSENT = false;
 
 // html sanitizer - additional tags and attributes
 HtmlSanitizer.AllowedTags['h'] = true;
@@ -40,6 +38,20 @@ HtmlSanitizer.AllowedAttributes['id'] = true;
 HtmlSanitizer.AllowedAttributes['class'] = true;
 HtmlSanitizer.AllowedAttributes['download'] = true;
 HtmlSanitizer.AllowedSchemas.push('mailto:');
+HtmlSanitizer.AllowedCssStyles['width'] = true;
+HtmlSanitizer.AllowedCssStyles['height'] = true;
+HtmlSanitizer.AllowedCssStyles['min-width'] = true;
+HtmlSanitizer.AllowedCssStyles['min-height'] = true;
+HtmlSanitizer.AllowedCssStyles['max-width'] = true;
+HtmlSanitizer.AllowedCssStyles['max-height'] = true;
+HtmlSanitizer.AllowedCssStyles['padding'] = true;
+HtmlSanitizer.AllowedCssStyles['margin'] = true;
+HtmlSanitizer.AllowedCssStyles['border'] = true;
+HtmlSanitizer.AllowedCssStyles['border-radius'] = true;
+HtmlSanitizer.AllowedCssStyles['display'] = true;
+HtmlSanitizer.AllowedCssStyles['overflow'] = true;
+HtmlSanitizer.AllowedCssStyles['transform'] = true;
+HtmlSanitizer.AllowedCssStyles['background'] = true;
 
 // other variables
 let PREVIOUS_HEIGHT = document.body.clientHeight;
@@ -85,17 +97,18 @@ const startDBListener = () => {
                 if (DEBUG) console.log(`Log: Chat: that: pushkey = ${pushkey}`);
                 if (DEBUG) console.log(`Log: Chat: that: html = ${$('#chatarea').innerHTML}`);
             }
-            if (!MSG_UNSENT) smoothScroll($('#chatarea'), false, false);
+            smoothScroll($('#chatarea'), false, false);
         });
         if (/pre/i.test($('#chatarea').innerHTML) &&
            /code/i.test($('#chatarea').innerHTML)) {
             hljs.highlightAll();
         }
         SplashScreen.hide(() => {
-            if (!MSG_UNSENT) smoothScroll($('#chatarea'), false, false);
+            smoothScroll($('#chatarea'), false, false);
             checkForApkUpdates();
         });
         loadTheme();
+        smoothScroll($('#chatarea'), false, false);
         log('Chat: db update fetched');
     });
 }
@@ -132,8 +145,6 @@ document.addEventListener('keyup', (e) => {
 
 // soft keyboard launch triggers window resize event
 window.addEventListener('resize', (e) => {
-    // reset value of this flag
-    MSG_UNSENT = false;
     // detects soft keyboard switch
     if (PREVIOUS_HEIGHT != document.body.clientHeight && PREVIOUS_WIDTH == document.body.clientWidth) {
         SOFTBOARD_OPEN = !SOFTBOARD_OPEN;
@@ -161,8 +172,6 @@ window.addEventListener('resize', (e) => {
 
 // on send button clicked
 $('#btnsend').addEventListener('click', (e) => {
-    // reset value of this flag
-    MSG_UNSENT = false;
     const msgbackup = $('#txtmsg').value;
     // if msgbackup is empty.
     if (!msgbackup.trim()) {
@@ -265,7 +274,7 @@ document.body.addEventListener('click', (e) => {
     // title bar back arrow click
     if (['backdiv', 'backarrow', 'dp acc_bg'].includes(e.target.className)) {
         log('Chat: history: going back');
-        history.back();
+        location.href = '/inbox';
     }
     // menu copy button click
     else if (e.target.id == 'menu_copy') {
@@ -286,7 +295,6 @@ document.body.addEventListener('click', (e) => {
                 Dialog.display('alert', 'Not allowed', 'You can only unsend a message within 1 hour of sending it.');
                 return;
             }
-            MSG_UNSENT = true;
             firebaseDBUpdate(firebaseDBRef(Database, DB_ROOT + CHAT_ROOT), {
                 [LONG_PRESSED_ELEMENT.id]: null
             }).then(() => {
@@ -299,7 +307,7 @@ document.body.addEventListener('click', (e) => {
     // menu reply button click
     else if (e.target.id == 'menu_reply') {
         Menu.hide(() => {
-            QUOTE_REPLY_TEXT = `<blockquote id="tm_${LONG_PRESSED_ELEMENT.id}">${getChildElement(LONG_PRESSED_ELEMENT, 'div')[0].innerHTML}</blockquote>\n\n`;
+            QUOTE_REPLY_TEXT = `<blockquote id="tm_${LONG_PRESSED_ELEMENT.id}" style="overflow:auto; height:100px;">${getChildElement(LONG_PRESSED_ELEMENT, 'div')[0].innerHTML}</blockquote>\n\n`;
             $('#txtmsg').focus();
         });
     }
@@ -412,7 +420,7 @@ document.body.addEventListener('pointerdown', (e) => {
                 Dialog.hide('action', () => {
                     try {
                         Android.showToast('Look into your notification panel for download progress');
-                        download(e.target.src, `${e.target.alt.trim() ? e.target.alt.trim() : 'image'}_sozialnmedien_${getTimeStamp()}.png`);
+                        downloadFile(e.target.src, `${e.target.alt.trim() ? e.target.alt.trim() : 'image'}_sozialnmedien_${getTimeStamp()}.png`);
                     }
                     catch (error) {
                         Dialog.display('alert', 'Download failed', `Failed to download file. Click <a href="${e.target.src}">here</a> to visit file in browser.`);
@@ -443,8 +451,6 @@ document.body.addEventListener('pointerup', (e) => {
 
 // swipe gesture listener
 document.body.addEventListener('touchmove', (e) => {
-    // reset value of this flag
-    MSG_UNSENT = false;
     log(`Chat: swiped: id = ${e.target.id} node = ${e.target.nodeName} class = ${e.target.className}`);
     if (LONG_PRESSED_ELEMENT) LONG_PRESSED_ELEMENT.style.transform = 'scale(1)';
     e.target.style.transform = 'scale(1)';

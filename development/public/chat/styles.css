@@ -132,6 +132,7 @@
     background-color: #D8D8D8;
 }
 .markdown pre code {
+    min-width: 60vw;
     border: 0;
     border-left: 5px solid var(--accent-bgcolor);
     background-color: #F0F0F0;

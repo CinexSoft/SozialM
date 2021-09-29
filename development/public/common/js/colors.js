@@ -9,9 +9,9 @@
  * works for each and every webpage.
  */
 
-import { $, } from '/common/js/domfunc.js';
-import { log, } from '/common/js/logging.js';
 import { LOAD_THEME, } from '/common/js/variables.js';
+import { log, } from '/common/js/logging.js';
+import { $, } from '/common/js/domfunc.js';
 
 /**
  * Global theme colors.
@@ -111,5 +111,5 @@ export const loadTheme = () => {
         element.style.borderColor = CONTROL_COLOR;
         element.style.color = DARK_FG_COLOR;
     }
-    log('modules.js: loadTheme(): loaded');
+    log('colors.js: loadTheme(): loaded');
 }

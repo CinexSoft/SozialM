@@ -1,8 +1,8 @@
-import { ref, update, } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js';
-import { $, } from '/common/js/domfunc.js';
 import { Auth, Database, } from '/common/js/firebaseinit.js';
-import { checkForApkUpdates, getURLQueryFieldValue, } from '/common/js/generalfunc.js';
+import { ref, update, } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js';
 import { log, err, } from '/common/js/logging.js';
+import { checkForApkUpdates, getURLQueryFieldValue, } from '/common/js/generalfunc.js';
+import { $, } from '/common/js/domfunc.js';
 import { Dialog, } from '/common/js/overlays.js';
 
 let CHAT_ROOM_ID;
@@ -14,7 +14,7 @@ const loadChatRoom = () => {
 }
 
 CHAT_ROOM_ID = getURLQueryFieldValue('chatroomid');
-if (CHAT_ROOM_ID && !/[^A-Za-z0-9]/.test(CHAT_ROOM_ID)) loadChatRoom();
+if (CHAT_ROOM_ID && !Array.isArray(CHAT_ROOM_ID) && !/[^A-Za-z0-9]/.test(CHAT_ROOM_ID)) loadChatRoom();
 
 // this prompt is a temporary code while the inbox is being built
 Dialog.display('alert', 'Chat Room',

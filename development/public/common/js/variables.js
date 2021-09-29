@@ -36,6 +36,12 @@ export let DEBUG = !true;
 export let LOAD_THEME = !true;
 
 /**
+ * Session logs token
+ * @type {String} If true, reloads the theme/accent colors based on usage of function loadTheme().
+ */
+export let SESSION_TOKEN;
+
+/**
  * Checks if the Android WebAppInterface exists.
  * The `Android` WebAppInterface is a class available in the Android APK of this project.
  * The interface allows the website to use Android features through javascript without requiring an independent Android app to be developed.
@@ -73,7 +79,10 @@ export const setVariable = (variable, value) => {
         case 'LOAD_THEME':
             LOAD_THEME = value;
             break;
+        case 'SESSION_TOKEN':
+            SESSION_TOKEN = value;
+            break;
         default:
-            throw `Error: for variable ${variable}, no such variable in modules.js, note that variables are case-sensitive`;
+            throw `Error: for variable ${variable}, no such variable in variables.js, note that variables are case-sensitive`;
     }
 }

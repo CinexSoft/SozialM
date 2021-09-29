@@ -1,18 +1,9 @@
-import { getUserInfo, generateUserToken, } from '/common/js/generalfunc.js';
-import { uploadSessionLogs, log, err, } from '/common/js/logging.js';
-import { Dialog, Menu, } from '/common/js/overlays.js';
 import { setVariable, EXISTS_ANDROID_INTERFACE, } from '/common/js/variables.js';
+import { getUserInfo, generateUserToken, getLongDateTime, } from '/common/js/generalfunc.js';
 
 /* Uncomment to start displaying logs in the console.
  * setVariable('DEBUG', true);
  */
- 
-/* On error of any kind, catch it and upload it.
- * Includes both exceptions and syntax errors.
- */
-window.onerror = (error) => {
-    err(`common.js: window.onerror(): ${error}`);
-}
 
 // upload logs in intervals for current session
 setInterval(() => {
@@ -22,6 +13,10 @@ setInterval(() => {
 // user ID recognises a person while user token recognises a device
 getUserInfo();
 generateUserToken();
+
+// rest imports
+import { uploadSessionLogs, log, err, } from '/common/js/logging.js';
+import { Dialog, Menu, } from '/common/js/overlays.js';
 
 // global onclick listeners
 document.body.addEventListener('click', (e) => {

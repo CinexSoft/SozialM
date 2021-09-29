@@ -9,10 +9,8 @@
  * works for each and every webpage.
  */
 
+import { Auth } from '/common/js/firebaseinit.js';
 import { onAuthStateChanged as firebaseOnAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.js';
-import { Auth, Database } from '/common/js/firebaseinit.js';
-import { log, err, } '/common/js/logging.js';
-import { Dialog } from '/common/js/overlays.js';
 import {
     USER_ID,
     USER_TOKEN,
@@ -20,6 +18,8 @@ import {
     EXISTS_ANDROID_INTERFACE,
     setVariable,
 } from '/common/js/variables.js';
+import { log, err, } from '/common/js/logging.js';
+import { Dialog } from '/common/js/overlays.js';
 
 /**
  * Returns a local timestamp in ms since Unix epoch or in ns since app launch.
@@ -60,7 +60,7 @@ export const generateToken = (length = 64) => {
     let output_token = [];
     for (let i = 0; i < length; i++) {
         let j = (Math.random() * (array_of_chars.length - 1)).toFixed(0);
-        outputToken[i] = array_of_chars[j];
+        output_token[i] = array_of_chars[j];
     }
     return output_token.join('');
 }
@@ -70,11 +70,11 @@ export const generateToken = (length = 64) => {
  */
 export const generateUserToken = () => {
     if (!localStorage.getItem('User.token')) {
-        setVariable(USER_TOKEN, generateToken());
+        setVariable('USER_TOKEN', generateToken());
         localStorage.setItem('User.token', USER_TOKEN);
-        log(`modules.js: user: new token = ${USER_TOKEN}`);
+        log(`generalfunc.js: user: new token = ${USER_TOKEN}`);
     }
-    setVariable(USER_TOKEN, localStorage.getItem('User.token'));
+    setVariable('USER_TOKEN', localStorage.getItem('User.token'));
 }
 
 /**
@@ -83,13 +83,13 @@ export const generateUserToken = () => {
 export const getUserInfo = () => {
     firebaseOnAuthStateChanged(Auth, (user) => {
         if (!user) {
-            err('modules.js: user not signed in');
+            err('generalfunc.js: user not signed in');
             localStorage.removeItem('Auth.user');
             return;
         }
-        setVariable(USER_ID, generateToken());
+        setVariable('USER_ID', user.uid);
         localStorage.setItem('Auth.user', JSON.stringify(user));
-        log(`modules.js: user: id = ${USER_ID}`);
+        log(`generalfunc.js: user: id = ${USER_ID}`);
     });
 }
 
@@ -103,7 +103,7 @@ export const encode = (str) => {
     for (let character of specialChars) {
         str = str.replaceAll(character, `ASCII${character.charCodeAt(0)}`);
     }
-    if (DEBUG) console.log(`Log: modules.js: encode(): str = ${str}`);
+    if (DEBUG) console.log(`Log: generalfunc.js: encode(): str = ${str}`);
     return str;
 }
 
@@ -117,7 +117,7 @@ export const decode = (str) => {
     for (let character of specialChars) {
         str = str.replaceAll(`ASCII${character.charCodeAt(0)}`, character);
     }
-    if (DEBUG) console.log(`Log: modules.js: decode(): str = ${str}`);
+    if (DEBUG) console.log(`Log: generalfunc.js: decode(): str = ${str}`);
     return str;
 }
 
@@ -131,14 +131,14 @@ export const downloadFile = (directurl, filename = `sozialnmedien_${getTimeStamp
     if (EXISTS_ANDROID_INTERFACE) {
         try {
             Android.download(directurl, filename);
-            log('[AND]: modules.js: download(): through Android WepAppInterface');
+            log('[AND]: generalfunc.js: download(): through Android WepAppInterface');
         } catch (error) {
-            err(`modules.js: ${error}`);
+            err(`generalfunc.js: ${error}`);
             throw error;
         }
         return;
     }
-    err('modules.js: android interface doesn\'t exist');
+    err('generalfunc.js: android interface doesn\'t exist');
     throw 'Error: android interface doesn\'t exist';
     let element = document.createElement('a');
     element.setAttribute('href', directurl);
@@ -156,15 +156,15 @@ export const downloadFile = (directurl, filename = `sozialnmedien_${getTimeStamp
 export const copyPlainTxt = (copytext = '') => {
     copytext = copytext.replace(/<br>/g, '\n').replace(/<[^>]*>/g, '');
     navigator.clipboard.writeText(copytext).then(() => {
-        log('modules.js: text copied to clipboard');
+        log('generalfunc.js: text copied to clipboard');
     }).catch((error) => {
-        err(`modules.js: ${error}`);
+        err(`generalfunc.js: ${error}`);
         if (EXISTS_ANDROID_INTERFACE) {
             Android.copyToClipboard(copytext);
-            log('[AND]: modules.js: copyPlainTxt(): through Android WepAppInterface');
+            log('[AND]: generalfunc.js: copyPlainTxt(): through Android WepAppInterface');
             Android.showToast('Text copied!');
         } else {
-            err('modules.js: android interface doesn\'t exist');
+            err('generalfunc.js: android interface doesn\'t exist');
             Dialog.display('alert', 'Oops!', 'Copy text to clipboard failed');
         }
     });
@@ -188,27 +188,27 @@ export const getBrowser = () => {
  */
 export const checkForApkUpdates = () => {
     if (!EXISTS_ANDROID_INTERFACE) return;
-    log('[APK]: modules.js: checking for update');
+    log('[APK]: generalfunc.js: checking for update');
     try { 
         switch (Android.updateAvailable()) {
             case 'true':
-                log('modules.js: alertDialog: launch: update available');
+                log('generalfunc.js: alertDialog: launch: update available');
                 Dialog.display('alert', 'Update available', 'A new version of this Android app is available.', 'Download', () => {
                    setTimeout(() => {
                         Android.showToast('Downloading app, look into your notification panel');
                         Android.download('https://sozialnmedien.web.app/downloads/app.web.sozialnmedien.apk', 'app.web.sozialnmedien.apk');
                     }, 500);
                     Dialog.hide('alert');
-                    log('[AND]: modules.js: downloaded Android app');
+                    log('[AND]: generalfunc.js: downloaded Android app');
                 });
                 break;
             case 'failed':
-                err('modules.js: update check failed');
+                err('generalfunc.js: update check failed');
                 break;
         }
     }
     catch (error) {
-        err(`modules.js: ${error}`);
+        err(`generalfunc.js: ${error}`);
     }
 }
 
@@ -219,11 +219,11 @@ export const checkForApkUpdates = () => {
  */
 export const getURLQuery = (fields) => {
     const Parameters = {};
-    for (item in location.search.split(/\?|\&/)) if (item) {
+    for (item of location.search.split(/\?|\&/)) if (item) {
         let param = item.split(/=/)[0];
         let value = item.split(/=/)[1];
         if (!param || !value || !fields.includes(param)) continue;
-        if (!Parameters.hasOwnProperty(param)) Parameters[param]: value;
+        if (!Parameters.hasOwnProperty(param)) Parameters[param] = value;
         else if (Array.isArray(Parameters[param])) Parameters[param].push(value);
         else Parameters[param] = [Parameters[param], value];
     }
@@ -237,11 +237,11 @@ export const getURLQuery = (fields) => {
  * @return {Array} If the query has duplicate fields.
  */
 export const getURLQueryFieldValue = (field) => {
-    values = [];
-    for (item in location.search.split(/\?|\&/)) if (item) {
+    let values = [];
+    for (let item of location.search.split(/\?|\&/)) if (item) {
         let param = item.split(/=/)[0];
         let value = item.split(/=/)[1];
-        if (param && value && field == param)) values.push(value);
+        if (param && value && field.toLowerCase() == param.toLowerCase()) values.push(value);
     }
     return values.length > 0 ? (values.length == 1 ? values[0] : values) : undefined;
 }

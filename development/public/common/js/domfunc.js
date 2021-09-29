@@ -60,7 +60,7 @@ export const childHasParent = (child, parent) => {
     let node = child.parentNode;
     while (node != null) {
         if (node == parent) {
-            log(`modules.js: ${node.nodeName} of class = ${node.className} has parent ${parent.nodeName} of class = ${parent.className}`);
+            log(`domfunc.js: ${node.nodeName} of class = ${node.className} has parent ${parent.nodeName} of class = ${parent.className}`);
             return true;
         }
         node = node.parentNode;
@@ -101,6 +101,6 @@ export const smoothScroll = (element, get_behavior_only = false, smooth = true) 
         if (get_behavior_only) return 'auto';
         element.style.scrollBehavior = 'auto';
     }
-    log(`modules.js: smoothscroll(): element = ${element.nodeName} class = ${element.className} diff = ${element.scrollHeight - element.scrollTop}`);
+    log(`domfunc.js: smoothscroll(): element = ${element.nodeName} class = ${element.className} diff = ${element.scrollHeight - element.scrollTop}`);
     element.scrollTop = element.scrollHeight;
 }
