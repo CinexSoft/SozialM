@@ -60,7 +60,7 @@ pre {
 /* ------------------- BUTTONS ---------------------*/
 button {
     font-size: 1.05rem;
-    transition-duration: 100ms;
+    transition-duration: 200ms;
 }
 button:active {
     font-size: 1.03rem;
