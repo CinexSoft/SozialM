@@ -242,6 +242,7 @@
     font-size: 22px;
 }
 @media only screen and (orientation: landscape) and (min-height: 420px) {
+    .chatbg,
     .root,
     .titlebar,
     .msgpreview,
