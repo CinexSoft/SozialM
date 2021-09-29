@@ -1,6 +1,4 @@
 /**
- * overlays.js
- *
  * WARNING:
  * Before making modifications to this file, make absolutely sure that
  * you've used the functions and their respective flags (if any) properly.
@@ -11,7 +9,8 @@
  * works for each and every webpage.
  */
 
-import { log, err, $, getChildElement } from '/common/js/modules.js'
+import { $, getChildElement } from '/common/js/domfunc.js';
+import { log, err, } from '/common/js/logging.js';
 
 /**
  * Contains global data for behavior of overlays viz menus and dialogs.
