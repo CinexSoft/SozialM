@@ -1,15 +1,15 @@
-Built on Wed Sep 29 20:25:40 UTC 2021
+Built on Thu Sep 30 21:06:30 UTC 2021
 
 Readable code sizes:
-20K	./development/public/chat/script.js
+24K	./development/public/chat/script.js
 8.0K	./development/public/auth/script.js
 4.0K	./development/public/profile/script.js
 4.0K	./development/public/common/js/variables.js
 12K	./development/public/common/js/overlays.js
 4.0K	./development/public/common/js/logging.js
-4.0K	./development/public/common/js/common.js
 8.0K	./development/public/common/js/domfunc.js
 12K	./development/public/common/js/generalfunc.js
+4.0K	./development/public/common/js/init.js
 4.0K	./development/public/common/js/firebaseinit.js
 8.0K	./development/public/common/js/colors.js
 4.0K	./development/public/inbox/script.js
@@ -22,9 +22,9 @@ Obfuscated code sizes:
 4.0K	./production/public/common/js/variables.js
 12K	./production/public/common/js/overlays.js
 4.0K	./production/public/common/js/logging.js
-4.0K	./production/public/common/js/common.js
 4.0K	./production/public/common/js/domfunc.js
 12K	./production/public/common/js/generalfunc.js
+4.0K	./production/public/common/js/init.js
 4.0K	./production/public/common/js/firebaseinit.js
 4.0K	./production/public/common/js/colors.js
 4.0K	./production/public/inbox/script.js
