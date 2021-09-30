@@ -6,8 +6,6 @@ import { $, } from '/common/js/domfunc.js';
 import { Colors, } from '/common/js/colors.js';
 import { Dialog, } from '/common/js/overlays.js';
 
-checkForApkUpdates();
-
 // root visibility flag
 let VISIBILE_ROOT = 'login';
 
@@ -34,128 +32,6 @@ const resetColors = () => {
     }
 }
 
-// called when the eye-slash icon is pressed
-$(".switchlink")[0].addEventListener('click', (event) => {
-    resetColors();
-    if (VISIBILE_ROOT == 'login') {
-        $('#login').style.display = 'none';
-        $('.swinfo')[0].innerHTML = 'Already have an account? ';
-        $('.switchlink')[0].innerHTML = 'Log In';
-        VISIBILE_ROOT = 'signup';
-    } else if (VISIBILE_ROOT == 'signup') {
-        $('#signup').style.display = 'none';
-        $('.swinfo')[0].innerHTML = 'Don\'t have an account? ';
-        $('.switchlink')[0].innerHTML = 'Sign Up';
-        VISIBILE_ROOT = 'login';
-    }
-    log(`Auth: switch root: VISIBILE_ROOT = ${VISIBILE_ROOT}`);
-    document.getElementById(VISIBILE_ROOT).style.display = 'block';
-});
-
-// toggle password visibility
-for (let element of $(".fa-eye-slash")) element.addEventListener('click', (event) => {
-    for (let element of $('.password')) {
-        log(`Auth: togglePassVisibility: type = ${element.type}`);
-        if (element.type == 'password') {
-            element.type = 'text';
-            for (let element of $('.fa-eye-slash')) {
-                element.style.color = '#aaa';
-            }
-        } else if (element.type == 'text') {
-            element.type = 'password';
-            for (let element of $('.fa-eye-slash')) {
-                element.style.color = Colors.CONTROL_COLOR;
-            }
-        }
-    }
-});
-
-// on focus given to an input
-document.body.addEventListener('click', (event) => {
-    if (['INPUT', 'DIV'].includes(event.target.nodeName)) {
-        resetColors();
-    } else if (event.target.id == 'pass_reset') {
-        Dialog.display('action', 'Reset Password',
-            '<p style="text-align:justify">The Reset Password UI isn\'t yet ready. Please send an e-mail to <a id="mail_cinexsoft" href="mailto:cinexsoft@gmail.com">CinexSoft</a> and we\'ll send you a reset link to your registered email address.</p>' +
-            '<p style="text-align:justify">You might need to wait from a couple of hours to about 2 days for the link. If it doesn\'t arrive, request a reset again.</p>',
-            'Open mail',
-            () => {
-                $('#mail_cinexsoft').click();
-            }
-        );
-    }
-});
-
-// login button clicked
-$('#btn_login').addEventListener('click', (e) => {
-    resetColors();
-    $('#login_info').style.color = '#555';
-    $('#login_info').innerHTML = 'Logging you in, please wait...';
-    $('#login_info').style.display = 'block';
-    const email = $('#login_email').value;
-    const password = $('#login_pass').value;
-    signInWithEmailAndPassword(Auth, email, password).then((userCredential) => {
-        const user = userCredential.user;
-        localStorage.setItem('Auth.user', JSON.stringify(user));
-        location.href = '/';
-    })
-    .catch((error) => {
-        const nodes = [];
-        const innernodes = [];
-        if (error.code.includes('mail')) {
-            nodes.push($('#login_email'));
-        } else if (error.code.includes('pass')) {
-            nodes.push($('#login_pass').parentNode);
-            innernodes.push($('#login_pass'));
-        }
-        handleError('login', error, nodes, innernodes);
-    });
-});
-
-// signup button clicked
-$('#btn_signup').addEventListener('click', (e) => {
-    resetColors();
-    $('#signup_info').style.color = '#555';
-    $('#signup_info').innerHTML = 'Signing you up, please wait...';
-    $('#signup_info').style.display = 'block';
-    const email = $('#signup_email').value;
-    if ($('#signup_pass').value != $('#signup_pass_c').value) {
-        handleError('signup', {
-            message: 'Passwords don\'t match',
-            code:'auth/password-mismatch',
-        },
-        [
-            $('#signup_pass').parentNode,
-            $('#signup_pass_c').parentNode,
-        ],
-        [
-            $('#signup_pass'),
-            $('#signup_pass_c'),
-        ]);
-        return;
-    }
-    const password = $('#signup_pass').value;
-    createUserWithEmailAndPassword(Auth, email, password).then((userCredential) => {
-        const user = userCredential.user;
-        localStorage.setItem('Auth.user', JSON.stringify(user));
-        location.href = '/';
-    })
-    .catch((error) => {
-        const nodes = [];
-        const innernodes = [];
-        if (error.code.includes('mail')) {
-            nodes.push($('#signup_email'));
-        }
-        if (error.code.includes('pass')) {
-            nodes.push($('#signup_pass').parentNode);
-            nodes.push($('#signup_pass_c').parentNode);
-            innernodes.push($('#signup_pass'));
-            innernodes.push($('#signup_pass_c'));
-        }
-        handleError('signup', error, nodes, innernodes);
-    });
-});
-
 // login or signup error handler
 const handleError = (state, { code, message, }, nodes, innernodes) => {
     log(`Auth: nodes = ${nodes}`);
@@ -178,4 +54,130 @@ const handleError = (state, { code, message, }, nodes, innernodes) => {
     }
 }
 
-log('Auth: document and script load complete');
+const main = () => {
+    checkForApkUpdates();
+    // event when the eye-slash icon is pressed
+    $(".switchlink")[0].addEventListener('click', (event) => {
+        resetColors();
+        if (VISIBILE_ROOT == 'login') {
+            $('#login').style.display = 'none';
+            $('.swinfo')[0].innerHTML = 'Already have an account? ';
+            $('.switchlink')[0].innerHTML = 'Log In';
+            VISIBILE_ROOT = 'signup';
+        } else if (VISIBILE_ROOT == 'signup') {
+            $('#signup').style.display = 'none';
+            $('.swinfo')[0].innerHTML = 'Don\'t have an account? ';
+            $('.switchlink')[0].innerHTML = 'Sign Up';
+            VISIBILE_ROOT = 'login';
+        }
+        log(`Auth: switch root: VISIBILE_ROOT = ${VISIBILE_ROOT}`);
+        document.getElementById(VISIBILE_ROOT).style.display = 'block';
+    });
+    
+    // toggle password visibility
+    for (let element of $(".fa-eye-slash")) element.addEventListener('click', (event) => {
+        for (let element of $('.password')) {
+            log(`Auth: togglePassVisibility: type = ${element.type}`);
+            if (element.type == 'password') {
+                element.type = 'text';
+                for (let element of $('.fa-eye-slash')) {
+                    element.style.color = '#aaa';
+                }
+            } else if (element.type == 'text') {
+                element.type = 'password';
+                for (let element of $('.fa-eye-slash')) {
+                    element.style.color = Colors.CONTROL_COLOR;
+                }
+            }
+        }
+    });
+    
+    // on focus given to an input
+    document.body.addEventListener('click', (event) => {
+        if (['INPUT', 'DIV'].includes(event.target.nodeName)) {
+            resetColors();
+        } else if (event.target.id == 'pass_reset') {
+            Dialog.display('action', 'Reset Password',
+                '<p style="text-align:justify">The Reset Password UI isn\'t yet ready. Please send an e-mail to <a id="mail_cinexsoft" href="mailto:cinexsoft@gmail.com">CinexSoft</a> and we\'ll send you a reset link to your registered email address.</p>' +
+                '<p style="text-align:justify">You might need to wait from a couple of hours to about 2 days for the link. If it doesn\'t arrive, request a reset again.</p>',
+                'Open mail',
+                () => {
+                    $('#mail_cinexsoft').click();
+                }
+            );
+        }
+    });
+    
+    // login button clicked
+    $('#btn_login').addEventListener('click', (e) => {
+        resetColors();
+        $('#login_info').style.color = '#555';
+        $('#login_info').innerHTML = 'Logging you in, please wait...';
+        $('#login_info').style.display = 'block';
+        const email = $('#login_email').value;
+        const password = $('#login_pass').value;
+        signInWithEmailAndPassword(Auth, email, password).then((userCredential) => {
+            const user = userCredential.user;
+            localStorage.setItem('Auth.user', JSON.stringify(user));
+            location.href = '/';
+        })
+        .catch((error) => {
+            const nodes = [];
+            const innernodes = [];
+            if (error.code.includes('mail')) {
+                nodes.push($('#login_email'));
+            } else if (error.code.includes('pass')) {
+                nodes.push($('#login_pass').parentNode);
+                innernodes.push($('#login_pass'));
+            }
+            handleError('login', error, nodes, innernodes);
+        });
+    });
+    
+    // signup button clicked
+    $('#btn_signup').addEventListener('click', (e) => {
+        resetColors();
+        $('#signup_info').style.color = '#555';
+        $('#signup_info').innerHTML = 'Signing you up, please wait...';
+        $('#signup_info').style.display = 'block';
+        const email = $('#signup_email').value;
+        if ($('#signup_pass').value != $('#signup_pass_c').value) {
+            handleError('signup', {
+                message: 'Passwords don\'t match',
+                code:'auth/password-mismatch',
+            },
+            [
+                $('#signup_pass').parentNode,
+                $('#signup_pass_c').parentNode,
+            ],
+            [
+                $('#signup_pass'),
+                $('#signup_pass_c'),
+            ]);
+            return;
+        }
+        const password = $('#signup_pass').value;
+        createUserWithEmailAndPassword(Auth, email, password).then((userCredential) => {
+            const user = userCredential.user;
+            localStorage.setItem('Auth.user', JSON.stringify(user));
+            location.href = '/';
+        })
+        .catch((error) => {
+            const nodes = [];
+            const innernodes = [];
+            if (error.code.includes('mail')) {
+                nodes.push($('#signup_email'));
+            }
+            if (error.code.includes('pass')) {
+                nodes.push($('#signup_pass').parentNode);
+                nodes.push($('#signup_pass_c').parentNode);
+                innernodes.push($('#signup_pass'));
+                innernodes.push($('#signup_pass_c'));
+            }
+            handleError('signup', error, nodes, innernodes);
+        });
+    });
+    log('Auth: document and script load complete');
+}
+
+main();
