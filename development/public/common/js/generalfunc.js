@@ -213,16 +213,19 @@ export const checkForApkUpdates = () => {
 }
 
 /**
- * Returns an object comprising of current URL query fields and their values
- * @param {Array} The fields whose values you need.
+ * Returns an object comprising of current URL query fields and their values.
+ * @param {Array} fields The fields whose values you need. Pass [] for all fields.
+ * @param {String} querystr Optional, the query string. Default is location.search.
  * @return {Object} The query fields and their values. Values will always be Strings. For duplicate fields, an array of values is returned.
  */
-export const getURLQuery = (fields) => {
+const getURLQuery = (fields, querystr = location.search) => {
     const Parameters = {};
-    for (item of location.search.split(/\?|\&/)) if (item) {
+    for (let item of querystr.split(/\?|\&/)) if (item) {
+        if (item.split(/=/).length != 2) throw `Error: malformed query string for parameter: ${item}`;
         let param = item.split(/=/)[0];
         let value = item.split(/=/)[1];
-        if (!param || !value || !fields.includes(param)) continue;
+        if (!param || !value) continue;
+        if (fields.length != 0 && !fields.includes(param)) continue;
         if (!Parameters.hasOwnProperty(param)) Parameters[param] = value;
         else if (Array.isArray(Parameters[param])) Parameters[param].push(value);
         else Parameters[param] = [Parameters[param], value];
@@ -232,13 +235,15 @@ export const getURLQuery = (fields) => {
 
 /**
  * Returns the value of a given query field of the current URL.
- * @param {String} The field whose value you need.
+ * @param {String} field The field whose value you need.
+ * @param {String} querystr Optional, the query string. Default is location.search.
  * @return {String} The value of the field.
  * @return {Array} If the query has duplicate fields.
  */
-export const getURLQueryFieldValue = (field) => {
+const getURLQueryFieldValue = (field, querystr = location.search) => {
     let values = [];
-    for (let item of location.search.split(/\?|\&/)) if (item) {
+    for (let item of querystr.split(/\?|\&/)) if (item) {
+        if (item.split(/=/).length != 2) throw `Error: malformed query string for parameter: ${item}`;
         let param = item.split(/=/)[0];
         let value = item.split(/=/)[1];
         if (param && value && field.toLowerCase() == param.toLowerCase()) values.push(value);
