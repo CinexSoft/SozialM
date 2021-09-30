@@ -218,7 +218,7 @@ export const checkForApkUpdates = () => {
  * @param {String} querystr Optional, the query string. Default is location.search.
  * @return {Object} The query fields and their values. Values will always be Strings. For duplicate fields, an array of values is returned.
  */
-const getURLQuery = (fields, querystr = location.search) => {
+export const getURLQuery = (fields, querystr = location.search) => {
     const Parameters = {};
     for (let item of querystr.split(/\?|\&/)) if (item) {
         if (item.split(/=/).length != 2) throw `Error: malformed query string for parameter: ${item}`;
@@ -240,7 +240,7 @@ const getURLQuery = (fields, querystr = location.search) => {
  * @return {String} The value of the field.
  * @return {Array} If the query has duplicate fields.
  */
-const getURLQueryFieldValue = (field, querystr = location.search) => {
+export const getURLQueryFieldValue = (field, querystr = location.search) => {
     let values = [];
     for (let item of querystr.split(/\?|\&/)) if (item) {
         if (item.split(/=/).length != 2) throw `Error: malformed query string for parameter: ${item}`;
