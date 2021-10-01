@@ -1,5 +1,4 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-app.js';
-import { getAnalytics } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-analytics.js';
 import { getDatabase } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js';
 import { getAuth } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.js';
 
@@ -22,9 +21,8 @@ if (location.href.includes('localhost')) FirebaseConfig.databaseURL = 'http://lo
 
 // Initialize Firebase
 export const App = initializeApp(FirebaseConfig);
-export const Analytics = getAnalytics(App);
-export const Database = getDatabase();
-export const Auth = getAuth();
+export const Database = getDatabase(App);
+export const Auth = getAuth(App);
 
 // database root
 export const DB_ROOT = '/Ci4j82hg96y36rfi96vfrwog7h85f4jh870bpgw52fekftt95hjo7d2i3jgie64k';

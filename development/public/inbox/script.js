@@ -21,15 +21,16 @@ const loadChatRoom = (chat_room_id) => {
 }
     
 const main = () => {
+    let chat_room_id;
     // If chatroom id exists as a URL query field
-    if (let chat_room_id = getURLQueryFieldValue('chatroomid')
-    && !Array.isArray(chat_room_id)
-    && !/[^A-Za-z0-9]/.test(chat_room_id)) {
+    if ((chat_room_id = getURLQueryFieldValue('chatroomid'))
+     && !Array.isArray(chat_room_id)
+     && !/[^A-Za-z0-9]/.test(chat_room_id)) {
         loadChatRoom(chat_room_id);
         return;
     }
     // If chatroom id already exists in localStorage
-    if (let chat_room_id = localStorage.getItem('Chat.roomid')) {
+    if (chat_room_id = localStorage.getItem('Chat.roomid')) {
         loadChatRoom(chat_room_id);
         return;
     }
