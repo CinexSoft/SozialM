@@ -55,6 +55,12 @@ const handleError = (state, { code, message, }, nodes, innernodes) => {
 }
 
 const main = () => {
+    // checking if user is logged in, local storage does exactly what it says
+    if (localStorage.getItem('Auth.user')) {
+        console.log('Log: already signed in, redirect to /chat');
+        location.href = '/inbox';
+        return;
+    }
     checkForApkUpdates();
     // event when the eye-slash icon is pressed
     $(".switchlink")[0].addEventListener('click', (event) => {

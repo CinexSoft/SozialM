@@ -6,9 +6,10 @@ import { $, } from '/common/js/domfunc.js';
 import { Dialog, } from '/common/js/overlays.js';
 
 const loadChatRoom = (chat_room_id) => {
-    // stores the chat room id into localStorage only if it doesn't already exist
-    if (!localStorage.getItem('Chat.roomid')) chat_room_id = localStorage.setItem('Chat.roomid', chat_room_id);
+    chat_room_id = (chat_room_id || 'ejs993ejiei3').replace(/[^A-Za-z0-9]/g, '');
     log(`Inbox: chat room id: ${chat_room_id}`);
+    // stores the chat room id into localStorage to be used by '/chat'.
+    localStorage.setItem('Chat.roomid', chat_room_id);
     // checking if user is logged in
     if (!localStorage.getItem('Auth.user')) {
         console.log('Log: not signed in, redirect to /auth');
@@ -20,14 +21,21 @@ const loadChatRoom = (chat_room_id) => {
 }
     
 const main = () => {
-    let chat_room_id = getURLQueryFieldValue('chatroomid');
-    if (chat_room_id
+    // If chatroom id exists as a URL query field
+    if (let chat_room_id = getURLQueryFieldValue('chatroomid')
     && !Array.isArray(chat_room_id)
     && !/[^A-Za-z0-9]/.test(chat_room_id)) {
-        loadChatRoom();
+        loadChatRoom(chat_room_id);
         return;
     }
-    // this prompt is a temporary code while the inbox is being built
+    // If chatroom id already exists in localStorage
+    if (let chat_room_id = localStorage.getItem('Chat.roomid')) {
+        loadChatRoom(chat_room_id);
+        return;
+    }
+    /* If chatroom id doesn't exist, user will be prompted for it.
+     * this prompt is a temporary code while the inbox is being built
+     */
     Dialog.display('alert', 'Chat Room',
           '<p><b>Hi there!</b></p>'
         + '<p>The inbox UI is not ready yet. While that is being done, you can access the chat system by entering new or old chat room IDs.</p>'
@@ -36,8 +44,7 @@ const main = () => {
         + '<input type="text" id="chatroomid" placeholder="Enter chat room ID">',
         'Load chat', () => {
         Dialog.hide('alert', () => {
-            chat_room_id = ($('#chatroomid').value || 'ejs993ejiei3').replace(/[^A-Za-z0-9]/g, '');
-            loadChatRoom();
+            loadChatRoom($('#chatroomid').value);
         });
     });
 }
