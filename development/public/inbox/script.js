@@ -5,19 +5,25 @@ import { checkForApkUpdates, getURLQueryFieldValue, } from '/common/js/generalfu
 import { $, } from '/common/js/domfunc.js';
 import { Dialog, } from '/common/js/overlays.js';
 
-let CHAT_ROOM_ID;
-
-const loadChatRoom = () => {
-    log(`Inbox: chat room id: ${CHAT_ROOM_ID}`);
-    localStorage.setItem('Chat.roomid', CHAT_ROOM_ID);
+const loadChatRoom = (chat_room_id) => {
+    // stores the chat room id into localStorage only if it doesn't already exist
+    if (!localStorage.getItem('Chat.roomid')) chat_room_id = localStorage.setItem('Chat.roomid', chat_room_id);
+    log(`Inbox: chat room id: ${chat_room_id}`);
+    // checking if user is logged in
+    if (!localStorage.getItem('Auth.user')) {
+        console.log('Log: not signed in, redirect to /auth');
+        location.href = '/auth';
+        return;
+    }
+    // launches chat
     location.href = '/chat';
 }
     
 const main = () => {
-    CHAT_ROOM_ID = getURLQueryFieldValue('chatroomid');
-    if (CHAT_ROOM_ID
-    && !Array.isArray(CHAT_ROOM_ID)
-    && !/[^A-Za-z0-9]/.test(CHAT_ROOM_ID)) {
+    let chat_room_id = getURLQueryFieldValue('chatroomid');
+    if (chat_room_id
+    && !Array.isArray(chat_room_id)
+    && !/[^A-Za-z0-9]/.test(chat_room_id)) {
         loadChatRoom();
         return;
     }
@@ -30,7 +36,7 @@ const main = () => {
         + '<input type="text" id="chatroomid" placeholder="Enter chat room ID">',
         'Load chat', () => {
         Dialog.hide('alert', () => {
-            CHAT_ROOM_ID = ($('#chatroomid').value || 'ejs993ejiei3').replace(/[^A-Za-z0-9]/g, '');
+            chat_room_id = ($('#chatroomid').value || 'ejs993ejiei3').replace(/[^A-Za-z0-9]/g, '');
             loadChatRoom();
         });
     });

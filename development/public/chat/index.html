@@ -16,26 +16,6 @@
     <link rel="shortcut icon" type="image/x-icon" href="https://sozialnmedien.web.app/favicon.ico"/>
     <link rel="icon" type="image/x-icon" href="https://sozialnmedien.web.app/favicon.ico"/>
     <title>Chat</title>
-    <script>
-        let CHAT_ROOT, CHAT_ROOM_ID;
-        // checks if user is logged in
-        if (!localStorage.getItem('Auth.user')) {
-            console.log('Log: not signed in, redirect to /auth');
-            location.href = '/auth';
-        }
-        else {
-            // checking if chat root exists
-            if (localStorage.getItem('Chat.roomid')) {
-                CHAT_ROOT = `/chat/${CHAT_ROOM_ID = localStorage.getItem('Chat.roomid')}/`;
-                console.log(`Log: chat root found: ${CHAT_ROOT}`);
-                localStorage.removeItem('Chat.roomid');
-            }
-            else {
-                console.log('Log: chat root not found, it must be created first, redirect to /inbox');
-                location.href = '/inbox';
-            }
-        }
-    </script>
     <!-- font awesome icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <!-- code highlighter library -->
@@ -108,11 +88,6 @@
                 <img class="dp acc_bg" src="/common/res/defaultdp.png">
             </div>
             <h class="title" id="roomid">Demo Chat</h>
-            <script>                
-                if (CHAT_ROOM_ID != 'ejs993ejiei3') {
-                    document.getElementById('roomid').innerHTML = CHAT_ROOM_ID.charAt(0).toUpperCase() + CHAT_ROOM_ID.slice(1);
-                }
-            </script>
         </div>
         <div class="chatbg prim_img_bg">
             <div class="chatarea markdown" id="chatarea">
@@ -129,9 +104,6 @@
             </div>
         </div>
     </div>
-    <script>
-        document.getElementById("alertDialogRoot").focus();
-    </script>
     <!-- highlight library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js"></script>    
     <!-- md to html converter -->

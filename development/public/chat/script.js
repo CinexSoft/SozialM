@@ -32,6 +32,7 @@ const MDtoHTML = new showdown.Converter();
 MDtoHTML.setFlavor('github');
 
 // other variables
+let CHAT_ROOT;
 let PREVIOUS_HEIGHT = document.body.clientHeight;
 let PREVIOUS_WIDTH = document.body.clientWidth;
 let CHATAREA_SCROLL_HEIGHT = $('#chatarea').scrollHeight;
@@ -114,6 +115,26 @@ const startDBListener = () => {
 }
 
 const main = () => {
+    let chat_room_id;
+    // checks if user is logged in
+    if (!localStorage.getItem('Auth.user')) {
+        console.log('Log: not signed in, redirect to /auth');
+        location.href = '/auth';
+        return;
+    }
+    // checking if chat room exists
+    if (localStorage.getItem('Chat.roomid')) {
+        CHAT_ROOT = `/chat/${chat_room_id = localStorage.getItem('Chat.roomid')}/`;
+        console.log(`Log: chat room found: ${chat_room_id}`);
+        localStorage.removeItem('Chat.roomid');
+    }
+    else {
+        console.log('Log: chat root not found, it must be created first, redirect to /inbox');
+        location.href = '/inbox';
+    }
+    if (chat_room_id != 'ejs993ejiei3') {
+        document.getElementById('roomid').innerHTML = chat_room_id.charAt(0).toUpperCase() + chat_room_id.slice(1);
+    }
     // on key up listener
     document.addEventListener('keyup', (e) => {
         const key = e.keyCode || e.charCode;
