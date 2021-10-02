@@ -26,16 +26,15 @@ jobs:
       - name: Install Firebase tools
         run: |
           npm i -g firebase-tools
-          firebase login --interactive --token "${{ secrets.FIREBASE_TOKEN }}"
       - name: Deploy to preview
         run: |
           cd ./production
-          firebase use sozialnmedien
-          firebase hosting:channel:deploy -e 2d preview$(date | sed "s/\s//g" | sed "s/://g")
+          firebase use sozialnmedien --token "${{ secrets.FIREBASE_TOKEN }}"
+          firebase hosting:channel:deploy -e 2d preview$(date | sed "s/\s//g" | sed "s/://g") --token "${{ secrets.FIREBASE_TOKEN }}"
       - name: List preview channels
         run: |
           echo "Firebase channels"          | tee -a ./production/preview.build.list
-          firebase hosting:channel:list     | tee -a ../production/preview.build.list
+          firebase hosting:channel:list --token "${{ secrets.FIREBASE_TOKEN }}" | tee -a ../production/preview.build.list
           echo
           cd ../
       - name: List and delete production files
