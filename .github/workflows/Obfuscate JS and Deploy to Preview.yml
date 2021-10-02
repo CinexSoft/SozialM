@@ -43,7 +43,7 @@ jobs:
         run: |
           cd ./production
           firebase hosting:channel:list --token "${{ secrets.FIREBASE_TOKEN }}" | tee -a ./preview.build.list
-          echo                               | tee -a ./production/preview.build.list
+          echo                               | tee -a ./preview.build.list
           cd ../
       - name: Delete production files
         run: |
