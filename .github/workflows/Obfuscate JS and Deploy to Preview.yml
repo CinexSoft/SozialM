@@ -27,9 +27,9 @@ jobs:
           echo                               | tee -a ./production/preview.build.list
       - name: List production files
         run: |
-          echo "Obfuscated code sizes:"     | tee -a ./production/preview.build.list
-          du -ha ./production/public/       | grep "\.js" | tee -a ./production/preview.build.list
-          echo                              | tee -a ./production/preview.build.list
+          echo "Obfuscated code sizes:"      | tee -a ./production/preview.build.list
+          du -ha ./production/public/        | grep "\.js" | tee -a ./production/preview.build.list
+          echo                               | tee -a ./production/preview.build.list
       - name: Install Firebase tools
         run: |
           npm i -g firebase-tools
@@ -43,7 +43,7 @@ jobs:
         run: |
           cd ./production
           firebase hosting:channel:list --token "${{ secrets.FIREBASE_TOKEN }}" | tee -a ./preview.build.list
-          echo
+          echo                               | tee -a ./production/preview.build.list
           cd ../
       - name: Delete production files
         run: |
