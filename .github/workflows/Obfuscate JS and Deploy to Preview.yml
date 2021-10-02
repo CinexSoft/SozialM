@@ -26,13 +26,11 @@ jobs:
       - name: Install Firebase tools
         run: |
           npm i -g firebase-tools
-      - name: Deploy to preview
+      - name: Deploy to preview and list channels
         run: |
           cd ./production
           firebase use sozialnmedien --token "${{ secrets.FIREBASE_TOKEN }}"
-          firebase hosting:channel:deploy -e 2d preview$(date | sed "s/\s//g" | sed "s/://g") --token "${{ secrets.FIREBASE_TOKEN }}"
-      - name: List preview channels
-        run: |
+          firebase hosting:channel:deploy -e 2d $(git branch --show-current)$(date | sed "s/\s//g" | sed "s/://g") --token "${{ secrets.FIREBASE_TOKEN }}"
           echo "Firebase channels"          | tee -a ./preview.build.list
           firebase hosting:channel:list --token "${{ secrets.FIREBASE_TOKEN }}" | tee -a ./preview.build.list
           echo
