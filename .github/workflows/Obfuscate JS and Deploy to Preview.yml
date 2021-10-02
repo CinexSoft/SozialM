@@ -24,8 +24,8 @@ jobs:
           cp -r ./development/public ./production/
           javascript-obfuscator ./production/public/ --output ./production/public/
       - name: Install Firebase tools
-          run: |
-            npm i -g firebase-tools   
+        run: |
+          npm i -g firebase-tools   
       - name: Deploy to preview
         run: |
           cd ./production
