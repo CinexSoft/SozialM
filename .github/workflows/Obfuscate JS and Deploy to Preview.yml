@@ -2,6 +2,7 @@ name: Obfuscate JS and Deploy to Preview
 on:
   push:
     branches:
+      - '*'
       - '!main'
       - '!master'
   workflow_dispatch:
@@ -32,7 +33,7 @@ jobs:
           PROJECT_PATH: ./production
       - name: List preview channels
         run: |
-          echo "Firebase channels"
+          echo "Firebase channels"          | tee -a ./production/preview.build.list
           npm i -g firebase-tools
           firebase hosting:channel:list --token ${{ secrets.FIREBASE_TOKEN }} | tee -a ./production/preview.build.list
           echo
