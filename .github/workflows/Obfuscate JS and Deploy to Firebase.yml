@@ -29,10 +29,10 @@ jobs:
           PROJECT_PATH: ./production
       - name: List and delete production files
         run: |
-            echo "Obfuscated code sizes:"     | tee -a ./production/build.list
-            du -ha ./production/public/       | grep "\.js" | tee -a ./production/build.list
-            echo                              | tee -a ./production/build.list
-            rm -rf ./production/public/*
+          echo "Obfuscated code sizes:"     | tee -a ./production/build.list
+          du -ha ./production/public/       | grep "\.js" | tee -a ./production/build.list
+          echo                              | tee -a ./production/build.list
+          rm -rf ./production/public/*
       - name: Git commit and push
         run: |
           git config --global user.name "CinexSoft"
