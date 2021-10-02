@@ -11,27 +11,32 @@ jobs:
       - name: Get repository from repo server to runner
         uses: actions/checkout@v2
       - name: Obfuscate codes
-        run: |
-          echo -e "Built on $(date)\n"       | tee ./production/build.list
-          echo "Readable code sizes:"        | tee -a ./production/build.list
-          du -ha ./development/public/       | grep "\.js" | tee -a ./production/build.list
-          echo                               | tee -a ./production/build.list
+        run: | 
           npm i -g javascript-obfuscator
           cp -r ./development/public ./production/
           javascript-obfuscator ./production/public/ --output ./production/public/
-      - name: Firebase deploy
-        uses: w9jds/firebase-action@master
-        with:
-          args: deploy
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-          PROJECT_ID: sozialnmedien
-          PROJECT_PATH: ./production
-      - name: List and delete production files
+      - name: List development files
+        run: |
+          echo -e "Built on $(date)\n"      | tee ./production/build.list
+          echo "Readable code sizes:"       | tee -a ./production/build.list
+          du -ha ./development/public/      | grep "\.js" | tee -a ./production/build.list
+          echo                              | tee -a ./production/build.list
+      - name: List production files
         run: |
           echo "Obfuscated code sizes:"     | tee -a ./production/build.list
           du -ha ./production/public/       | grep "\.js" | tee -a ./production/build.list
           echo                              | tee -a ./production/build.list
+      - name: Install Firebase tools
+        run: |
+          npm i -g firebase-tools
+      - name: Firebase deploy
+        run: |
+          cd ./production
+          firebase use sozialnmedien --token "${{ secrets.FIREBASE_TOKEN }}"
+          firebase deploy --token "${{ secrets.FIREBASE_TOKEN }}"
+          cd ../
+      - name: Delete production files
+        run: |
           rm -rf ./production/public/*
       - name: Git commit and push
         run: |
