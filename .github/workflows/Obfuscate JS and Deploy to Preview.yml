@@ -2,8 +2,10 @@ name: Obfuscate JS and Deploy to Preview
 on:
   push:
     branches:
-      - "!main"
-      - "!master"
+      - '!main'
+      - '!master'
+  workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -20,7 +22,7 @@ jobs:
           npm i -g javascript-obfuscator
           cp -r ./development/public ./production/
           javascript-obfuscator ./production/public/ --output ./production/public/
-      - name: Firebase deploy
+      - name: Deploy to preview
         uses: w9jds/firebase-action@master
         with:
           args: hosting:channel:deploy -e 2d preview$(date | sed "s/\s//g" | sed "s/://g")
@@ -28,15 +30,18 @@ jobs:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           PROJECT_ID: sozialnmedien
           PROJECT_PATH: ./production
+      - name: List preview channels
+        run: |
+          echo "Firebase channels"
+          npm i -g firebase-tools
+          firebase hosting:channel:list --token ${{ secrets.FIREBASE_TOKEN }} | tee -a ./production/preview.build.list
+          echo
       - name: List and delete production files
         run: |
           echo "Obfuscated code sizes:"     | tee -a ./production/preview.build.list
           du -ha ./production/public/       | grep "\.js" | tee -a ./production/preview.build.list
           echo                              | tee -a ./production/preview.build.list
           rm -rf ./production/public/*
-          echo "Firebase channels"
-          firebase hosting:channel:list     | tee -a ./production/preview.build.list
-          echo
       - name: Git commit and push
         run: |
           git config --global user.name "CinexSoft"
