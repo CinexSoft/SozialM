@@ -26,7 +26,7 @@ jobs:
       - name: Install Firebase tools
         run: |
           npm i -g firebase-tools
-          FIREBASE_TOKEN="${{ secrets.FIREBASE_TOKEN }}"
+          firebase login --no-localhost --token "${{ secrets.FIREBASE_TOKEN }}"
       - name: Deploy to preview
         run: |
           cd ./production
@@ -38,7 +38,6 @@ jobs:
           firebase hosting:channel:list     | tee -a ../production/preview.build.list
           echo
           cd ../
-          FIREBASE_TOKEN="null"
       - name: List and delete production files
         run: |
           echo "Obfuscated code sizes:"     | tee -a ./production/preview.build.list
