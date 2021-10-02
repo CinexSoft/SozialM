@@ -26,7 +26,7 @@ jobs:
       - name: Install Firebase tools
         run: |
           npm i -g firebase-tools
-          firebase login:ci --non-interactive --token "${{ secrets.FIREBASE_TOKEN }}"
+          firebase login --token "${{ secrets.FIREBASE_TOKEN }}"
       - name: Deploy to preview
         run: |
           cd ./production
