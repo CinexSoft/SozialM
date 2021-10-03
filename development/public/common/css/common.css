@@ -12,6 +12,13 @@ body {
     font-family: Helvetica, sans-serif;
     font-size: 90%;
 }
+/* ---------------- SCROLLBARS -----------------------*/
+::-webkit-scrollbar {
+  width: 0;
+}
+::-moz-scrollbar {
+  width: 0;
+}
 /* -------------- SPECIAL STYLES ---------------------*/
 .noselect,
 h, h1, h2, h3, h4, h5, h6, blockquote,
