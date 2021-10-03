@@ -37,7 +37,7 @@ export let LOAD_THEME = !true;
 
 /**
  * Session logs token
- * @type {String} If true, reloads the theme/accent colors based on usage of function loadTheme().
+ * @type {String} Stores current session startup time.
  */
 export let SESSION_TOKEN;
 
@@ -60,6 +60,7 @@ export const EXISTS_ANDROID_INTERFACE = typeof Android !== 'undefined'
  - USER_TOKEN
  - DEBUG
  - LOAD_THEME
+ - SESSION_TOKEN
  *
  * This is for scripts that import modules.js.
  * @param {String} variable Variable identifier - case sensitive.
@@ -83,6 +84,6 @@ export const setVariable = (variable, value) => {
             SESSION_TOKEN = value;
             break;
         default:
-            throw `Error: for variable ${variable}, no such variable in variables.js, note that variables are case-sensitive`;
+            throw `Error: for ${variable}, no such variable in variables.js, note that variables are case-sensitive`;
     }
 }

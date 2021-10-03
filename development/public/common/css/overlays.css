@@ -49,7 +49,7 @@
     display: flex;                 /* establish flex container */
     flex-direction: column;        /* make main axis vertical */
     justify-content: center;       /* center items vertically in this case */
-    max-height: 50vh;
+    max-height: calc(45vh);
     overflow: auto;
     text-align: center;
 }

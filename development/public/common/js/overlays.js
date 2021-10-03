@@ -9,8 +9,8 @@
  * works for each and every webpage.
  */
 
-import { $, getChildElement } from '/common/js/domfunc.js';
 import { log, err, } from '/common/js/logging.js';
+import { $, getChildElement } from '/common/js/domfunc.js';
 
 /**
  * Contains global data for behavior of overlays viz menus and dialogs.
