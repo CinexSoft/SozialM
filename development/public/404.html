@@ -17,8 +17,14 @@
     <link rel="stylesheet" href="/common/css/colors.css">
     <link rel="stylesheet" href="/common/css/common.css">
     <style>
-        body {
-            overscroll: auto;
+        h1 {
+            font-size: 1.5rem;
+        }
+        h2 {
+            font-size: 1.3rem;
+        }
+        h3 {
+            font-size: 1rem;
         }
         .background {
             position: absolute;
@@ -28,25 +34,28 @@
             transform: rotate(0);    /* initially I wanted to give the background a slant */
         }
         .backhead {
+            margin: calc(50% - 1.25rem)
             color: white;
-            position: absolute;
+            position: fixed;
             inset: 0;
             top: 20px;
             font-size: 2.5rem;
             text-align: center;
+            height: 2.5rem;
         }
         .root {
             position: relative;
             inset: 0;
-            top: 30vh;
+            top: 35vh;
             margin: auto;
-            width: 80%;
-            max-width: 720px;
+            width: calc(80% - 20px);
+            max-width: 480px;
             max-height: 480px;
+            min-height: fit-content;
             height: -moz-fit-content;
             box-shadow: 1px 1px 2px #aaa;
             border-radius: 10px;
-            padding: 20px 30px 40px ;
+            padding: 20px 30px 20px ;
             background-color: #fff;
         }
         .root h2 {
@@ -56,7 +65,7 @@
             color: #555;
         }
         .root p {
-            font-size: 1rem;
+            font-size: 0.9rem;
         }
         .root hr {
             color: #ddd;
@@ -67,22 +76,32 @@
             padding: 0 0 0 20px;
             width: 100%;
             line-height: 22px;
+            font-size: 0.8rem;
         }
-        @media only screen and (orientation: landscape) {
+        @media only screen and (orientation: landscape) and (max-height: 480px) {
             body {
-                height: 130vh;
+                height: 140vh;
             }
+            .backhead {
+                top: 0;
+            }
+            .background {
+                height: 70vh;
+            }
+        }
+        @media only screen and (min-width: 400px) {
             .root {
-                min-height: fit-content;
+                transform: scale(1.05);
             }
         }
     </style>
 </head>
 <body class="prim_img_bg">
     <!-- the green background -->
-    <div class="background acc_bg"></div>
-    <!-- the heading -->
-    <h1 class="backhead">sozialnmedien</h1>
+   <div class="background acc_bg">
+        <!-- the heading -->
+        <h1 class="backhead">sozialnmedien</h1>
+    </div>
     <div class="root" id="root">
         <h2>404</h2>
         <h1>Page not found</h1>

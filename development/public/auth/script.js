@@ -6,9 +6,6 @@ import { $, } from '/common/js/domfunc.js';
 import { Colors, } from '/common/js/colors.js';
 import { Dialog, } from '/common/js/overlays.js';
 
-// root visibility flag
-let VISIBILE_ROOT = 'login';
-
 // reset colors
 const resetColors = () => {
     /* hide login and signup info, $ is a css style selector function
@@ -55,6 +52,8 @@ const handleError = (state, { code, message, }, nodes, innernodes) => {
 }
 
 const main = () => {
+    // root visibility flag
+    let visibile_root = 'login';
     // checking if user is logged in, local storage does exactly what it says
     if (localStorage.getItem('Auth.user')) {
         console.log('Log: already signed in, redirect to /chat');
@@ -65,19 +64,19 @@ const main = () => {
     // event when the eye-slash icon is pressed
     $(".switchlink")[0].addEventListener('click', (event) => {
         resetColors();
-        if (VISIBILE_ROOT == 'login') {
+        if (visibile_root == 'login') {
             $('#login').style.display = 'none';
             $('.swinfo')[0].innerHTML = 'Already have an account? ';
             $('.switchlink')[0].innerHTML = 'Log In';
-            VISIBILE_ROOT = 'signup';
-        } else if (VISIBILE_ROOT == 'signup') {
+            visibile_root = 'signup';
+        } else if (visibile_root == 'signup') {
             $('#signup').style.display = 'none';
             $('.swinfo')[0].innerHTML = 'Don\'t have an account? ';
             $('.switchlink')[0].innerHTML = 'Sign Up';
-            VISIBILE_ROOT = 'login';
+            visibile_root = 'login';
         }
-        log(`Auth: switch root: VISIBILE_ROOT = ${VISIBILE_ROOT}`);
-        document.getElementById(VISIBILE_ROOT).style.display = 'block';
+        log(`Auth: switch root: visibile_root = ${visibile_root}`);
+        document.getElementById(visibile_root).style.display = 'block';
     });
     
     // toggle password visibility

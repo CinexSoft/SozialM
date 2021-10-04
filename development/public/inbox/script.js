@@ -10,17 +10,17 @@ const loadChatRoom = (chat_room_id) => {
     log(`Inbox: chat room id: ${chat_room_id}`);
     // stores the chat room id into localStorage to be used by '/chat'.
     localStorage.setItem('Chat.roomid', chat_room_id);
+    // launches chat
+    location.href = '/chat';
+}
+    
+const main = () => {
     // checking if user is logged in
     if (!localStorage.getItem('Auth.user')) {
         console.log('Log: not signed in, redirect to /auth');
         location.href = '/auth';
         return;
     }
-    // launches chat
-    location.href = '/chat';
-}
-    
-const main = () => {
     let chat_room_id;
     // If chatroom id exists as a URL query field
     if ((chat_room_id = getURLQueryFieldValue('chatroomid'))

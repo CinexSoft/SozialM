@@ -6,18 +6,20 @@
     transform: rotate(0);    /* initially I wanted to give the background a slant */
 }
 .backhead {
+    margin: calc(50% - 1.25rem)
     color: white;
-    position: absolute;
+    position: fixed;
     inset: 0;
     top: 20px;
     font-size: 2.5rem;
     text-align: center;
+    height: 2.5rem;
 }
 .root {
-    margin: auto;
-    position: absolute;
+    position: relative;
     inset: 0;
-    top: 10%;
+    top: 40vh;
+    margin: auto;
     width: 270px;
     height: fit-content;
     height: -moz-fit-content;
@@ -108,23 +110,28 @@
     padding: 7px 20px 7px;
     color: white;
 }
+ @media only screen and (orientation: landscape) and (max-height: 480px) {
+   body {
+       height: 140vh;
+   }
+   .backhead {
+       top: 0;
+   }
+   .root {
+       z-index: 1;
+   }
+   .background {
+       height: 70vh;
+   }
+   footer {
+       z-index: 0;
+   }
+}
 /* if screen width is over 400px, scale the root slightly
  * They'll scale out if width decreases below 400px
  */
 @media only screen and (min-width: 400px) {
     .root {
         transform: scale(1.15);
-    }
-}
-/* if height is below 480px, which is too short, hide the footer and heading
- * They'll reappear if height increases over 480px
- */
-@media only screen and (max-height: 480px) {
-    .root {
-       top: 10%;
-    }
-    .backhead,
-    footer {
-        display: none;
     }
 }

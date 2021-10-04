@@ -73,7 +73,6 @@
 .chatarea .bubbles {
     padding: 2.5px 10px 2.5px;
     width: calc(100% - 20px);
-    transition-duration: 300ms;
 }
 .chatarea .bubbles div {
     border: 0;
@@ -85,7 +84,8 @@
     padding: 1px 7px 1px;
     word-wrap: break-word;
     cursor: text;
-    font-size: 0.9rem
+    font-size: 0.9rem;
+    transition-duration: 300ms;
 }
 .chatarea .that {
     margin-right: auto;
