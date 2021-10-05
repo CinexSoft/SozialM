@@ -1,0 +1,160 @@
+/* ----------------- OVERLAYS -----------------------*/
+.splashScreenRoot,
+.alertDialogRoot,
+.actionDialogRoot,
+.menuRoot {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    visibility: hidden;
+    z-index: 100;
+}
+.splashScreen,
+.alertDialog,
+.actionDialog,
+.menu {
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    border: 0;
+    padding: 0;
+    padding-bottom: 0px;
+    max-width: 300px;
+    height: fit-content;
+    height: -moz-fit-content;      /* mozilla doesn't support fit-content */
+    background-color: #fff;
+    border-radius: 10px;
+    color: #333;
+}
+.splashScreen h2,
+.alertDialog h2,
+.actionDialog h2,
+.menu h2 {
+    font-size: 1.1rem;
+    color: #777;
+    width: calc(100% - 40px);
+    margin: 0;
+    padding: 15px 20px 15px;
+    border-radius: 10px 10px 0 0;
+    text-align: center;
+}
+.alertDialog .content,
+.actionDialog .content,
+.menu div {
+    margin: 0;
+    padding: 10px 20px 10px;
+    word-wrap: break-word;
+    display: flex;                 /* establish flex container */
+    flex-direction: column;        /* make main axis vertical */
+    justify-content: center;       /* center items vertically in this case */
+    max-height: 45vh;
+    overflow: auto;
+    text-align: center;
+}
+.alertDialog button,
+.actionDialog button,
+.menu div button {
+    margin: 0;
+    border: 0;
+    width: 100%;
+    text-align: center;
+    height: 45px;
+    display: block;
+    color: #777;
+    font-size: 0.9rem;
+    user-select: none;
+    background-color: #fff;
+}
+.alertDialog button:hover,
+.actionDialog button:hover,
+.menu div button:hover {
+    background-color: #fafafa;
+}
+.alertDialog button:active,
+.actionDialog button.btnOk:active,
+.menu div button:active {
+    color: #fff;
+    font-size: 0.9rem;
+    background-color: var(--control-active-color);
+}
+.splashScreen hr,
+.alertDialog hr,
+.actionDialog hr,
+.menu hr {
+    width: calc(100% - 1px);
+    padding: 0;
+    margin: 0;
+    border: 0.5px solid #eee;
+    border-radius: 2px;
+    background-color: #eee;
+}
+/* --------------- SPLASHSCREEN ---------------------*/
+.splashScreenRoot {
+    background-color: var(--primary-bgcolor);
+    color: var(--control-color);
+}
+.splashScreen {
+    border-radius: 0;
+    width: 90%;
+    max-width: 320px;
+    -moz-max-width: 320px;
+    background-color: transparent;
+    text-align: left;
+}
+.splashScreen hr {
+    background-color: #ddd;
+    border-color: #cacaca;
+}
+/* --------------- ALERT DIALOG ---------------------*/
+.alertDialog div,
+.actionDialog div.content {
+    min-height: 60px;
+}
+.alertDialog button {
+    border-radius: 0 0 9px 9px;
+}
+/* --------------- ACTION DIALOG ---------------------*/
+.actionDialog div.buttons {
+    margin: 0;
+    border: 0;
+    height: 45px;
+    width: 100%;
+    border-radius: 0 0 9px 9px;
+    display: flex;
+}
+.actionDialog button {
+    width: 50%;
+}
+.actionDialog button.btnClose {
+    border-right: 1px solid #eee;
+    border-radius: 0 0 0 9px;
+}
+.actionDialog button.btnClose:active {
+    background-color: #bbb;
+    color: #555;
+}
+.actionDialog button.btnOk {
+    border-left: 1px solid #eee;
+    border-radius: 0 0 9px 0;
+}
+/* ----------------- MENU -----------------------*/
+.menu h2 {
+    
+}
+.menu div {
+    padding: 0;
+}
+.menu div button {
+    color: #555;
+}
+.menu button:last-child {
+    border-radius: 0 0 9px 9px;
+}
+/* resizes alertDialog boxes for larger display width */
+@media only screen and (min-width: 400px) {
+    .splashScreenRoot .splashScreen {
+        transform: scale(1.1);
+    }
+}

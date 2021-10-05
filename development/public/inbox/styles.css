@@ -1,0 +1,11 @@
+.alertDialog p {
+    margin: 2.5px;
+    text-align: justify;
+}
+.alertDialog input {
+    padding: 10px;
+    border: 1.2px solid var(--primary-bgcolor);
+    border-radius: 10px;
+    background-color: #F0F7F6;
+    margin-top: 5px;
+}

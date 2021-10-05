@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="robots" content="noindex">
+    <meta name="googlebot" content="noindex">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <link rel="manifest" href="/a2hs.webmanifest">
+    <meta name="viewport" content="width=device-width, height=device-height, user-scalable=no">
+    <meta name="theme-color" content="#075E54">
+    <meta name="msapplication-navbutton-color" content="#075E54">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#075E54">
+    <link rel="shortcut icon" type="image/x-icon" href="https://sozialnmedien.web.app/favicon.ico"/>
+    <link rel="icon" type="image/x-icon" href="https://sozialnmedien.web.app/favicon.ico"/>
+    <title>Chat</title>
+    <!-- font awesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- code highlighter library -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/github.min.css">
+    <!-- global stylesheets -->
+    <link rel="stylesheet" href="/common/css/colors.css">
+    <link rel="stylesheet" href="/common/css/common.css">
+    <link rel="stylesheet" href="/common/css/keyframes.css">
+    <link rel="stylesheet" href="/common/css/markdown.css">
+    <link rel="stylesheet" href="/common/css/overlays.css">
+    <!-- this stylesheet -->
+    <link rel="stylesheet" href="/chat/styles.css">
+</head>
+<body class="prim_bg">
+    <!-- 4 types of overlays -->
+    <div class="menuRoot" id="menuRoot">
+        <div class="menu" id="menu">
+            <h2 class="">Menu</h2><hr>
+            <div class="content">
+                <button id="menu_copy">Copy message</button><hr>
+                <button id="menu_unsend">Unsend</button><hr>
+                <button id="menu_reply">Reply</button><hr>
+                <button id="menu_details">Details</button>
+            </div>
+        </div>
+    </div>
+    <div class="actionDialogRoot" id="actionDialogRoot">
+        <div class="actionDialog" id="actionDialog">
+            <h2 class="">Heading</h2><hr>
+            <div class="content">
+                Content
+            </div><hr>
+            <div class="buttons">
+                <button class="btnClose" id="actionDialog_btnClose">Close</button>
+                <button class="btnOk" id="actionDialog_btnOk">OK</button>
+            </div>
+        </div>
+    </div>
+    <div class="alertDialogRoot" id="alertDialogRoot">
+        <div class="alertDialog" id="alertDialog">
+            <h2 class="">Heading</h2><hr>
+            <div class="content">
+                Content
+            </div><hr>
+            <button id="alertDialog_btn">Close</button>
+        </div>
+    </div>
+    <div class="splashScreenRoot" id="splashScreenRoot">
+        <div class="splashScreen" id="splashScreen">
+            <h2 class="">Warnings</h2><hr>
+            <p class="content">
+                This isn't even Alpha Software. Your chats may completely disappear. We don't guarantee
+                anything, but if you write to as at <a href="mailto:cinexsoft@gmail.com">cinexsoft@gmail.com</a>
+                from your registered email, with your user id, we will try not to wipe your chats.
+            </p><hr>
+            <p class="content">
+                You can find your user id by long pressing on the empty space left of the message bubble you sent.
+                This will open the Menu. Then navigate to Details <code>→</code> Advanced and copy the code beside
+                the <code>id</code> key.
+            </p><hr>
+            <p class="content">
+                For this session, your chats are being fetched. Once done, this message will self close.
+            </p>
+        </div>
+    </div>
+    <div class="root">
+        <div class="titlebar acc_bg">
+            <div class="backdiv">
+                <img class="backarrow" src="/common/res/backarrow100white.png">
+                <img class="dp acc_bg" src="/common/res/defaultdp.png">
+            </div>
+            <h class="title" id="roomid">Demo Chat</h>
+        </div>
+        <div class="chatbg prim_img_bg">
+            <div class="chatarea markdown" id="chatarea">
+                <div class="info sec_bg">
+                    <p class="fa fa-info-circle">&ensp;Your chats are only server-to-end encrypted. Chats are stored without encryption on CinexSoft databases. We're yet to implement end-to-end encryption.</p>
+                </div>
+            </div>
+            <div class="msgpreview markdown" id="msgpreview">
+                <font class="header" color="#7d7d7d">Markdown preview</font>
+            </div>
+            <div class="msgbox">
+                <textarea id="txtmsg" placeholder="Message" rows="5"></textarea>
+                <button id="btnsend" class="control_bg"><i class="fa fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+    <!-- highlight library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js"></script>    
+    <!-- md to html converter -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.1/showdown.min.js"></script>
+    <!-- HTML sanitizer -->
+    <script src="https://cdn.jsdelivr.net/gh/jitbit/HtmlSanitizer@master/HtmlSanitizer.js"></script>
+    <!-- global script -->
+    <script type="module" src="/common/js/init.js"></script>
+    <!-- main script -->
+    <script type="module" src="/chat/script.js"></script>
+</body>
+</html>

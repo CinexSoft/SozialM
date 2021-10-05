@@ -1,0 +1,92 @@
+/* ----------------- MARKDOWN -----------------------
+ * elements generated from markdown,
+ * considering that they are placed in markdown class
+ */
+.markdown h1,
+.markdown h2,
+.markdown h3,
+.markdown h4,
+.markdown h5,
+.markdown h6 {
+   
+}
+
+.markdown ul
+.markdown ol {
+    padding: 0 5px 0;
+    margin: 0 auto 0;
+}
+.markdown font.highlight {
+    border-radius: 3px;
+    padding-left: 3px;
+    padding-right: 3px;
+}
+.markdown a {
+    color: dodgerblue;
+}
+.markdown a:visited {
+    color: dodgerblue;
+}
+.markdown img {
+    margin: 0 0 3px;
+    width: 100%;
+    height: auto;
+    border: 0px;
+    border-radius: 5px;
+    display: block;
+}
+.markdown hr {
+    color: #aaa;
+    background-color: #aaa;
+    border: 0.5px solid;
+    border-radius: 100px;
+}
+.markdown p {
+    margin: 7px auto 6px;
+}
+.markdown blockquote {
+    margin: 7px auto 7px;
+    width: calc(100% - 16px);
+    height: auto;
+    padding: 0 5px 0;
+    padding-right: 6px;
+    border-radius: 5px;
+    color: #000;
+    display: block;
+    overflow: auto;
+    font-size: 0.8rem;
+    border: 1px;
+    border-left: 5px solid gray;
+    background-color: #fafafa;
+}
+.markdown blockquote > p {
+    width: 100%;
+}
+.markdown p code {
+    font-family: monospace;
+    border-radius: 3px;
+    padding: 0.5px 3px 0.5px;
+    background-color: #FAFAFA;
+}
+.markdown pre {
+    width: 100%;
+    display: block;
+    padding: 0;
+    margin: 7px auto 7px;
+    font-family: monospace;
+    border-radius: 5px;
+}
+.markdown pre code {
+    display: block;
+    margin: 0;
+    padding: 5px;
+    height: auto;
+    border-radius: 5px;
+    font-size: 0.7rem;
+    color: #222;
+    overflow: auto;
+    font-family: monospace;
+    border: 1px;
+    border-left: 5px solid gray;
+    background-color: #fafafa;
+}

@@ -1,0 +1,61 @@
+name: Obfuscate JS and Deploy to Preview
+on:
+  push:
+    branches:
+      - '*'
+      - '*-prv'
+      - '*-preview'
+      - '!*-npv'
+      - '!*-nopreview'
+      - '!main'
+      - '!master'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - name: Get repository from repo server to runner
+        uses: actions/checkout@v2
+      - name: Obfuscate codes
+        run: | 
+          npm i -g javascript-obfuscator
+          cp -r ./development/public ./production/
+          javascript-obfuscator ./production/public/ --output ./production/public/
+      - name: List development files
+        run: |
+          echo -e "Built on $(date)\n"       | tee ./production/preview.build.list
+          echo "Readable code sizes:"        | tee -a ./production/preview.build.list
+          du -ha ./development/public/       | grep "\.js" | tee -a ./production/preview.build.list
+          echo                               | tee -a ./production/preview.build.list
+      - name: List production files
+        run: |
+          echo "Obfuscated code sizes:"      | tee -a ./production/preview.build.list
+          du -ha ./production/public/        | grep "\.js" | tee -a ./production/preview.build.list
+          echo                               | tee -a ./production/preview.build.list
+      - name: Install Firebase tools
+        run: |
+          npm i -g firebase-tools
+      - name: Deploy preview
+        run: |
+          cd ./production
+          firebase use sozialnmedien --token "${{ secrets.FIREBASE_TOKEN }}"
+          firebase hosting:channel:deploy -e 2d $(git branch --show-current | sed "s/\//-/g")-$(date | sed "s/\s//g" | sed "s/://g") --token "${{ secrets.FIREBASE_TOKEN }}"
+          cd ../
+      - name: List preview channels
+        run: |
+          cd ./production
+          firebase hosting:channel:list --token "${{ secrets.FIREBASE_TOKEN }}" | tee -a ./preview.build.list
+          echo                               | tee -a ./preview.build.list
+          cd ../
+      - name: Delete production files
+        run: |
+          rm -rf ./production/public/*
+      - name: Git commit and push
+        run: |
+          git config --global user.name "CinexSoft"
+          git config --global user.email "cinexsoft@gmail.com"
+          git add -A                                               | tee -a ./production/preview.build.list
+          git commit -m "Obfuscated JS and deployed to Preview"    | tee -a ./production/preview.build.list
+          git push                                                 | tee -a ./production/preview.build.list

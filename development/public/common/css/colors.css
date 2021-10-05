@@ -1,0 +1,56 @@
+/* ----------------- THEME COLORS -------------------*/
+body {
+  --accent-bgcolor: #075E54;
+  --primary-bgcolor: #ECE5DD;
+  --secondary-bgcolor: #FFF7D0;
+  --chat-bubble-bgcolor: #DCF8C6;
+  --highlight-select-color: #52DCCE;
+  --control-color: #128C7E;
+  --control-active-color: #2fA99C;
+  --fg-color: #333333;
+  --dark-fg-color: #FFFFFF;
+}
+.acc_bg {
+    background-color: var(--accent-bgcolor);
+    color: var(--dark-fg-color);
+    border-color: var(--accent-bgcolor);
+}
+.prim_bg {
+    background-color: var(--primary-bgcolor);
+    color: var(--fg-color);
+    border-color: var(--primary-bgcolor);
+}
+.prim_img_bg {
+    background: var(--primary-bgcolor) url("/common/res/whatsappbg.png") no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+.sec_bg {
+    background-color: var(--secondary-bgcolor);
+    color: var(--fg-color);
+    border-color: var(--secondary-bgcolor);
+}
+.chatbubble_bg {
+    background-color: var(--chat-bubble-bgcolor);
+    color: var(--fg-color);
+    border-color: var(--chat-bubble-bgcolor);
+}
+.control_fg {
+    color: var(--control-color);
+}
+.control_bg {
+    background-color: var(--control-color);
+    color: var(--dark-fg-color);
+    border-color: var(--control-color);
+}
+.control_bg:active {
+    background-color: var(--control-active-color);
+}
+.prim_fg {
+    color: var(--fg-color);
+}
+.dark_fg {
+    color: var(--dark-fg-color);
+}
