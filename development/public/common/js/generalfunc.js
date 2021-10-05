@@ -10,7 +10,6 @@
  */
 
 import { Auth } from '/common/js/firebaseinit.js';
-import { onAuthStateChanged as firebaseOnAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.js';
 import {
     USER_ID,
     USER_TOKEN,
@@ -80,8 +79,9 @@ export const generateUserToken = () => {
 /**
  * Gets current user info from Firebase Auth and stores the id in the global variable USER_ID.
  */
-export const getUserInfo = () => {
-    firebaseOnAuthStateChanged(Auth, (user) => {
+export const getUserInfo = async () => {
+    const FirebaseAuth = await import('https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.js');
+    FirebaseAuth.onAuthStateChanged(Auth, (user) => {
         if (!user) {
             err('generalfunc.js: user not signed in');
             localStorage.removeItem('Auth.user');

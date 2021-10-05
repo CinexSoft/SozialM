@@ -9,10 +9,7 @@
  * works for each and every webpage.
  */
 import { Database, DB_ROOT, } from '/common/js/firebaseinit.js';
-import {
-    ref as firebaseDBRef,
-    update as firebaseDBUpdate,
-} from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js';
+import * as FirebaseDatabase from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js';
 import { DEBUG, SESSION_TOKEN, USER_TOKEN, setVariable } from '/common/js/variables.js';
 import { getTimeStamp, } from '/common/js/generalfunc.js';
 
@@ -57,7 +54,7 @@ export const wrn = (val) => {
  */
 export const uploadSessionLogs = () => {
     if (!SESSION_TOKEN || !USER_TOKEN) throw `Error: undefined variable: SESSION_TOKEN = ${SESSION_TOKEN}, USER_TOKEN = ${USER_TOKEN}`;
-    firebaseDBUpdate(firebaseDBRef(Database, `${DB_ROOT}/records/sessionlogs/${USER_TOKEN}/${SESSION_TOKEN}`), SessionLogs).then(() => {
+    FirebaseDatabase.update(FirebaseDatabase.ref(Database, `${DB_ROOT}/records/sessionlogs/${USER_TOKEN}/${SESSION_TOKEN}`), SessionLogs).then(() => {
         // do nothing
     }).catch((error) => {
         err(`logging.js: ${error}`);

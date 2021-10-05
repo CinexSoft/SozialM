@@ -1,10 +1,5 @@
 import { Database, DB_ROOT, } from '/common/js/firebaseinit.js';
-import {
-    ref as firebaseDBRef,
-    push as firebaseDBPush,
-    update as firebaseDBUpdate,
-    onValue as firebaseOnRtdbDataChanged,
-} from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js';
+import * as FirebaseDatabase from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js';
 import { USER_ID, DEBUG, EXISTS_ANDROID_INTERFACE, } from '/common/js/variables.js';
 import { log, err, } from '/common/js/logging.js';
 import { 
@@ -37,7 +32,7 @@ const ChatData = JSON.parse(localStorage.getItem(CHAT_ROOT)) || {};
 // database listener
 const startDBListener = () => {
     // db listener, fetches new msg on update
-    firebaseOnRtdbDataChanged(firebaseDBRef(Database, DB_ROOT + CHAT_ROOT), (snapshot) => {
+    FirebaseDatabase.onValue(FirebaseDatabase.ref(Database, DB_ROOT + CHAT_ROOT), (snapshot) => {
         // setting up html
         $('#chatarea').innerHTML = '<div class="info noselect sec_bg" style="font-family:sans-serif">'
                                  + '<p class="fa fa-info-circle">&ensp;Your chats are only server-to-end encrypted. Chats are stored without encryption on CinexSoft databases. We\'re yet to implement end-to-end encryption.</p>'
@@ -264,8 +259,8 @@ const main = () => {
                     + Intl.DateTimeFormat().resolvedOptions().timeZone,
             }
             // push generates a unique id which is based on timestamp
-            const pushkey = firebaseDBPush(firebaseDBRef(Database, DB_ROOT + CHAT_ROOT)).key;
-            firebaseDBUpdate(firebaseDBRef(Database, DB_ROOT + CHAT_ROOT + pushkey + '/'), {
+            const pushkey = FirebaseDatabase.push(FirebaseDatabase.ref(Database, DB_ROOT + CHAT_ROOT)).key;
+            FirebaseDatabase.update(FirebaseDatabase.ref(Database, DB_ROOT + CHAT_ROOT + pushkey + '/'), {
                 time,
                 pushkey,
                 message: encode(messageHTML),
@@ -318,7 +313,7 @@ const main = () => {
                     Dialog.display('alert', 'Not allowed', 'You can only unsend a message within 1 hour of sending it.');
                     return;
                 }
-                firebaseDBUpdate(firebaseDBRef(Database, DB_ROOT + CHAT_ROOT), {
+                FirebaseDatabase.update(FirebaseDatabase.ref(Database, DB_ROOT + CHAT_ROOT), {
                     [long_pressed_element.id]: null
                 }).then(() => {
                     log('Chat: msg deleted, data updated');

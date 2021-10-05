@@ -1,5 +1,4 @@
 import { Auth, } from '/common/js/firebaseinit.js';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.js';
 import { log, err, } from '/common/js/logging.js';
 import { checkForApkUpdates, } from '/common/js/generalfunc.js';
 import { $, } from '/common/js/domfunc.js';
@@ -114,14 +113,15 @@ const main = () => {
     });
     
     // login button clicked
-    $('#btn_login').addEventListener('click', (e) => {
+    $('#btn_login').addEventListener('click', async (e) => {
         resetColors();
         $('#login_info').style.color = '#555';
         $('#login_info').innerHTML = 'Logging you in, please wait...';
         $('#login_info').style.display = 'block';
         const email = $('#login_email').value;
         const password = $('#login_pass').value;
-        signInWithEmailAndPassword(Auth, email, password).then((userCredential) => {
+        const FirebaseAuth = await import('https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.js');
+        FirebaseAuth.signInWithEmailAndPassword(Auth, email, password).then((userCredential) => {
             const user = userCredential.user;
             localStorage.setItem('Auth.user', JSON.stringify(user));
             location.href = '/';
@@ -140,7 +140,7 @@ const main = () => {
     });
     
     // signup button clicked
-    $('#btn_signup').addEventListener('click', (e) => {
+    $('#btn_signup').addEventListener('click', async (e) => {
         resetColors();
         $('#signup_info').style.color = '#555';
         $('#signup_info').innerHTML = 'Signing you up, please wait...';
@@ -162,7 +162,8 @@ const main = () => {
             return;
         }
         const password = $('#signup_pass').value;
-        createUserWithEmailAndPassword(Auth, email, password).then((userCredential) => {
+        const FirebaseAuth = await import('https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.js');
+        FirebaseAuth.createUserWithEmailAndPassword(Auth, email, password).then((userCredential) => {
             const user = userCredential.user;
             localStorage.setItem('Auth.user', JSON.stringify(user));
             location.href = '/';
