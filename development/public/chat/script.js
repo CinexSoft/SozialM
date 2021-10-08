@@ -354,14 +354,9 @@ const main = () => {
                                + `${message.pushkey}\n\n`
                                + '<b style="color:#777">HTML Code</b> '
                                + '<code>\n'
-                                   + decode(message.message.replace(/\n    /g, '\n')
-                                       .replace(/"|'|,/g, '')
-                                   )
+                               + decode(message.message)
                                    .replace (/</g, '&lt;')
                                    .replace(/>/g, '&gt;')
-                                   .replace(/\n}/g, '')
-                                   .replace(/{\n\S/g, 'u')
-                                   .replace(/{/g, '')
                                + '</code>'
                            + '</pre>'
                         );
