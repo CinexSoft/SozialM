@@ -45,13 +45,13 @@ const startDBListener = () => {
             ChatData[pushkey] = {
                 uid,
                 pushkey,
-                message: data.message,
+                message: HtmlSanitizer.SanitizeHtml(decode(data.message)),
                 time: data.time,
             };
             // cache chat in local storage
             localStorage.setItem(CHAT_ROOT, JSON.stringify(ChatData));
             // get html from msg
-            const getHTML = decode(data.message);
+            const getHTML = ChatData[pushkey].message;
             if (uid == USER_ID) {
                 appendHTMLString($('#chatarea'), `<div class="bubbles"><div class="this chatbubble_bg" id="${pushkey}">${getHTML}</div></div>`);
                 if (DEBUG) console.log(`Log: Chat: this: pushkey = ${pushkey}`);
@@ -204,7 +204,7 @@ const main = () => {
             return;
         }
         // Convert and then sanitize html.
-        const messageHTML = HtmlSanitizer.SanitizeHtml(MDtoHTML.makeHtml(msg));
+        const messageHTML = MDtoHTML.makeHtml(msg);
         if (!messageHTML.trim()) return;
         quote_reply_text = '';
         $('#txtmsg').value = '';
