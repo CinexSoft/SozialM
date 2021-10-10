@@ -45,13 +45,13 @@ const startDBListener = () => {
             ChatData[pushkey] = {
                 uid,
                 pushkey,
-                message: data.message,
+                message: HtmlSanitizer.SanitizeHtml(decode(data.message)),
                 time: data.time,
             };
             // cache chat in local storage
             localStorage.setItem(CHAT_ROOT, JSON.stringify(ChatData));
             // get html from msg
-            const getHTML = decode(data.message);
+            const getHTML = ChatData[pushkey].message;
             if (uid == USER_ID) {
                 appendHTMLString($('#chatarea'), `<div class="bubbles"><div class="this chatbubble_bg" id="${pushkey}">${getHTML}</div></div>`);
                 if (DEBUG) console.log(`Log: Chat: this: pushkey = ${pushkey}`);
@@ -204,7 +204,7 @@ const main = () => {
             return;
         }
         // Convert and then sanitize html.
-        const messageHTML = HtmlSanitizer.SanitizeHtml(MDtoHTML.makeHtml(msg));
+        const messageHTML = MDtoHTML.makeHtml(msg);
         if (!messageHTML.trim()) return;
         quote_reply_text = '';
         $('#txtmsg').value = '';
@@ -335,11 +335,13 @@ const main = () => {
                 const message = ChatData[long_pressed_element.id];
                 const time = message.time;
                 // innerHTML of dialog
-                const infoHTML = '<table style="width:100%; text-align:left">'
-                               +     `<tr><td>Sent by: </td><td><pre style="margin:0; padding:0; font-family:sans-serif; overflow:auto; width:180px;">${ChatData[long_pressed_element.id].uid == USER_ID ? 'You' : ChatData[long_pressed_element.id].uid}</pre></td></tr>`
-                               +     `<tr><td>Sent on: </td><td>${time.dayname.slice(0, 3)}, ${time.monthname.slice(0, 3)} ${time.date}, ${time.year}</td></tr>`
-                               +     `<tr><td>Sent at: </td><td><pre style="margin:0; padding:0; font-family:sans-serif; overflow:auto; width:180px;">${time.time}</pre></td></tr>`
-                               + '</table>'
+                const infoHTML = '<pre style="margin:0; padding:0; font-family:sans-serif; overflow:auto; width:100%;">'
+                               +     '<table style="text-align:left">'
+                               +         `<tr><td>Sent by: </td><td>${ChatData[long_pressed_element.id].uid == USER_ID ? 'You' : ChatData[long_pressed_element.id].uid}</td></tr>`
+                               +         `<tr><td>Sent on: </td><td>${time.dayname.slice(0, 3)}, ${time.monthname.slice(0, 3)} ${time.date}, ${time.year}</td></tr>`
+                               +         `<tr><td>Sent at: </td><td>${time.time}</td></tr>`
+                               +     '</table>'
+                               + '</pre>'
                 // display dialog
                 Dialog.display('action', 'Message details', infoHTML, 'Advanced', () => {
                     Dialog.hide('action', () => {
