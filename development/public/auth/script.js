@@ -41,6 +41,10 @@ const handleError = (state, { code, message, }, nodes, innernodes) => {
     }
     $(`#${state}_info`).innerHTML = outputmsg;
     $(`#${state}_info`).style.display = 'block';
+    $('#btn_login').innerHTML = 'Login';
+    $('#btn_signup').innerHTML = 'Sign up';
+    $('#btn_login').disabled = false;
+    $('#btn_signup').disabled = false;
     for (let element of nodes) {
         element.style.color = 'red';
         element.style.borderColor = 'tomato';
@@ -115,11 +119,24 @@ const main = () => {
     // login button clicked
     $('#btn_login').addEventListener('click', async (e) => {
         resetColors();
-        $('#login_info').style.color = '#555';
-        $('#login_info').innerHTML = 'Logging you in, please wait...';
-        $('#login_info').style.display = 'block';
         const email = $('#login_email').value;
         const password = $('#login_pass').value;
+        $('#btn_login').disabled = true;
+        $('#btn_signup').disabled = true;
+        // code for loading spin animation - a styled div
+        $('#btn_login').innerHTML = (
+            '<div style="'
+          +     'margin: 0 auto;'
+          +     'margin-bottom: 2px;'
+          +     'border: 1.5px solid var(--accent-bgcolor);'
+          +     'border-top: 1.5px solid transparent;'
+          +     'border-radius: 50%;'
+          +     'width: 0px;'
+          +     'height: 0px;'
+          +     'background-color: transparent;'
+          +     'animation: loadspin 1s linear infinite; ">'
+          + '</div>'
+        );
         const FirebaseAuth = await import('https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.js');
         FirebaseAuth.signInWithEmailAndPassword(Auth, email, password).then((userCredential) => {
             const user = userCredential.user;
@@ -142,9 +159,6 @@ const main = () => {
     // signup button clicked
     $('#btn_signup').addEventListener('click', async (e) => {
         resetColors();
-        $('#signup_info').style.color = '#555';
-        $('#signup_info').innerHTML = 'Signing you up, please wait...';
-        $('#signup_info').style.display = 'block';
         const email = $('#signup_email').value;
         if ($('#signup_pass').value != $('#signup_pass_c').value) {
             handleError('signup', {
@@ -162,6 +176,22 @@ const main = () => {
             return;
         }
         const password = $('#signup_pass').value;
+        $('#btn_login').disabled = true;
+        $('#btn_signup').disabled = true;
+        // code for loading spin animation - a styled div
+        $('#btn_signup').innerHTML = (
+            '<div style="'
+          +     'margin: 0 auto;'
+          +     'margin-bottom: 2px;'
+          +     'border: 1.5px solid var(--accent-bgcolor);'
+          +     'border-top: 1.5px solid transparent;'
+          +     'border-radius: 50%;'
+          +     'width: 0px;'
+          +     'height: 0px;'
+          +     'background-color: transparent;'
+          +     'animation: loadspin 1s linear infinite; ">'
+          + '</div>'
+        );
         const FirebaseAuth = await import('https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.js');
         FirebaseAuth.createUserWithEmailAndPassword(Auth, email, password).then((userCredential) => {
             const user = userCredential.user;
