@@ -9,3 +9,15 @@
     background-color: #F0F7F6;
     margin-top: 5px;
 }
+.titlebar {
+    height: 54px;
+    display: flex;
+    flex-direction: row;
+}
+.title {
+    font-size: 1.3rem;
+    margin: auto 20px auto;
+    padding-top: 2px;
+    overflow: auto;
+    width: calc(100% - 20px - 10px - 35px - 10px - 20px);
+}
