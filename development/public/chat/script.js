@@ -74,6 +74,23 @@ const startDBListener = () => {
         loadTheme();
         smoothScroll($('#chatarea'), false, false);
         log('Chat: db update fetched');
+    }).catch((error) => {
+        Dialog.display('alert', 'Fatal error', (
+              '<pre style="'
+            +     'margin: 0;'
+            +     'padding: 0;'
+            +     'width: 100%;'
+            +     'overflow: auto;'
+            +     'text-align:left;'
+            +     'font-size: 0.8rem;'
+            +     'font-family: sans-serif; ">'
+            +     '<p>Please copy the following error report it to <a href="mailto:cinexsoft@gmail.com">cinexsoft@gmail.com</a></p>.'
+            +     '<code>'
+            +         error // JSON.stringify({ error.name, error.message, error.stack, }, null, 4)
+            +     '</code>'
+            + '</pre>'
+        ));
+        err(`Chat: ${error}`);
     });
 }
 
@@ -335,7 +352,14 @@ const main = () => {
                 const message = ChatData[long_pressed_element.id];
                 const time = message.time;
                 // innerHTML of dialog
-                const infoHTML = '<pre style="margin:0; padding:0; font-family:sans-serif; overflow:auto; width:100%;">'
+                const infoHTML = '<pre style="'
+                               +     'margin: 0;'
+                               +     'padding: 0;'
+                               +     'width: 100%;'
+                               +     'overflow: auto;'
+                               +     'text-align:left;'
+                               +     'font-size: 0.9rem;'
+                               +     'font-family: sans-serif; ">'
                                +     '<table style="text-align:left">'
                                +         `<tr><td>Sent by: </td><td>${ChatData[long_pressed_element.id].uid == USER_ID ? 'You' : ChatData[long_pressed_element.id].uid}</td></tr>`
                                +         `<tr><td>Sent on: </td><td>${time.dayname.slice(0, 3)}, ${time.monthname.slice(0, 3)} ${time.date}, ${time.year}</td></tr>`
@@ -348,20 +372,27 @@ const main = () => {
                         /* display excess JSON of chat
                          * WARNING: Take care when modifying the regex and order of replace function.
                          */
-                        Dialog.display('alert', 'Message details',
-                           '<pre style="overflow:auto;text-align:left;font-family:sans-serif;font-size:0.8rem">'
-                               + '<b style="color:#777">User ID</b>\n'
-                               + `${message.uid}\n\n`
-                               + '<b style="color:#777">Push key</b>\n'
-                               + `${message.pushkey}\n\n`
-                               + '<b style="color:#777">HTML Code</b> '
-                               + '<code>\n'
-                               + decode(message.message)
-                                   .replace (/</g, '&lt;')
-                                   .replace(/>/g, '&gt;')
-                               + '</code>'
-                           + '</pre>'
-                        );
+                        Dialog.display('alert', 'Message details', (
+                              '<pre style="'
+                            +     'margin: 0;'
+                            +     'padding: 0;'
+                            +     'width: 100%;'
+                            +     'overflow: auto;'
+                            +     'text-align:left;'
+                            +     'font-size: 0.8rem;'
+                            +     'font-family: sans-serif; ">'
+                            +     '<b style="color:#777">User ID</b>\n'
+                            +     `${message.uid}\n\n`
+                            +     '<b style="color:#777">Push key</b>\n'
+                            +     `${message.pushkey}\n\n`
+                            +     '<b style="color:#777">HTML Code</b>\n'
+                            +     '<code>'
+                            +         decode(message.message)
+                                      .replace (/</g, '&lt;')
+                                      .replace(/>/g, '&gt;')
+                            +     '</code>'
+                            + '</pre>'
+                        ));
                     });
                 });
             });
