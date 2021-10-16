@@ -21,3 +21,36 @@
     overflow: auto;
     width: calc(100% - 20px - 10px - 35px - 10px - 20px);
 }
+.chats_container {
+    height: calc(100vh - 55px);
+    max-height: calc(100vh - 55px);
+}
+.chats_container .chat {
+    
+}
+.chats_container .chat .dp {
+    
+}
+.chats_container .chat .message {
+    
+}
+.chats_container .chat .message .info {
+    
+}
+.chats_container .chat .message .info .sender {
+    
+}
+.chats_container .chat .message .info .time {
+    
+}
+.chats_container .chat .message .body {
+    
+}
+@media only screen and (orientation: landscape) and (min-height: 420px) {
+    .root,
+    .titlebar,
+    .chats_container {
+        margin: auto;
+        width: 400px;
+    }
+}
