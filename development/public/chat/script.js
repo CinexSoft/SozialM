@@ -1,4 +1,4 @@
-import { Database, DB_ROOT, } from '/common/js/firebaseinit.js';
+import { Database, DB_ROOT, USER_ROOT, } from '/common/js/firebaseinit.js';
 import * as FirebaseDatabase from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js';
 import { USER_ID, DEBUG, EXISTS_ANDROID_INTERFACE, } from '/common/js/variables.js';
 import { log, err, } from '/common/js/logging.js';
@@ -24,10 +24,11 @@ import { Overlay, SplashScreen, Dialog, Menu, } from '/common/js/overlays.js';
 
 // other variables
 let CHAT_ROOT;
+let CHAT_ROOM_ID;
 
 // the entire chat is downloaded and stored here
 // the data has unique random values as keys
-const ChatData = JSON.parse(localStorage.getItem(CHAT_ROOT)) || {};
+let ChatData = {};
 
 // database listener
 const startDBListener = () => {
@@ -48,8 +49,6 @@ const startDBListener = () => {
                 message: HtmlSanitizer.SanitizeHtml(decode(data.message)),
                 time: data.time,
             };
-            // cache chat in local storage
-            localStorage.setItem(CHAT_ROOT, JSON.stringify(ChatData));
             // get html from msg
             const getHTML = ChatData[pushkey].message;
             if (uid == USER_ID) {
@@ -64,7 +63,7 @@ const startDBListener = () => {
             smoothScroll($('#chatarea'), false, false);
         });
         if (/pre/i.test($('#chatarea').innerHTML) &&
-           /code/i.test($('#chatarea').innerHTML)) {
+            /code/i.test($('#chatarea').innerHTML)) {
             hljs.highlightAll();
         }
         SplashScreen.hide(() => {
@@ -106,7 +105,6 @@ const main = () => {
     let long_pressed_element;
     let scaled_element;
     let softboard_open = false;
-    let chat_room_id;
     // html sanitizer configuration - additional tags and attributes
     HtmlSanitizer.AllowedTags['h'] = true;
     HtmlSanitizer.AllowedAttributes['alt'] = true;
@@ -136,8 +134,8 @@ const main = () => {
     }
     // checking if chat room exists
     if (localStorage.getItem('Chat.roomid')) {
-        CHAT_ROOT = `/chat/${chat_room_id = localStorage.getItem('Chat.roomid')}/`;
-        console.log(`Log: chat room found: ${chat_room_id}`);
+        CHAT_ROOT = `/chat/${CHAT_ROOM_ID = localStorage.getItem('Chat.roomid')}/`;
+        console.log(`Log: chat room found: ${CHAT_ROOM_ID}`);
         localStorage.removeItem('Chat.roomid');
     }
     else {
@@ -145,9 +143,14 @@ const main = () => {
         location.href = '/inbox';
         return;
     }
-    if (chat_room_id != 'ejs993ejiei3') {
-        document.getElementById('roomid').innerHTML = chat_room_id.charAt(0).toUpperCase() + chat_room_id.slice(1);
+    if (CHAT_ROOM_ID != 'ejs993ejiei3') {
+        document.getElementById('roomid').innerHTML = CHAT_ROOM_ID.charAt(0).toUpperCase() + CHAT_ROOM_ID.slice(1);
     }
+    // push current chat room id to db, doesn't mat9if it already exists
+    FirebaseDatabase.update(FirebaseDatabase.ref(`${USER_ROOT}/${USER_ID}/chatrooms`), () => {
+        [CHAT_ROOM_ID]: true,
+    });
+    ChatData = JSON.parse(localStorage.getItem('Chat.data'))[CHAT_ROOM_ID];
     // on key up listener
     document.addEventListener('keyup', (e) => {
         const key = e.keyCode || e.charCode;
