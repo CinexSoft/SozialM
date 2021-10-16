@@ -8,6 +8,12 @@
  * When making modifications, you also need to test out if the modified code
  * works for each and every webpage.
  */
+ 
+/**
+ * Used to recognise a user.
+ * @type {Object} Stores user info from Firebase Auth.
+ */
+export let USER = {};
 
 /**
  * Used to recognise a user.
@@ -68,6 +74,9 @@ export const EXISTS_ANDROID_INTERFACE = typeof Android !== 'undefined'
  */
 export const setVariable = (variable, value) => {
     switch (variable) {
+        case 'USER':
+            USER = value;
+            break;
         case 'USER_ID':
             USER_ID = value;
             break;

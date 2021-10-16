@@ -8,12 +8,15 @@ const init = () => {
      * setVariable('DEBUG', true);
      */
      
-    /* These three lines are crucial and must be run before all module functions.
+    /* These lines are crucial and must be run before all module functions.
+     * The order of execution is important and shouldn't be messed with.
      * getUserInfo                 -> Gets user info from Firebase db asynchronously
      * generateUserToken           -> Generates a token for current user if it doesn't already exist in localStorage. Used to to recognise a device. Crucial for logging functions.
      * setVariable 'SESSION_TOKEN' -> Sets SESSION_TOKEN to current date time. Crucial for logging functions.
      */
     getUserInfo();
+    setVariable('USER', JSON.parse(localStorage.getItem('Auth.user')));
+    setVariable('USER_ID', USER.uid);
     generateUserToken();
     setVariable('SESSION_TOKEN', getLongDateTime());
     
@@ -33,6 +36,7 @@ const init = () => {
     });
     
     console.log('init.js: loaded');
+    log(`init.js: user: id = ${user.uid}`);
     log(`[AND]: init.js: WebAppInterface: ${EXISTS_ANDROID_INTERFACE}`);
 }
 

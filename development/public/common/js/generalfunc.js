@@ -87,9 +87,9 @@ export const getUserInfo = async () => {
             localStorage.removeItem('Auth.user');
             return;
         }
-        setVariable('USER_ID', user.uid);
         localStorage.setItem('Auth.user', JSON.stringify(user));
-        log(`generalfunc.js: user: id = ${USER_ID}`);
+        setVariable('USER', JSON.parse(localStorage.getItem('Auth.user')));
+        setVariable('USER_ID', USER.uid);
     });
 }
 
