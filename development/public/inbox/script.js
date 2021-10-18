@@ -12,14 +12,14 @@ const storeChatRoomId = (chat_room_id) => {
     localStorage.setItem('Chat.roomid', chat_room_id);
 }
 
-const getChatHTML = ({ chatroomid, dp_src, sender, date_time, message }) => {
-    chatroomid = chatroomid || 'ejs993ejiei3';
-    dp_src = dp_src || 'https://';
+const getChatHTML = ({ chat_room_id, dp_src, sender, date_time, message }) => {
+    chat_room_id = chat_room_id || 'ejs993ejiei3';
+    dp_src = dp_src || '/common/res/defaultdp.png';
     sender = sender || 'Demo Chat';
     date_time = date_time || '01/01/2000 02:05';
     message = message || 'No recent message';
     return (
-         `<div id="${chatroomid}" class="chat">`
+         `<div id="${chat_room_id}" class="chat">`
        +     `<img src="${dp_src}" class="dp">`
        +     `<div class="message">`
        +         `<div class="info">`
