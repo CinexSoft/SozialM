@@ -90,7 +90,7 @@ const startDBListener = () => {
             +     'text-align:left;'
             +     'font-size: 0.8rem;'
             +     'font-family: sans-serif; ">'
-            +     '<p>Please copy the following error report it to <a href="mailto:cinexsoft@gmail.com">cinexsoft@gmail.com</a></p>.'
+            +     '<p>Please copy the following error and report it to <a href="mailto:cinexsoft@gmail.com">cinexsoft@gmail.com</a></p>.'
             +     '<code>'
             +         error // JSON.stringify({ error.name, error.message, error.stack, }, null, 4)
             +     '</code>'
