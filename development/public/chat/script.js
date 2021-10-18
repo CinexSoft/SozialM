@@ -526,6 +526,13 @@ const main = () => {
     Overlay.setInstanceOpen(true);
     
     // start listening for arrival/departure of messages
+    loadChatsToUI();
+    // hide splashcreeen
+    SplashScreen.hide(() => {
+        smoothScroll($('#chatarea'), false, false);
+        checkForApkUpdates();
+    });
+    // start listening for new messages
     startDBListener();
     
     log('Chat: document and script load complete');
