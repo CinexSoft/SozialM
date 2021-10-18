@@ -1,5 +1,6 @@
 import { Auth, Database, DB_ROOT } from '/common/js/firebaseinit.js';
 import * as FirebaseDatabase from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js';
+import { USER_ID } from '/common/js/variables.js';
 import { log, err, } from '/common/js/logging.js';
 import { checkForApkUpdates, getURLQueryFieldValue, } from '/common/js/generalfunc.js';
 import { $, } from '/common/js/domfunc.js';
@@ -49,19 +50,13 @@ const main = () => {
     }
     // If chatroom id already exists in localStorage, go to /chat
     if (chat_room_id = localStorage.getItem('Chat.roomid')) {
-        location.href = '/chat';
+        location.href = `/chat?id=${chat_room_id}`;
         return;
     }
     FirebaseDatabase.get(FirebaseDatabase.ref(`${USER_ROOT}/${USER_ID}/chatrooms`)).then((snapshot) => {
         for ({ key } of snapshot) {
             chatrooms.push(key);
         }
-    }).catch((error) => {
-        err(`Inbox: ${error}`);
-    });
-    FirebaseDatabase.get(FirebaseDatabase.ref(`${DB_ROOT}/chat`)).then((snapshot) => {
-        all_chat_data = snapshot.val();
-        localStorage.setItem('Chat.data', JSON.stringify(all_chat_data));
     }).catch((error) => {
         Dialog.display('alert', 'Fatal error', (
               '<pre style="'
