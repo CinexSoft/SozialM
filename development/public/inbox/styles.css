@@ -28,6 +28,10 @@
 .chats_container .chat {
     
 }
+.chats_container .chat:active {
+    filter: brightness(70%);
+    transition-duration: 150ms;
+}
 .chats_container .chat .dp {
     
 }
