@@ -30,18 +30,41 @@ let CHAT_ROOM_ID;
 // the data has unique random values as keys
 let ChatData = {};
 
+const loadChatsToUI = () => {
+    $('#chatarea').innerHTML = '<div class="info noselect sec_bg" style="font-family:sans-serif">'
+                             + '<p class="fa fa-info-circle">&ensp;Your chats are only server-to-end encrypted. Chats are stored without encryption on CinexSoft databases. We\'re yet to implement end-to-end encryption.</p>'
+                             + '</div>';
+    for ({ pushkey } of ChatData) {
+        const data = ChatData[pushkey];
+        const uid = data.uid;
+        const getHTML = ChatData[pushkey].message;
+        if (uid == USER_ID) {
+            appendHTMLString($('#chatarea'), `<div class="bubbles"><div class="this chatbubble_bg" id="${pushkey}">${getHTML}</div></div>`);
+            if (DEBUG) console.log(`Log: Chat: this: pushkey = ${pushkey}`);
+            if (DEBUG) console.log(`Log: Chat: this: html = ${$('#chatarea').innerHTML}`);
+        } else {
+            appendHTMLString($('#chatarea'), `<div class="bubbles"><div class="that" id="${pushkey}">${getHTML}</div></div>`);
+            if (DEBUG) console.log(`Log: Chat: that: pushkey = ${pushkey}`);
+            if (DEBUG) console.log(`Log: Chat: that: html = ${$('#chatarea').innerHTML}`);
+        }
+        smoothScroll($('#chatarea'), false, false);
+    }
+    if (/pre/i.test($('#chatarea').innerHTML) &&
+        /code/i.test($('#chatarea').innerHTML)) {
+        hljs.highlightAll();
+    }
+    loadTheme();
+    smoothScroll($('#chatarea'), false, false);
+    log('Chat: loaded messages from ChatData');
+}
+
 // database listener
 const startDBListener = () => {
     // db listener, fetches new msg on update
     FirebaseDatabase.onValue(FirebaseDatabase.ref(Database, DB_ROOT + CHAT_ROOT), (snapshot) => {
-        // setting up html
-        $('#chatarea').innerHTML = '<div class="info noselect sec_bg" style="font-family:sans-serif">'
-                                 + '<p class="fa fa-info-circle">&ensp;Your chats are only server-to-end encrypted. Chats are stored without encryption on CinexSoft databases. We\'re yet to implement end-to-end encryption.</p>'
-                                 + '</div>';
-        snapshot.forEach(({ key }) => {
+        // storing messages from db to local
+        for ({ key } of snapshot) {
             const pushkey = key;
-            const data = snapshot.child(pushkey).val();
-            const uid = data.uid;
             // store data in local variable
             ChatData[pushkey] = {
                 uid,
@@ -49,31 +72,15 @@ const startDBListener = () => {
                 message: HtmlSanitizer.SanitizeHtml(decode(data.message)),
                 time: data.time,
             };
-            // get html from msg
-            const getHTML = ChatData[pushkey].message;
-            if (uid == USER_ID) {
-                appendHTMLString($('#chatarea'), `<div class="bubbles"><div class="this chatbubble_bg" id="${pushkey}">${getHTML}</div></div>`);
-                if (DEBUG) console.log(`Log: Chat: this: pushkey = ${pushkey}`);
-                if (DEBUG) console.log(`Log: Chat: this: html = ${$('#chatarea').innerHTML}`);
-            } else {
-                appendHTMLString($('#chatarea'), `<div class="bubbles"><div class="that" id="${pushkey}">${getHTML}</div></div>`);
-                if (DEBUG) console.log(`Log: Chat: that: pushkey = ${pushkey}`);
-                if (DEBUG) console.log(`Log: Chat: that: html = ${$('#chatarea').innerHTML}`);
-            }
-            smoothScroll($('#chatarea'), false, false);
-        });
-        if (/pre/i.test($('#chatarea').innerHTML) &&
-            /code/i.test($('#chatarea').innerHTML)) {
-            hljs.highlightAll();
         }
-        SplashScreen.hide(() => {
-            smoothScroll($('#chatarea'), false, false);
-            checkForApkUpdates();
-        });
-        loadTheme();
-        smoothScroll($('#chatarea'), false, false);
+        // loads messages into the UI
+        loadChatsToUI();
+        // saves data in localStorage
+        const all_chats_data = JSON.parse(localStorage.getItem('Chat.data'));
+        all_chats_data[CHAT_ROOM_ID] = ChatData;
+        localStorage.setItem('Chat.data', JSON.stringify(all_chats_data));
         log('Chat: db update fetched');
-    }).catch((error) => {
+    }, (error) => {
         Dialog.display('alert', 'Fatal error', (
               '<pre style="'
             +     'margin: 0;'
