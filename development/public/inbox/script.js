@@ -39,7 +39,7 @@ const main = () => {
     let chatrooms = [];
     let all_chat_data = {};
     // If chatroom id exists as a URL query field, store it
-    if ((chat_room_id = getURLQueryFieldValue('room'))
+    if ((chat_room_id = getURLQueryFieldValue('id'))
     && !Array.isArray(chat_room_id)) storeChatRoomId(chat_room_id);
     // checking if user is logged in
     if (!localStorage.getItem('Auth.user')) {
@@ -80,19 +80,22 @@ const main = () => {
         ));
         err(`Inbox: ${error}`);
     });
+    // code to load chats belonging to the user
     /* If chatroom id doesn't exist, user will be prompted for it.
      * this prompt is a temporary code while the inbox is being built
      */
-    if (true) Dialog.display('alert', 'Chat Room',
-          '<p><b>Hi there!</b></p>'
-        + '<p>The inbox UI is not ready yet. While that is being done, you can access the chat system by entering new or old chat room IDs.</p>'
-        + '<p>This way you will setup or enter a chat room and can connect with people.</p>'
-        + '<p>To connect with you using a specific room, the second person needs to enter the same chat ID from their side.</p>'
-        + '<input type="text" id="chatroomid" placeholder="Enter chat room ID">',
+    if (true) Dialog.display('alert', 'Text with',
+        + '<p>The inbox UI is not ready yet. While that is being done, you can access the chat system by entering UID of the other user.</p>'
+        + '<p>To connect with you, the second person needs to enter your UID.</p>'
+        + '<p>You can also copy and send the link to the other user from the address bar after entering the ID and clicking <i>Load Chat</i></p>'
+        + '<input type="text" id="other_user_id" placeholder="Enter user\'s ID">',
         'Load chat', () => {
         Dialog.hide('alert', () => {
-            storeChatRoomId($('#chatroomid').value);
-            location.href = '/chat';
+            const other_user_id = $('#other_user_id').value;
+            if (other_user_id) chat_room_id = other_user_id > USER_ID ? `${other_user_id}_${USER_ID}` : `${USER_ID}_${other_user_id}`;
+            else chat_room_id = '';
+            storeChatRoomId(chat_room_id);
+            location.href = `/chat?id=${chat_room_id}`;
         });
     });
 }
