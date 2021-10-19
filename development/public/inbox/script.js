@@ -1,16 +1,28 @@
-import { Auth, Database, DB_ROOT } from '/common/js/firebaseinit.js';
+import { Auth, Database, DB_ROOT, } from '/common/js/firebaseinit.js';
 import * as FirebaseDatabase from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js';
-import { USER_ID } from '/common/js/variables.js';
+import { UserData, USER_ID } from '/common/js/variables.js';
 import { log, err, } from '/common/js/logging.js';
 import { checkForApkUpdates, getURLQueryFieldValue, } from '/common/js/generalfunc.js';
 import { $, } from '/common/js/domfunc.js';
 import { Dialog, } from '/common/js/overlays.js';
 
 const storeChatRoomId = (chat_room_id) => {
+
     chat_room_id = (chat_room_id || 'ejs993ejiei3').replace(/[^A-Za-z0-9]/g, '');
     log(`Inbox: chat room id: ${chat_room_id}`);
+
+    /* Collects the user id of the 2nd user
+     * line 1 splits the chat room id into an array of 2 uids.
+     * line 2 checks if there exists not more than 2 uids, else alerts user with an error.
+     */
+    const user_ids = chat_room_id.split(':u1:u2:')
+    if (user_ids.length != 2 || !user_ids.includes(USER_ID)) {
+        displayErrorDialog(`invalid chat room id, array of CHAT_ROOM_ID = ${user_ids}`, 'Chat');
+        return;
+    }
+    
     // stores the chat room id into localStorage to be used by '/chat'.
-    localStorage.setItem('Chat.roomid', chat_room_id);
+    localStorage.setItem('ChatData.loadid', chat_room_id);
 }
 
 const getChatHTML = ({ chat_room_id, dp_src, sender, date_time, message }) => {
@@ -36,32 +48,53 @@ const getChatHTML = ({ chat_room_id, dp_src, sender, date_time, message }) => {
 }
 
 const main = () => {
+
     let chat_room_id;
-    let chatrooms = [];
-    let all_chat_data = {};
+
     // If chatroom id exists as a URL query field, store it
     if ((chat_room_id = getURLQueryFieldValue('id'))
     && !Array.isArray(chat_room_id)) storeChatRoomId(chat_room_id);
-    // checking if user is logged in
-    if (!localStorage.getItem('Auth.user')) {
-        console.log('Log: not signed in, redirect to /auth');
-        location.href = '/auth';
-        return;
-    }
+
     // If chatroom id already exists in localStorage, go to /chat
-    if (chat_room_id = localStorage.getItem('Chat.roomid')) {
+    if (chat_room_id = localStorage.getItem('ChatData.loadid')) {
         location.href = `/chat?id=${chat_room_id}`;
         return;
     }
-    FirebaseDatabase.get(FirebaseDatabase.ref(`${USER_ROOT}/${USER_ID}/chatrooms`)).then((snapshot) => {
-        for ({ key } of snapshot) {
-            chatrooms.push(key);
-        }
-    }).catch((error) => {
+
+    // Entire ChatData is downloaded and stored to localStorage
+    FirebaseDatabase.onValue(FirebaseDatabase.ref(Database, `${DB_ROOT}/chat`), (snapshot) => {
+        const all_chat_data = snapshot.val();
+        snapshot.forEach({ key }, () => {
+            const room_id = key;
+            localStorage.setItem(`ChatData.${room_id}`, JSON.stringify(data[key]));
+        });
+    }, (error) => {
         displayErrorDialog(error, 'Inbox');
     });
-    // code to load chats belonging to the user
-    /* If chatroom id doesn't exist, user will be prompted for it.
+
+    /* loads a list of all chat rooms, extracts uid of other user,
+     * and displays names of your recently contacted friends in a list.
+     *
+    // TODO: Objects aren't iterable.
+    // TODO: UID of the users need to be loaded from the chat id.
+    // TODO: Names need to be derived from the user ids.
+    const user_list = [];
+    for (id of Object.keys(UserData.data.chatrooms)) {
+        const user_ids = id.split(':u1:u2:')
+        if (user_ids.length != 2 || !user_ids.includes(USER_ID)) {
+            displayErrorDialog(`invalid chat room id, array of CHAT_ROOM_ID = ${user_ids}`, 'Chat');
+            return;
+        }
+        const other_user_id = user_ids[!(user_ids.indexOf(USER_ID))];
+        user_list.push(UserData.friends[other_user_id].name);
+    }
+
+    for (user of user_list) {
+        getChatHTML();
+    }*/
+
+    /* code to load chats belonging to the user
+     * If chatroom id doesn't exist, user will be prompted for it.
      * this prompt is a temporary code while the inbox is being built
      */
     if (true) Dialog.display('alert', 'Text with',

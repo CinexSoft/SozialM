@@ -31,11 +31,15 @@ let CHAT_ROOM_ID;
 // the data has unique random values as keys
 let ChatData = {};
 
+/**
+ * Loads contents of ChatData into the document UI
+ * Before using this function, global variable ChatData must be updated / set.
+ */
 const loadChatsToUI = () => {
     $('#chatarea').innerHTML = '<div class="info noselect sec_bg" style="font-family:sans-serif">'
                              + '<p class="fa fa-info-circle">&ensp;Your chats are only server-to-end encrypted. Chats are stored without encryption on CinexSoft databases. We\'re yet to implement end-to-end encryption.</p>'
                              + '</div>';
-    for ({ pushkey } of ChatData) {
+    for (let pushkey in ChatData) {
         const data = ChatData[pushkey];
         const uid = data.uid;
         const getHTML = ChatData[pushkey].message;
@@ -64,8 +68,10 @@ const startDBListener = () => {
     // db listener, fetches new msg on update
     FirebaseDatabase.onValue(FirebaseDatabase.ref(Database, DB_ROOT + CHAT_ROOT), (snapshot) => {
         // storing messages from db to local
-        for ({ key } of snapshot) {
+        snapshot.forEach({ key }, () => {
             const pushkey = key;
+            const data = snapshot.val();
+            const uid = data.uid;
             // store data in local variable
             ChatData[pushkey] = {
                 uid,
@@ -73,13 +79,11 @@ const startDBListener = () => {
                 message: HtmlSanitizer.SanitizeHtml(decode(data.message)),
                 time: data.time,
             };
-        }
+        });
         // loads messages into the UI
         loadChatsToUI();
         // saves data in localStorage
-        const all_chats_data = JSON.parse(localStorage.getItem('Chat.data'));
-        all_chats_data[CHAT_ROOM_ID] = ChatData;
-        localStorage.setItem('Chat.data', JSON.stringify(all_chats_data));
+        localStorage.setItem(`ChatData.${CHAT_ROOM_ID}`, JSON.stringify(ChatData));
         log('Chat: db update fetched');
     }, (error) => {
         displayErrorDialog(error, 'Chat');
@@ -87,9 +91,11 @@ const startDBListener = () => {
 }
 
 const main = () => {
+
     // Markdown converter
     const MDtoHTML = new showdown.Converter();
     MDtoHTML.setFlavor('github');
+
     // other variables
     let previous_height = document.body.clientHeight;
     let previous_width = document.body.clientWidth;
@@ -98,6 +104,7 @@ const main = () => {
     let long_pressed_element;
     let scaled_element;
     let softboard_open = false;
+
     // html sanitizer configuration - additional tags and attributes
     HtmlSanitizer.AllowedTags['h'] = true;
     HtmlSanitizer.AllowedAttributes['alt'] = true;
@@ -119,37 +126,77 @@ const main = () => {
     HtmlSanitizer.AllowedCssStyles['overflow'] = true;
     HtmlSanitizer.AllowedCssStyles['transform'] = true;
     HtmlSanitizer.AllowedCssStyles['background'] = true;
-    // checks if user is logged in
-    if (!localStorage.getItem('Auth.user')) {
-        console.log('Log: not signed in, redirect to /auth');
-        location.href = '/auth';
-        return;
-    }
+
     // checking if chat room exists
-    if (localStorage.getItem('Chat.roomid')) {
-        CHAT_ROOT = `/chat/${CHAT_ROOM_ID = localStorage.getItem('Chat.roomid')}/`;
+    if (localStorage.getItem('ChatData.roomid')) {
+        CHAT_ROOT = `/chat/${CHAT_ROOM_ID = localStorage.getItem('ChatData.loadid')}/`;
         console.log(`Log: chat room found: ${CHAT_ROOM_ID}`);
-        localStorage.removeItem('Chat.roomid');
+        localStorage.removeItem('ChatData.loadid');
     }
     else {
         console.log('Log: chat root not found, it must be created first, redirect to /inbox');
         location.href = '/inbox';
         return;
     }
+
+    /* Collects the user id of the 2nd user
+     * line 1 splits the chat room id into an array of 2 uids.
+     * line 2 checks if there exists not more than 2 uids, else alerts user with an error.
+     * line 3 stores the uid that doesn't contain uid of current user, which is stores in global USER_ID.
+     *        since the indexes of the array and hence indexOf(USER_ID) are 0 or 1, !indexOf(USER_ID) returns the other index.
+     */
     const user_ids = CHAT_ROOM_ID.split(':u1:u2:')
-    if (user_ids.length > 2) displayErrorDialog(`more then 2 UID in chatroomid, CHAT_ROOM_ID = ${CHAT_ROOM_ID}`, 'Chat');
+    if (user_ids.length != 2 || !user_ids.includes(USER_ID)) {
+        location.href = `/inbox?id=${CHAT_ROOM_ID}`;
+        return;
+    }
     const other_user_id = user_ids[!(user_ids.indexOf(USER_ID))];
-    // push current chat room id to db, doesn't matter if it already exists
-    FirebaseDatabase.update(FirebaseDatabase.ref(`${USER_ROOT}/${USER_ID}/chatrooms`), () => {
-        [CHAT_ROOM_ID]: true,
+
+    /**
+     * Push current chat room id to db, doesn't matter if it already exists.
+     * This code just creates a list of available rooms, serves UI purposes, no major function.
+     */
+    FirebaseDatabase.update(FirebaseDatabase.ref(`${USER_ROOT}/${USER_ID}`), {
+        chatrooms: {
+            [CHAT_ROOM_ID]: true,
+        },
+        friends: {
+            [other_user_id]: {
+                /* This is an ES6 feature called OPTIONAL CHAINING. search the web for more info.
+                 * what the code does?
+                 *     If UserData.friends[other_user_id].name doesn't exist then name is set to other_user_id.
+                 */
+                name: (UserData?.friends?.[other_user_id]?.name || other_user_id),
+            },
+        },
     });
-    ChatData = JSON.parse(localStorage.getItem('Chat.data'))[CHAT_ROOM_ID];
+
+    /* loading ChatData from the stored stored already in local storage.
+     * it'll be used to render the chat UI, reducing loading times.
+     * this code supports loadChatsToUI().
+     */
+    ChatData = JSON.parse(localStorage.getItem(`ChatData.${CHAT_ROOM_ID}`));
+
+    /* Sets the title of the chat page.
+     * The title is based on how the user has saved the name of the firend.
+     */
+    // TODO: UserData.friends[other_user_id].name; is invalid. UserData is not defined / initialised / loaded.
+    // TODO: Replace global USER with UserData, containing all info about user, inc name, email, image, and pref, contacts, etc.
+    // TODO: These info will be seperately stored in localStorage
     if (CHAT_ROOM_ID != 'ejs993ejiei3') $('#roomid').innerHTML = UserData.friends[other_user_id].name;
+
+    /* The following contains a lot of event listeners being added
+     */
+
     // on key up listener
     document.addEventListener('keyup', (e) => {
+
         const key = e.keyCode || e.charCode;
         log(`Chat: keypress: key = ${key}`);
         const HTML = quote_reply_text + MDtoHTML.makeHtml($('#txtmsg').value.trim());
+
+        /* If HTML is not empty, update the HTML of markdown preview, else hide it
+         */
         if (HTML) {
             $('#msgpreview').style.display = 'block';
             $('#txtmsg').style.borderRadius = '0 0 10px 10px';
@@ -160,6 +207,10 @@ const main = () => {
             $('#txtmsg').style.borderRadius = '40px';
             $('#msgpreview').innerHTML = '<font class="header" color="#7d7d7d">Markdown preview</font><font color="#7d7d7d">Preview appears here</font>';
         }
+
+        /* If delete or backspace key is pressed and '#txtmsg' contains no text
+         * then hide markdown preview
+         */
         const KEY_DEL = 8,
               KEY_BACKSPACE = 46;
         if ((key == KEY_DEL || key == KEY_BACKSPACE) && !$('#txtmsg').value.trim()) {
@@ -168,27 +219,45 @@ const main = () => {
             $('#txtmsg').style.borderRadius = '40px';
             $('#msgpreview').innerHTML = '<font class="header" color="#7d7d7d">Markdown preview</font><font color="#7d7d7d">Preview appears here</font>';
         }
-        // if html contains code, run highlighter
+
+        // if HTML contains code, run highlighter
         if (/pre/i.test(HTML) &&
-           /code/i.test(HTML)) {
+            /code/i.test(HTML)) {
             hljs.highlightAll();
         }
     });
     
     // soft keyboard launch triggers window resize event
     window.addEventListener('resize', (e) => {
+
         // detects soft keyboard switch
         if (previous_height != document.body.clientHeight && previous_width == document.body.clientWidth) {
             softboard_open = !softboard_open;
+            /* If height diff +ve means screen returns to original size, i.e., soft board was hidden.
+             * If -ve, it means screen size decresed when soft board was hidden.
+             */
             log(`Chat: keyboard: switched? height diff = ${document.body.clientHeight - previous_height}`);
         }
+
+        /* Smoothly scrolls up the '#chatarea' to keep the last chat bubble visible.
+         * otherwise, the lower chat bubbles get hiddden under the keyboard when screen gets resized.
+         * clientHeight is current window height.
+         * previous_height is height before keyboard switch.
+         * difference < 0 means scroll is made only if softboard comes up, not when it goes away.
+         */
         if (document.body.clientHeight - previous_height < 0) {
             $('#chatarea').style.scrollBehavior = 'smooth';
             $('#chatarea').scrollTop += Math.abs(document.body.clientHeight - previous_height);
         }
+
+        // Updates values of previous_width, previous_height
         previous_width = document.body.clientWidth;
         previous_height = document.body.clientHeight;
-        // switches visibility of msgpreview
+
+        /* switches visibility of msgpreview based on visibility of softboard.
+         * if softboard is launched and text area has text in it, markdown preview is visible.
+         * if keyboard is hidden, preview also gets hidden.
+         */
         const HTML = quote_reply_text + MDtoHTML.makeHtml($('#txtmsg').value.trim());
         if (HTML != '' && softboard_open) {
             $('#msgpreview').innerHTML = `<font class="header" color="#7d7d7d">Markdown preview</font>${HtmlSanitizer.SanitizeHtml(HTML)}`;
@@ -197,6 +266,8 @@ const main = () => {
             smoothScroll($('#msgpreview'));
             return;
         }
+
+        // hides visibility of msgpreview on softboard hide.
         $('#msgpreview').innerHTML = '<font class="header" color="#7d7d7d">Markdown preview</font><font color="#7d7d7d">Preview appears here</font>';
         $('#msgpreview').style.display = 'none';
         $('#txtmsg').style.borderRadius = '40px';
@@ -204,7 +275,9 @@ const main = () => {
     
     // on send button clicked
     $('#btnsend').addEventListener('click', (e) => {
+
         const msgbackup = $('#txtmsg').value;
+
         // if msgbackup is empty.
         if (!msgbackup.trim()) {
             $('#txtmsg').value = '';
@@ -217,6 +290,7 @@ const main = () => {
             $('#txtmsg').value = msgbackup;
             return;
         }
+
         // Convert and then sanitize html.
         const messageHTML = MDtoHTML.makeHtml(msg);
         if (!messageHTML.trim()) return;
@@ -241,6 +315,7 @@ const main = () => {
             'November', 
             'December',
         ];
+
         // Days array
         const weekdays = [
             'Sunday',
@@ -251,13 +326,16 @@ const main = () => {
             'Friday',
             'Saturday',
         ];
-        /* this append is temporary and is overwritten when db update is fetched
-         * which is why the class this has no pushkey id
+
+        /* this append is overwritten when db update is fetched.
+         * which is why the class of this div has no pushkey id.
          */
         appendHTMLString($('#chatarea'), `<div class="bubbles"><div class="this chatbubble_bg">${messageHTML}</div></div>`);
         smoothScroll($('#chatarea'), false, false);
+
         // this delay is to prevent a lag that occurrs when writing to db, within which the dialog is hidden
         setTimeout(() => {
+
             const Date = getLongDateTime(false);
             const time = {
                 year: Date.getFullYear(),
@@ -272,6 +350,7 @@ const main = () => {
                     + ('0' + Date.getSeconds()).slice(-2) + ' '
                     + Intl.DateTimeFormat().resolvedOptions().timeZone,
             }
+
             // push generates a unique id which is based on timestamp
             const pushkey = FirebaseDatabase.push(FirebaseDatabase.ref(Database, DB_ROOT + CHAT_ROOT)).key;
             FirebaseDatabase.update(FirebaseDatabase.ref(Database, DB_ROOT + CHAT_ROOT + pushkey + '/'), {
@@ -283,8 +362,8 @@ const main = () => {
                 log('Chat: data pushed');
                 loadTheme();
             }).catch((error) => {
-                err(error);
                 $('#txtmsg').value = msgbackup;
+                displayErrorDialog(error, 'Chat');
             });
         }, Overlay.animation_duration);
     });
@@ -297,31 +376,37 @@ const main = () => {
     
     // onclick listeners
     document.body.addEventListener('click', (e) => {
+
         /**
          * Variable should only be used by bubble highlighter block.
          * Purpose is to store the node that is to be highlighted when someone taps on a reply message.
          * @type {Node} HTML element
          */
         let highlight_target;
+
         // title bar back arrow click
         if (['backdiv', 'backarrow', 'dp acc_bg'].includes(e.target.className)) {
             log('Chat: history: going back');
             location.href = '/inbox';
         }
+
         // menu copy button click
         else if (e.target.id == 'menu_copy') {
             Menu.hide(() => {
                 copyPlainTxt(long_pressed_element.innerHTML);
             });
         }
+
         // menu unsend button click
         else if (e.target.id == 'menu_unsend') {
             Menu.hide(() => {
+
                 // unsend not possible if not sent by user
                 if (ChatData[long_pressed_element.id].uid != USER_ID) {
                     Dialog.display('alert', 'Not allowed', 'You can unsend a message only if you have sent it.');
                     return;
                 }
+
                 // unsend not possible after 1 hour
                 if (getTimeStamp() - parseInt(ChatData[long_pressed_element.id].time.stamp) > 3600000) {
                     Dialog.display('alert', 'Not allowed', 'You can only unsend a message within 1 hour of sending it.');
@@ -336,6 +421,7 @@ const main = () => {
                 });
             });
         }
+
         // menu reply button click
         else if (e.target.id == 'menu_reply') {
             Menu.hide(() => {
@@ -343,11 +429,13 @@ const main = () => {
                 $('#txtmsg').focus();
             });
         }
+
         // menu details button click
         else if (e.target.id == 'menu_details') {
             Menu.hide(() => {
                 const message = ChatData[long_pressed_element.id];
                 const time = message.time;
+
                 // innerHTML of dialog
                 const infoHTML = '<pre style="'
                                +     'margin: 0;'
@@ -363,9 +451,11 @@ const main = () => {
                                +         `<tr><td>Sent at: </td><td>${time.time}</td></tr>`
                                +     '</table>'
                                + '</pre>'
+
                 // display dialog
                 Dialog.display('action', 'Message details', infoHTML, 'Advanced', () => {
                     Dialog.hide('action', () => {
+
                         /* display excess JSON of chat
                          * WARNING: Take care when modifying the regex and order of replace function.
                          */
@@ -394,6 +484,7 @@ const main = () => {
                 });
             });
         }
+
         /* ------------------------------------- DO NOT TOUCH THIS ELSE IF BLOCK ----------------------------
          * This is the chat bubble highlighter code.
          * The upper indented block is just the condition of the else if statement.
@@ -430,7 +521,9 @@ const main = () => {
     
     // on mouse down listener
     document.body.addEventListener('pointerdown', (e) => {
+
         log(`Chat: pointerdown: id = ${e.target.id} node = ${e.target.nodeName} class = ${e.target.className}`);
+
         // bubble container long press
         if (e.target.className == 'bubbles') {
             longpress_timer = setTimeout(() => {
@@ -444,10 +537,12 @@ const main = () => {
                 long_pressed_element = scaled_element;
                 long_pressed_element.style.transform = 'scale(1)';
                 clearTimeout(longpress_timer);
+
                 // show menu
                 Menu.display();
             }, 600);
         }
+
         // image long pressed
         else if (e.target.nodeName == 'IMG' && e.target.parentNode.parentNode.parentNode.className == 'bubbles') {
             longpress_timer = setTimeout(() => {
@@ -475,6 +570,7 @@ const main = () => {
                 });
             }, 600);
         }
+
         // if it's a link, copy it
         else if (e.target.nodeName == 'A') {
             if (EXISTS_ANDROID_INTERFACE) longpress_timeout = setTimeout(() => {
@@ -512,13 +608,17 @@ const main = () => {
      */
     Overlay.setInstanceOpen(true);
     
-    // start listening for arrival/departure of messages
+    /* start listening for arrival/departure of messages.
+     * This code will fail if ChatData is not loaded, which is done up above, before the event listeners are added.
+     */
     loadChatsToUI();
+
     // hide splashcreeen
     SplashScreen.hide(() => {
         smoothScroll($('#chatarea'), false, false);
         checkForApkUpdates();
     });
+
     // start listening for new messages
     startDBListener();
     

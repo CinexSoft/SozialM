@@ -11,9 +11,9 @@
  
 /**
  * Used to recognise a user.
- * @type {Object} Stores user info from Firebase Auth.
+ * @type {Object} Stores user info.
  */
-export let USER = {};
+export let UserData = {};
 
 /**
  * Used to recognise a user.
@@ -74,8 +74,8 @@ export const EXISTS_ANDROID_INTERFACE = typeof Android !== 'undefined'
  */
 export const setVariable = (variable, value) => {
     switch (variable) {
-        case 'USER':
-            USER = value;
+        case 'UserData':
+            UserData = value;
             break;
         case 'USER_ID':
             USER_ID = value;
