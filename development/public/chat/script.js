@@ -136,14 +136,15 @@ const main = () => {
         location.href = '/inbox';
         return;
     }
-    if (CHAT_ROOM_ID != 'ejs993ejiei3') {
-        document.getElementById('roomid').innerHTML = CHAT_ROOM_ID.charAt(0).toUpperCase() + CHAT_ROOM_ID.slice(1);
-    }
-    // push current chat room id to db, doesn't mat9if it already exists
+    const user_ids = CHAT_ROOM_ID.split(':u1:u2:')
+    if (user_ids.length > 2) displayErrorDialog(`more then 2 UID in chatroomid, CHAT_ROOM_ID = ${CHAT_ROOM_ID}`, 'Chat');
+    const other_user_id = user_ids[!(user_ids.indexOf(USER_ID))];
+    // push current chat room id to db, doesn't matter if it already exists
     FirebaseDatabase.update(FirebaseDatabase.ref(`${USER_ROOT}/${USER_ID}/chatrooms`), () => {
         [CHAT_ROOM_ID]: true,
     });
     ChatData = JSON.parse(localStorage.getItem('Chat.data'))[CHAT_ROOM_ID];
+    if (CHAT_ROOM_ID != 'ejs993ejiei3') $('#roomid').innerHTML = UserData.friends[other_user_id].name;
     // on key up listener
     document.addEventListener('keyup', (e) => {
         const key = e.keyCode || e.charCode;
