@@ -11,6 +11,7 @@ import {
     copyPlainTxt,
     getBrowser,
     checkForApkUpdates,
+    displayErrorDialog,
 } from '/common/js/generalfunc.js';
 import {
     $,
@@ -81,22 +82,7 @@ const startDBListener = () => {
         localStorage.setItem('Chat.data', JSON.stringify(all_chats_data));
         log('Chat: db update fetched');
     }, (error) => {
-        Dialog.display('alert', 'Fatal error', (
-              '<pre style="'
-            +     'margin: 0;'
-            +     'padding: 0;'
-            +     'width: 100%;'
-            +     'overflow: auto;'
-            +     'text-align:left;'
-            +     'font-size: 0.8rem;'
-            +     'font-family: sans-serif; ">'
-            +     '<p>Please copy the following error and report it to <a href="mailto:cinexsoft@gmail.com">cinexsoft@gmail.com</a></p>.'
-            +     '<code>'
-            +         error // JSON.stringify({ error.name, error.message, error.stack, }, null, 4)
-            +     '</code>'
-            + '</pre>'
-        ));
-        err(`Chat: ${error}`);
+        displayErrorDialog(error, 'Chat');
     });
 }
 

@@ -250,3 +250,28 @@ export const getURLQueryFieldValue = (field, querystr = location.search) => {
     }
     return values.length > 0 ? (values.length == 1 ? values[0] : values) : undefined;
 }
+
+/**
+ * Alerts user of an error and also logs it.
+ * @param {String} error The error to be reported. Can be HTML string.
+ * @param {String} origin The UI from which the error originates. Eg: Chat
+ */
+export const displayErrorDialog = (error, origin = 'Err') => {
+    Dialog.display('alert', 'Fatal error', (
+          '<pre style="'
+        +     'margin: 0;'
+        +     'padding: 0;'
+        +     'width: 100%;'
+        +     'overflow: auto;'
+        +     'text-align:left;'
+        +     'font-size: 0.8rem;'
+        +     'font-family: sans-serif; ">'
+        +     '<p>Please copy the following error and report it to <a href="mailto:cinexsoft@gmail.com">cinexsoft@gmail.com</a></p>.'
+        +     '<code>'
+        +         error // JSON.stringify({ error.name, error.message, error.stack, }, null, 4)
+        +     '</code>'
+        + '</pre>'
+    ));
+    err(`${origin}: ${error}`);
+    throw `${origin}: ${error}`;
+}
