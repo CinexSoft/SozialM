@@ -1,38 +1,41 @@
 import { Database, Auth, } '/common/js/firebaseinit.js';
 import { USER_ID, USER_TOKEN, SESSION_TOKEN, setVariable, EXISTS_ANDROID_INTERFACE, USER_ROOT, } from '/common/js/variables.js';
-import { generateToken, getLongDateTime, } from '/common/js/generalfunc.js';
+import { generateToken, getLongDateTime, displayErrorDialog, } from '/common/js/generalfunc.js';
 import { uploadSessionLogs, log, err, } from '/common/js/logging.js';
 import { Dialog, Menu, } from '/common/js/overlays.js';
-
 
 /**
  * Gets current user info from Firebase Auth and stores the id in the global variable USER_ID.
  */
 const getUserData = async () => {
 
+    // load all auth data of the user to AuthData
     const FirebaseAuth = await import('https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.js');
     FirebaseAuth.onAuthStateChanged(Auth, (user) => {
         if (!user) {
             console.error('generalfunc.js: user signed out / not signed in');
-            localStorage.removeItem('Auth.UserData');
+            localStorage.removeItem('AuthData');
             localStorage.removeItem('Auth.UID');
 
             // open login page if not already on login page
             if (!location.href.includes('/auth')) location.href = '/auth';
             return;
         }
-        localStorage.setItem('Auth.UserData', JSON.stringify(user));
+        localStorage.setItem('AuthData', JSON.stringify(user));
         localStorage.setItem('Auth.UID', JSON.stringify(user.uid));
         setVariable('AuthData', user);
         setVariable('USER_ID', user.uid);
         setVariable('USER_ROOT', user.uid);
     });
+
+    // load all data of the user to UserData
     const FirebaseDatabase = await import('https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js');
     FirebaseDatabase.onValue(FirebaseDatabase.ref(Database, USER_ROOT), (snapshot) => {
         const data = snapshot.val();
         setVariable('UserData', data);
+        localStorage.setItem('UserData', JSON.stringify(data));
     }, (error) => {
-        console.error(`init.js: ${error}`);
+        displayErrorDialog(error, 'init.js: getUserData()');
     });
 }
 
