@@ -3,8 +3,8 @@
     "Ci4j82hg96y36rfi96vfrwog7h85f4jh870bpgw52fekftt95hjo7d2i3jgie64k": {
       "chat": {
         "$chatroomid": {
-          ".read": "auth != null && $chatroomid.contains(auth.uid)",
-          ".write": "auth != null && $chatroomid.contains(auth.uid)"
+          ".read": "auth != null",
+          ".write": "auth != null"
         }
       },
       "records": {

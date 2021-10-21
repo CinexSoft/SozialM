@@ -1,45 +1,9 @@
-import { Auth, Database, USER_ROOT, } from '/common/js/firebaseinit.js';
-import * as FirebaseDatabase from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js'
-import { UserData, USER_ID, USER_TOKEN, setVariable, EXISTS_ANDROID_INTERFACE, } from '/common/js/variables.js';
-import { generateToken, getLongDateTime, displayErrorDialog, } from '/common/js/generalfunc.js';
+import { setVariable, EXISTS_ANDROID_INTERFACE, } from '/common/js/variables.js';
+import { getUserInfo, generateUserToken, getLongDateTime, } from '/common/js/generalfunc.js';
 import { uploadSessionLogs, log, err, } from '/common/js/logging.js';
 import { Dialog, Menu, } from '/common/js/overlays.js';
-
-const getUserInfo = async () => {
-    const FirebaseAuth = await import('https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.js');
-    FirebaseAuth.onAuthStateChanged(Auth, (auth) => {
-        if (!auth) {
-            localStorage.removeItem('UserData.auth');
-            localStorage.removeItem('UserData.data');
-            if (location.href.includes('/auth')) return;
-            err('init.js: user not signed in, redirect to /auth');
-            location.href = '/auth';
-            return;
-        }
-        UserData['auth'] = auth;
-        localStorage.setItem('UserData.auth', JSON.stringify(auth));
-        setVariable('USER_ID', auth.uid);
-    });
-    FirebaseDatabase.onValue(FirebaseDatabase.ref(Database, `${USER_ROOT}/${USER_ID}`), (snapshot) => {
-        const data = snapshot.val();
-        UserData['data'] = data;
-        localStorage.setItem('UserData.data', JSON.stringify(data));
-    }, (error) => {
-        displayErrorDialog(error, 'init.js: getUserInfo()');
-    });
-}
-
-const generateUserToken = () => {
-    if (!localStorage.getItem('UserData.token')) {
-        setVariable('USER_TOKEN', generateToken());
-        localStorage.setItem('UserData.token', USER_TOKEN);
-        log(`generalfunc.js: user: new token = ${USER_TOKEN}`);
-    }
-    setVariable('USER_TOKEN', localStorage.getItem('UserData.token'));
-}
-
+    
 const init = () => {
-
     /* Uncomment to start displaying logs in the console.
      * setVariable('DEBUG', true);
      */
@@ -51,9 +15,11 @@ const init = () => {
      * setVariable 'SESSION_TOKEN' -> Sets SESSION_TOKEN to current date time. Crucial for logging functions.
      */
     getUserInfo();
+    setVariable('USER', JSON.parse(localStorage.getItem('Auth.user')));
+    setVariable('USER_ID', USER.uid);
     generateUserToken();
     setVariable('SESSION_TOKEN', getLongDateTime());
-
+    
     // upload logs in intervals for current session
     setInterval(() => {
         uploadSessionLogs();
@@ -70,7 +36,7 @@ const init = () => {
     });
     
     console.log('init.js: loaded');
-    log(`init.js: user: id = ${USER_ID}`);
+    log(`init.js: user: id = ${user.uid}`);
     log(`[AND]: init.js: WebAppInterface: ${EXISTS_ANDROID_INTERFACE}`);
 }
 
