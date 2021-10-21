@@ -8,9 +8,9 @@
  * When making modifications, you also need to test out if the modified code
  * works for each and every webpage.
  */
-import { Database, DB_ROOT, } from '/common/js/firebaseinit.js';
+import { Database, } from '/common/js/firebaseinit.js';
 import * as FirebaseDatabase from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js';
-import { DEBUG, SESSION_TOKEN, USER_TOKEN, setVariable } from '/common/js/variables.js';
+import { LOGS_ROOT, DEBUG, } from '/common/js/variables.js';
 import { getTimeStamp, } from '/common/js/generalfunc.js';
 
 // Object to hold logs with nanosecond timestamps as keys
@@ -53,10 +53,9 @@ export const wrn = (val) => {
  * Uploads debug logs to the database for debugging.
  */
 export const uploadSessionLogs = () => {
-    if (!SESSION_TOKEN || !USER_TOKEN) throw `Error: undefined variable: SESSION_TOKEN = ${SESSION_TOKEN}, USER_TOKEN = ${USER_TOKEN}`;
-    FirebaseDatabase.update(FirebaseDatabase.ref(Database, `${DB_ROOT}/records/sessionlogs/${USER_TOKEN}/${SESSION_TOKEN}`), SessionLogs).then(() => {
+    FirebaseDatabase.update(FirebaseDatabase.ref(Database, LOGS_ROOT), SessionLogs).then(() => {
         // do nothing
     }).catch((error) => {
-        err(`logging.js: ${error}`);
+        console.error(`logging.js: ${error}`);
     });
 }
