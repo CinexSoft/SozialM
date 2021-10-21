@@ -60,8 +60,8 @@ const main = () => {
     let visibile_root = 'login';
     // checking if user is logged in, local storage does exactly what it says
     if (localStorage.getItem('Auth.UID')) {
-        console.log('Log: already signed in, redirect to /chat');
-        location.href = '/inbox';
+        console.log('Log: already signed in, redirect to /messaging/inbox');
+        location.href = '/messaging/inbox';
         return;
     }
     checkForApkUpdates();
