@@ -72,7 +72,7 @@ const main = () => {
         'Load chat', () => {
         Dialog.hide('alert', () => {
             const other_user_id = $('#other_user_id').value;
-            if (other_user_id) chat_room_id = other_user_id > USER_ID ? `${other_user_id}:u1:u2:${USER_ID}` : `${USER_ID}_${other_user_id}`;
+            if (other_user_id) chat_room_id = other_user_id > USER_ID ? `${other_user_id}_${USER_ID}` : `${USER_ID}_${other_user_id}`;
             else chat_room_id = '';
             storeChatRoomId(chat_room_id);
             location.href = `/chat?id=${chat_room_id}`;
