@@ -61,6 +61,7 @@ const loadChatsToUI = () => {
 
 // database listener
 const startDBListener = () => {
+
     // db listener, fetches new msg on update
     FirebaseDatabase.onValue(FirebaseDatabase.ref(Database, DB_ROOT + CHAT_ROOT), (snapshot) => {
         // storing messages from db to local
@@ -74,8 +75,10 @@ const startDBListener = () => {
                 time: data.time,
             };
         }
+
         // loads messages into the UI
         loadChatsToUI();
+
         // saves data in localStorage
         const all_chats_data = JSON.parse(localStorage.getItem('Chat.data'));
         all_chats_data[CHAT_ROOM_ID] = ChatData;
@@ -87,9 +90,11 @@ const startDBListener = () => {
 }
 
 const main = () => {
+
     // Markdown converter
     const MDtoHTML = new showdown.Converter();
     MDtoHTML.setFlavor('github');
+
     // other variables
     let previous_height = document.body.clientHeight;
     let previous_width = document.body.clientWidth;
@@ -98,6 +103,7 @@ const main = () => {
     let long_pressed_element;
     let scaled_element;
     let softboard_open = false;
+
     // html sanitizer configuration - additional tags and attributes
     HtmlSanitizer.AllowedTags['h'] = true;
     HtmlSanitizer.AllowedAttributes['alt'] = true;
@@ -119,12 +125,7 @@ const main = () => {
     HtmlSanitizer.AllowedCssStyles['overflow'] = true;
     HtmlSanitizer.AllowedCssStyles['transform'] = true;
     HtmlSanitizer.AllowedCssStyles['background'] = true;
-    // checks if user is logged in
-    if (!localStorage.getItem('Auth.user')) {
-        console.log('Log: not signed in, redirect to /auth');
-        location.href = '/auth';
-        return;
-    }
+    
     // checking if chat room exists
     if (localStorage.getItem('Chat.roomid')) {
         CHAT_ROOT = `/chat/${CHAT_ROOM_ID = localStorage.getItem('Chat.roomid')}/`;
@@ -139,11 +140,9 @@ const main = () => {
     if (CHAT_ROOM_ID != 'ejs993ejiei3') {
         document.getElementById('roomid').innerHTML = CHAT_ROOM_ID.charAt(0).toUpperCase() + CHAT_ROOM_ID.slice(1);
     }
-    // push current chat room id to db, doesn't mat9if it already exists
-    FirebaseDatabase.update(FirebaseDatabase.ref(`${USER_ROOT}/${USER_ID}/chatrooms`), () => {
-        [CHAT_ROOM_ID]: true,
-    });
+    
     ChatData = JSON.parse(localStorage.getItem('Chat.data'))[CHAT_ROOM_ID];
+
     // on key up listener
     document.addEventListener('keyup', (e) => {
         const key = e.keyCode || e.charCode;
@@ -176,6 +175,7 @@ const main = () => {
     
     // soft keyboard launch triggers window resize event
     window.addEventListener('resize', (e) => {
+
         // detects soft keyboard switch
         if (previous_height != document.body.clientHeight && previous_width == document.body.clientWidth) {
             softboard_open = !softboard_open;
@@ -187,6 +187,7 @@ const main = () => {
         }
         previous_width = document.body.clientWidth;
         previous_height = document.body.clientHeight;
+
         // switches visibility of msgpreview
         const HTML = quote_reply_text + MDtoHTML.makeHtml($('#txtmsg').value.trim());
         if (HTML != '' && softboard_open) {
@@ -203,7 +204,9 @@ const main = () => {
     
     // on send button clicked
     $('#btnsend').addEventListener('click', (e) => {
+
         const msgbackup = $('#txtmsg').value;
+
         // if msgbackup is empty.
         if (!msgbackup.trim()) {
             $('#txtmsg').value = '';
@@ -216,6 +219,7 @@ const main = () => {
             $('#txtmsg').value = msgbackup;
             return;
         }
+
         // Convert and then sanitize html.
         const messageHTML = MDtoHTML.makeHtml(msg);
         if (!messageHTML.trim()) return;
@@ -225,6 +229,7 @@ const main = () => {
         $('#msgpreview').style.display = 'none';
         $('#txtmsg').style.borderRadius = '40px';
         $('#txtmsg').focus();
+
         // months array
         const months = [
             'January', 
@@ -240,6 +245,7 @@ const main = () => {
             'November', 
             'December',
         ];
+
         // Days array
         const weekdays = [
             'Sunday',
@@ -250,11 +256,13 @@ const main = () => {
             'Friday',
             'Saturday',
         ];
+
         /* this append is temporary and is overwritten when db update is fetched
          * which is why the class this has no pushkey id
          */
         appendHTMLString($('#chatarea'), `<div class="bubbles"><div class="this chatbubble_bg">${messageHTML}</div></div>`);
         smoothScroll($('#chatarea'), false, false);
+
         // this delay is to prevent a lag that occurrs when writing to db, within which the dialog is hidden
         setTimeout(() => {
             const Date = getLongDateTime(false);
@@ -271,6 +279,7 @@ const main = () => {
                     + ('0' + Date.getSeconds()).slice(-2) + ' '
                     + Intl.DateTimeFormat().resolvedOptions().timeZone,
             }
+
             // push generates a unique id which is based on timestamp
             const pushkey = FirebaseDatabase.push(FirebaseDatabase.ref(Database, DB_ROOT + CHAT_ROOT)).key;
             FirebaseDatabase.update(FirebaseDatabase.ref(Database, DB_ROOT + CHAT_ROOT + pushkey + '/'), {
@@ -296,12 +305,14 @@ const main = () => {
     
     // onclick listeners
     document.body.addEventListener('click', (e) => {
+
         /**
          * Variable should only be used by bubble highlighter block.
          * Purpose is to store the node that is to be highlighted when someone taps on a reply message.
          * @type {Node} HTML element
          */
         let highlight_target;
+
         // title bar back arrow click
         if (['backdiv', 'backarrow', 'dp acc_bg'].includes(e.target.className)) {
             log('Chat: history: going back');
@@ -345,8 +356,10 @@ const main = () => {
         // menu details button click
         else if (e.target.id == 'menu_details') {
             Menu.hide(() => {
+
                 const message = ChatData[long_pressed_element.id];
                 const time = message.time;
+
                 // innerHTML of dialog
                 const infoHTML = '<pre style="'
                                +     'margin: 0;'
@@ -362,9 +375,11 @@ const main = () => {
                                +         `<tr><td>Sent at: </td><td>${time.time}</td></tr>`
                                +     '</table>'
                                + '</pre>'
+
                 // display dialog
                 Dialog.display('action', 'Message details', infoHTML, 'Advanced', () => {
                     Dialog.hide('action', () => {
+
                         /* display excess JSON of chat
                          * WARNING: Take care when modifying the regex and order of replace function.
                          */
@@ -430,6 +445,7 @@ const main = () => {
     // on mouse down listener
     document.body.addEventListener('pointerdown', (e) => {
         log(`Chat: pointerdown: id = ${e.target.id} node = ${e.target.nodeName} class = ${e.target.className}`);
+
         // bubble container long press
         if (e.target.className == 'bubbles') {
             longpress_timer = setTimeout(() => {
@@ -443,6 +459,7 @@ const main = () => {
                 long_pressed_element = scaled_element;
                 long_pressed_element.style.transform = 'scale(1)';
                 clearTimeout(longpress_timer);
+
                 // show menu
                 Menu.display();
             }, 600);
@@ -513,11 +530,13 @@ const main = () => {
     
     // start listening for arrival/departure of messages
     loadChatsToUI();
+
     // hide splashcreeen
     SplashScreen.hide(() => {
         smoothScroll($('#chatarea'), false, false);
         checkForApkUpdates();
     });
+    
     // start listening for new messages
     startDBListener();
     
