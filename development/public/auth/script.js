@@ -1,4 +1,5 @@
 import { Auth, } from '/common/js/firebaseinit.js';
+import { USER_ID, } from '/common/js/variables.js';
 import { log, err, } from '/common/js/logging.js';
 import { checkForApkUpdates, } from '/common/js/generalfunc.js';
 import { $, } from '/common/js/domfunc.js';
@@ -58,7 +59,7 @@ const main = () => {
     // root visibility flag
     let visibile_root = 'login';
     // checking if user is logged in, local storage does exactly what it says
-    if (localStorage.getItem('Auth.user')) {
+    if (localStorage.getItem('Auth.UID')) {
         console.log('Log: already signed in, redirect to /chat');
         location.href = '/inbox';
         return;
@@ -140,7 +141,6 @@ const main = () => {
         const FirebaseAuth = await import('https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.js');
         FirebaseAuth.signInWithEmailAndPassword(Auth, email, password).then((userCredential) => {
             const user = userCredential.user;
-            localStorage.setItem('Auth.user', JSON.stringify(user));
             location.href = '/';
         })
         .catch((error) => {
@@ -195,7 +195,6 @@ const main = () => {
         const FirebaseAuth = await import('https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.js');
         FirebaseAuth.createUserWithEmailAndPassword(Auth, email, password).then((userCredential) => {
             const user = userCredential.user;
-            localStorage.setItem('Auth.user', JSON.stringify(user));
             location.href = '/';
         })
         .catch((error) => {
