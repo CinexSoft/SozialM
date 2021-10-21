@@ -24,7 +24,8 @@ export const App = initializeApp(FirebaseConfig);
 export const Database = getDatabase(App);
 export const Auth = getAuth(App);
 
-// database root
-export const DB_ROOT = '/Ci4j82hg96y36rfi96vfrwog7h85f4jh870bpgw52fekftt95hjo7d2i3jgie64k';
-export const USER_ROOT = 'Ci4j87hg96h36rfi66vfrfog7h85f4jh8g0bpgw52felutt95hgoud2i3ngie64k/userdata';
+export const RTDB_USERS_ROOT = '/ba14fdd95c0d857ed647a819d80b0a1a343f053994be559be2a4324d513135ed/users';
+export const RTDB_SLOGS_ROOT = '/66d6cc8921d26daea31bc60f0545c97f1c34b8426237822239c9e456d1cc9a26/slogs';
+export const RTDB_CHATS_ROOT = '/5e47119018a91ea0994c1ab82275f9e465886edabf5ec7b09e9e8e4cf5c7253d/chats';
+
 console.log('Log: firebaseinit.js loaded');
