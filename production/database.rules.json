@@ -1,28 +1,29 @@
 {
   "rules": {
-    "Ci4j82hg96y36rfi96vfrwog7h85f4jh870bpgw52fekftt95hjo7d2i3jgie64k": {
-      "chat": {
-        "$chatroomid": {
-          ".read": "auth != null",
-          ".write": "auth != null"
-        }
-      },
-      "records": {
-        "sessionlogs": {
-          "$usertoken": {
-            ".read": false,
-            ".write": true
-          }
+    "ba14fdd95c0d857ed647a819d80b0a1a343f053994be559be2a4324d513135ed": {
+      "users": {
+        "$uid": {
+          ".read": "auth != null && $uid === auth.uid",
+          ".write": "auth != null && $uid === auth.uid"
         }
       }
     },
-    "Ci4j87hg96h36rfi66vfrfog7h85f4jh8g0bpgw52felutt95hgoud2i3ngie64k": {
-      "userdata": {
-        "$uid": {
-          ".read": "$uid === auth.uid",
-          ".write": "$uid === auth.uid"
+    "66d6cc8921d26daea31bc60f0545c97f1c34b8426237822239c9e456d1cc9a26": {
+      "slogs": {
+        "$usertoken": {
+          ".read": false,
+          ".write": true
         }
       }
-    }
+    },
+    "5e47119018a91ea0994c1ab82275f9e465886edabf5ec7b09e9e8e4cf5c7253d": {
+      "chats": {
+        "$chatroomid": {
+          // ".validate": "$chatroomid.split(':u1:u2:')[0] < $chatroomid.split(':u1:u2:')[1]",
+          ".read": "auth != null && $chatroomid.contains(auth.uid)",
+          ".write": "auth != null && $chatroomid.contains(auth.uid)"
+        }
+      }
+    },
   }
 }
