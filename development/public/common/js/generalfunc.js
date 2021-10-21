@@ -11,11 +11,8 @@
 
 import { Auth } from '/common/js/firebaseinit.js';
 import {
-    USER_ID,
-    USER_TOKEN,
     DEBUG,
     EXISTS_ANDROID_INTERFACE,
-    setVariable,
 } from '/common/js/variables.js';
 import { log, err, } from '/common/js/logging.js';
 import { Dialog } from '/common/js/overlays.js';

@@ -90,7 +90,7 @@ const init = () => {
     });
     
     console.log('init.js: loaded');
-    log(`init.js: user: id = ${user.uid}`);
+    log(`init.js: user: id = ${USER_ID}`);
     log(`[AND]: init.js: WebAppInterface: ${EXISTS_ANDROID_INTERFACE}`);
 }
 
