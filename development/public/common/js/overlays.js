@@ -9,7 +9,6 @@
  * works for each and every webpage.
  */
 
-import { log, err, } from '/common/js/logging.js';
 import { $, getChildElement } from '/common/js/domfunc.js';
 
 /**
@@ -60,7 +59,6 @@ export const SplashScreen = {
         let timeout = 0;
         if (Overlay.instance_open) timeout = Overlay.animation_duration;
         setTimeout(() => {
-            log(`overlays.js: splashScreen display(): timeout = ${timeout}`);
             $('#splashScreen').innerHTML = innerHTML;
             $('#splashScreenRoot').style.animation = `fadeIn ${Overlay.animation_duration}ms forwards`;
             Overlay.setInstanceOpen(true);
@@ -104,7 +102,6 @@ const AlertDialog = {
         let timeout = 0;
         if (Overlay.instance_open) timeout = Overlay.animation_duration;
         setTimeout(() => {
-            log(`overlays.js: alertDialog display(): timeout = ${timeout}`);
             getChildElement($('#alertDialog'), 'h2')[0].innerHTML = title.replace(/\n/g, '<br>');;
             getChildElement($('#alertDialog'), 'div')[0].innerHTML = message.replace(/\n/g, '<br>');
             $('#alertDialog_btn').innerHTML = button;
@@ -150,7 +147,6 @@ const ActionDialog = {
         this.onClickFunction = func;
         if (Overlay.instance_open) timeout = Overlay.animation_duration;
         setTimeout(() => {
-            log(`overlays.js: actionDialog display(): timeout = ${timeout}`);
             getChildElement($('#actionDialog'), 'h2')[0].innerHTML = title.replace(/\n/g, '<br>');;
             getChildElement($('#actionDialog'), '.content')[0].innerHTML = message.replace(/\n/g, '<br>');
             $('#actionDialog_btnOk').innerHTML = button;    
@@ -234,7 +230,6 @@ export const Menu = {
         let timeout = 0;
         if (Overlay.instance_open) timeout = Overlay.animation_duration;
         setTimeout(() => {
-            log(`overlays.js: menu: timeout = ${timeout}`);
             getChildElement($('#menu'), 'h2')[0].innerHTML = title.replace(/\n/g, '<br>');;
             $('#menuRoot').style.animation = `fadeIn ${Overlay.animation_duration}ms forwards`;
             $('#menu').style.animation = `scaleIn ${Overlay.animation_duration}ms forwards`;

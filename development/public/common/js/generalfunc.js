@@ -71,7 +71,6 @@ export const encode = (str) => {
     for (let character of specialChars) {
         str = str.replaceAll(character, `ASCII${character.charCodeAt(0)}`);
     }
-    if (DEBUG) console.log(`Log: generalfunc.js: encode(): str = ${str}`);
     return str;
 }
 
@@ -85,7 +84,6 @@ export const decode = (str) => {
     for (let character of specialChars) {
         str = str.replaceAll(`ASCII${character.charCodeAt(0)}`, character);
     }
-    if (DEBUG) console.log(`Log: generalfunc.js: decode(): str = ${str}`);
     return str;
 }
 
@@ -240,6 +238,5 @@ export const displayErrorDialog = (error, origin = 'Err') => {
         +     '</code>'
         + '</pre>'
     ));
-    err(`${origin}: ${error}`);
     throw `${origin}: ${error}`;
 }

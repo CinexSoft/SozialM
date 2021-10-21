@@ -9,8 +9,6 @@
  * works for each and every webpage.
  */
 
-import { log, } from '/common/js/logging.js';
-
 /**
  * Select HTML element/s from the document root using CSS syntax.
  * @param {String} val The CSS representation of the element.
@@ -59,10 +57,7 @@ export const getChildElement = (element, val) => {
 export const childHasParent = (child, parent) => {
     let node = child.parentNode;
     while (node != null) {
-        if (node == parent) {
-            log(`domfunc.js: ${node.nodeName} of class = ${node.className} has parent ${parent.nodeName} of class = ${parent.className}`);
-            return true;
-        }
+        if (node == parent) return true;
         node = node.parentNode;
     }
     return false;
@@ -101,6 +96,5 @@ export const smoothScroll = (element, get_behavior_only = false, smooth = true) 
         if (get_behavior_only) return 'auto';
         element.style.scrollBehavior = 'auto';
     }
-    log(`domfunc.js: smoothscroll(): element = ${element.nodeName} class = ${element.className} diff = ${element.scrollHeight - element.scrollTop}`);
     element.scrollTop = element.scrollHeight;
 }
