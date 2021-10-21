@@ -133,8 +133,8 @@ const main = () => {
         localStorage.removeItem('Chat.roomid');
     }
     else {
-        console.log('Log: chat root not found, it must be created first, redirect to /inbox');
-        location.href = '/inbox';
+        console.log('Log: chat root not found, it must be created first, redirect to /messaging/inbox');
+        location.href = '/messaging/inbox';
         return;
     }
     if (CHAT_ROOM_ID != 'ejs993ejiei3') {
