@@ -1,5 +1,12 @@
 import { Database, Auth, } '/common/js/firebaseinit.js';
-import { USER_ID, USER_TOKEN, SESSION_TOKEN, setVariable, EXISTS_ANDROID_INTERFACE, USER_ROOT, } from '/common/js/variables.js';
+import {
+    USER_ID,
+    USER_TOKEN,
+    SESSION_TOKEN,
+    setVariable,
+    EXISTS_ANDROID_INTERFACE,
+    USER_ROOT,
+} from '/common/js/variables.js';
 import { generateToken, getLongDateTime, displayErrorDialog, } from '/common/js/generalfunc.js';
 import { uploadSessionLogs, log, err, } from '/common/js/logging.js';
 import { Dialog, Menu, } from '/common/js/overlays.js';
