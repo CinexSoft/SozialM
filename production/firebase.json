@@ -11,7 +11,7 @@
     "redirects": [
       {
         "source": "/",
-        "destination": "/inbox/index.html",
+        "destination": "/messaging/inbox/index.html",
         "type": 302
       }
     ]
