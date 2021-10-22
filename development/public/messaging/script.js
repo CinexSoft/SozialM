@@ -48,9 +48,10 @@ export const storeChatRoomId = (room_id) => {
  * @return {String} CHAT_ROOM_ID.
  */
 export const generateChatRoomId = (user_id) => {
-    const room_id = [ USER_ID, user_id, ].sort()[0]
-                  + ':u1:u2:'
-                  + [ USER_ID, user_id, ].sort()[1];
+    let room_id = 'ejs993ejiei3';
+    if (user_id) room_id = [ USER_ID, user_id, ].sort()[0]
+                         + ':u1:u2:'
+                         + [ USER_ID, user_id, ].sort()[1];
     return storeChatRoomId(room_id);
 }
 
