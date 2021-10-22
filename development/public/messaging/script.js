@@ -14,11 +14,12 @@ export let CHAT_ROOM_ID;
  * @return {Boolean} true if valid.
  */
 export const isValid = (room_id) => {
+    if (room_id == 'ejs993ejiei3') return true;
     const uids = room_id?.split(':u1:u2:');
     if (uids != null
     &&  uids.length == 2
     &&  uids[0] < uids[1]
-    && !uids.every(/[^A-Za-z0-9]/.test)
+    && !uids.every((id) => /[^A-Za-z0-9:]/.test(id))
     &&  uids.includes(localStorage.getItem('Auth.UID'))) return true;
     displayErrorDialog(`Error: messaging: isValid(): invalid room_id = ${room_id}`);
     return false;
@@ -31,7 +32,7 @@ export const isValid = (room_id) => {
  */
 export const storeChatRoomId = (room_id) => {
 
-    room_id = (room_id || 'ejs993ejiei3').replace(/[^A-Za-z0-9]/g, '');
+    room_id = (room_id || 'ejs993ejiei3').replace(/[^A-Za-z0-9:]/g, '');
     if (!isValid(room_id)) return;
 
     // stores the chat room id into localStorage and sets CHAT_ROOT, to be used by '/messaging/chat'.
