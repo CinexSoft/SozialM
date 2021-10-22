@@ -13,14 +13,15 @@ export let CHAT_ROOM_ID;
  * @param {String} room_id Chat room id.
  * @return {Boolean} true if valid.
  */
-export const isValid = (room_id) => {
+export const isValid = (room_id = 'ejs993ejiei3') => {
+    if (typeof room_id != 'String') return false;
     if (room_id == 'ejs993ejiei3') return true;
-    const uids = room_id?.split(':u1:u2:');
+    const uids = room_id.split(':u1:u2:');
     if (uids != null
     &&  uids.length == 2
     &&  uids[0] < uids[1]
-    && !uids.every((id) => /[^A-Za-z0-9:]/.test(id))
-    &&  uids.includes(localStorage.getItem('Auth.UID'))) return true;
+    &&  uids.includes(USED_ID)
+    && !uids.every((id) => /[^A-Za-z0-9]/.test(id))) return true;
     displayErrorDialog(`Error: messaging: isValid(): invalid room_id = ${room_id}`);
     return false;
 }
