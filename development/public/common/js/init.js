@@ -22,8 +22,8 @@ const getUserData = async () => {
         if (!user) {
             console.error('init.js: user signed out / not signed in');
             localStorage.removeItem('AuthData');
+            localStorage.removeItem('UserData');
             localStorage.removeItem('Auth.UID');
-
             // open login page if not already on login page
             if (!location.href.includes('/auth')) location.href = '/auth';
             return;
@@ -33,16 +33,16 @@ const getUserData = async () => {
         setVariable('AuthData', user);
         setVariable('USER_ID', user.uid);
         setVariable('USER_ROOT', user.uid);
-    });
 
-    // load all data of the user to UserData
-    const FirebaseDatabase = await import('https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js');
-    FirebaseDatabase.onValue(FirebaseDatabase.ref(Database, USER_ROOT), (snapshot) => {
-        const data = snapshot.val();
-        setVariable('UserData', data);
-        localStorage.setItem('UserData', JSON.stringify(data));
-    }, (error) => {
-        displayErrorDialog(`Error: init.js: getUserData() ${error}`);
+        // load all data of the user to UserData
+        const FirebaseDatabase = await import('https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js');
+        FirebaseDatabase.onValue(FirebaseDatabase.ref(Database, USER_ROOT), (snapshot) => {
+            const data = snapshot.val();
+            setVariable('UserData', data);
+            localStorage.setItem('UserData', JSON.stringify(data));
+        }, (error) => {
+            displayErrorDialog(`Error: init.js: getUserData() ${error}`);
+        });
     });
 }
 
