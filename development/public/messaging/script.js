@@ -40,7 +40,7 @@ export const storeChatRoomId = (room_id) => {
     setVariable('CHAT_ROOT', room_id);
     return CHAT_ROOM_ID = room_id;
 }
-
+// TODO: fix: generates true instead of proper CHAT_ROOM_ID, somehow it's valid
 /**
  * Generates and stores CHAT_ROOM_ID | CHAT_ROOM_ID has format `${uid1}:u1:u2:${uid2}`, uid1 < uid2.
  * It also sets the value of CHAT_ROOT.
