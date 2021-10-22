@@ -16,6 +16,11 @@ import { Dialog, Menu, } from '/common/js/overlays.js';
  */
 const getUserData = async () => {
 
+    /* This code is to cut the delay of USER_ID being set as
+     * FirebaseAuth.onAuthStateChanged is asynchronous.
+     */
+    setVariable('USER_ID', localStorage.getItem('Auth.UID'));
+
     // load all auth data of the user to AuthData
     const FirebaseAuth = await import('https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.js');
     FirebaseAuth.onAuthStateChanged(Auth, async (user) => {
