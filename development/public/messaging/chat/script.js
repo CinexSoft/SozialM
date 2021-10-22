@@ -81,6 +81,11 @@ const startDBListener = () => {
         loadChatsToUI();
         localStorage.setItem(`ChatData.${CHAT_ROOM_ID}`, JSON.stringify(ChatData));
 
+        // hide splashcreeen if not already hidden
+        if (SplashScreen.visible) SplashScreen.hide(() => {
+            smoothScroll($('#chatarea'), false, false);
+            checkForApkUpdates();
+        });
     }, (error) => {
         err(`Chat: ${error}`);
         displayErrorDialog(`Chat: ${error}`);
@@ -498,18 +503,20 @@ const main = () => {
     });
 
     /* Although deprecated, this function is used because
-     * the 'Loading chats' dialog is not shown using Dialog.display().
+     * the SplashScreen is not shown using SplashScreen.display().
      * Instead it's shown using CSS style 'visibility: visible'.
      * This is done to make the dialog visible immediately after the page
      * is loaded.
      */
     Overlay.setInstanceOpen(true);
 
+    SplashScreen.visible = true;
+
     // start listening for arrival/departure of messages
     loadChatsToUI();
 
     // hide splashcreeen
-    SplashScreen.hide(() => {
+    if (ChatData != {}) SplashScreen.hide(() => {
         smoothScroll($('#chatarea'), false, false);
         checkForApkUpdates();
     });
