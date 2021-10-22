@@ -1,18 +1,10 @@
 import { Auth, } from '/common/js/firebaseinit.js';
-import { USER_ID, } from '/common/js/variables.js';
 import { log, err, } from '/common/js/logging.js';
-import { checkForApkUpdates, getURLQueryFieldValue, } from '/common/js/generalfunc.js';
 import { $, } from '/common/js/domfunc.js';
 import { Dialog, } from '/common/js/overlays.js';
 
-const storeChatRoomId = (chat_room_id) => {
-    
-    chat_room_id = (chat_room_id || 'ejs993ejiei3').replace(/[^A-Za-z0-9]/g, '');
-    log(`Inbox: chat room id: ${chat_room_id}`);
-
-    // stores the chat room id into localStorage to be used by '/chat'.
-    localStorage.setItem('Chat.roomid', chat_room_id);
-}
+import { CHAT_ROOM_ID, } from '/messaging/script.js';
+import * as Messaging from '/messaging/script.js'
 
 const getChatHTML = ({ chat_room_id, dp_src, sender, date_time, message }) => {
     chat_room_id = chat_room_id || 'ejs993ejiei3';
@@ -38,18 +30,7 @@ const getChatHTML = ({ chat_room_id, dp_src, sender, date_time, message }) => {
 
 const main = () => {
 
-    let chat_room_id;
-    let chatrooms = [];
-
-    // If chatroom id exists as a URL query field, store it
-    if ((chat_room_id = getURLQueryFieldValue('id'))
-    && !Array.isArray(chat_room_id)) storeChatRoomId(chat_room_id);
-
-    // If chatroom id already exists in localStorage, go to /chat
-    if (chat_room_id = localStorage.getItem('Chat.roomid')) {
-        location.href = `/chat?id=${chat_room_id}`;
-        return;
-    }
+    const chatrooms = [];
 
     /* code to load chats belonging to the user
      * If chatroom id doesn't exist, user will be prompted for it.
@@ -63,12 +44,11 @@ const main = () => {
         'Load chat', () => {
         Dialog.hide('alert', () => {
             const other_user_id = $('#other_user_id').value;
-            if (other_user_id) chat_room_id = other_user_id > USER_ID ? `${other_user_id}_${USER_ID}` : `${USER_ID}_${other_user_id}`;
-            else chat_room_id = '';
-            storeChatRoomId(chat_room_id);
-            location.href = `/chat?id=${chat_room_id}`;
+            Messaging.generateChatRoomId(other_user_id);
+            location.href = `/messaging/chat?id=${CHAT_ROOM_ID}`;
         });
     });
 }
 
+Messaging.init();
 main();
