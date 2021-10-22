@@ -186,7 +186,7 @@ const main = () => {
         $('#msgpreview').style.display = 'none';
         $('#txtmsg').style.borderRadius = '40px';
     });
-    
+
     // on send button clicked
     $('#btnsend').addEventListener('click', (e) => {
 
@@ -473,32 +473,29 @@ const main = () => {
         // if it's a link, copy it
         else if (e.target.nodeName == 'A') {
             if (EXISTS_ANDROID_INTERFACE) longpress_timeout = setTimeout(() => {
-                log('Chat: long press triggered');
                 copyPlainTxt(e.target.href);
             }, 500);
         }
     });
-    
+
     // on mouse up listener
     document.body.addEventListener('pointerup', (e) => {
-        log('Chat: pointer up');
         if (long_pressed_element) long_pressed_element.style.transform = 'scale(1)';
         if (scaled_element) scaled_element.style.transform = 'scale(1)';
         $('#chatarea').style.userSelect = 'initial';
         clearTimeout(longpress_timer);
         clearTimeout(longpress_timeout);
     });
-    
+
     // swipe gesture listener
     document.body.addEventListener('touchmove', (e) => {
-        log(`Chat: swiped: id = ${e.target.id} node = ${e.target.nodeName} class = ${e.target.className}`);
         if (long_pressed_element) long_pressed_element.style.transform = 'scale(1)';
         if (scaled_element) scaled_element.style.transform = 'scale(1)';
         $('#chatarea').style.userSelect = 'initial';
         clearTimeout(longpress_timer);
         clearTimeout(longpress_timeout);
     });
-    
+
     /* Although deprecated, this function is used because
      * the 'Loading chats' dialog is not shown using Dialog.display().
      * Instead it's shown using CSS style 'visibility: visible'.
@@ -506,7 +503,7 @@ const main = () => {
      * is loaded.
      */
     Overlay.setInstanceOpen(true);
-    
+
     // start listening for arrival/departure of messages
     loadChatsToUI();
 
@@ -515,10 +512,10 @@ const main = () => {
         smoothScroll($('#chatarea'), false, false);
         checkForApkUpdates();
     });
-    
+
     // start listening for new messages
     startDBListener();
-    
+
     log('Chat: document and script load complete');
 }
 
