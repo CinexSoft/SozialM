@@ -40,7 +40,7 @@ export const storeChatRoomId = (room_id) => {
     setVariable('CHAT_ROOT', room_id);
     return CHAT_ROOM_ID = room_id;
 }
-// TODO: fix: generates true instead of proper CHAT_ROOM_ID, somehow it's valid
+
 /**
  * Generates and stores CHAT_ROOM_ID | CHAT_ROOM_ID has format `${uid1}:u1:u2:${uid2}`, uid1 < uid2.
  * It also sets the value of CHAT_ROOT.
@@ -48,7 +48,7 @@ export const storeChatRoomId = (room_id) => {
  * @return {String} CHAT_ROOM_ID.
  */
 export const generateChatRoomId = (user_id) => {
-    let room_id = 'ejs993ejiei3';
+    let room_id;
     if (user_id) room_id = [ USER_ID, user_id, ].sort()[0]
                          + ':u1:u2:'
                          + [ USER_ID, user_id, ].sort()[1];
@@ -67,7 +67,7 @@ export const init = () => {
     && !Array.isArray(room_id)) storeChatRoomId(room_id);
 
     // checking if chat room exists and is valid
-    if (room_id = localStorage.getItem('Chat.roomid') && isValid(room_id)) {
+    if ((room_id = localStorage.getItem('Chat.roomid')) && isValid(room_id)) {
         CHAT_ROOM_ID = room_id;
         console.log(`Log: chat room found: ${CHAT_ROOM_ID}`);
         if (location.href.includes('/chat')) localStorage.removeItem('Chat.roomid');
