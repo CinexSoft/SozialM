@@ -44,15 +44,8 @@ const loadChatsToUI = () => {
         const data = ChatData[pushkey];
         const uid = data.uid;
         const getHTML = ChatData[pushkey].message;
-        if (uid == USER_ID) {
-            appendHTMLString($('#chatarea'), `<div class="bubbles"><div class="this chatbubble_bg" id="${pushkey}">${getHTML}</div></div>`);
-            if (DEBUG) console.log(`Log: Chat: this: pushkey = ${pushkey}`);
-            if (DEBUG) console.log(`Log: Chat: this: html = ${$('#chatarea').innerHTML}`);
-        } else {
-            appendHTMLString($('#chatarea'), `<div class="bubbles"><div class="that" id="${pushkey}">${getHTML}</div></div>`);
-            if (DEBUG) console.log(`Log: Chat: that: pushkey = ${pushkey}`);
-            if (DEBUG) console.log(`Log: Chat: that: html = ${$('#chatarea').innerHTML}`);
-        }
+        if (uid == USER_ID) appendHTMLString($('#chatarea'), `<div class="bubbles"><div class="this chatbubble_bg" id="${pushkey}">${getHTML}</div></div>`);
+        else appendHTMLString($('#chatarea'), `<div class="bubbles"><div class="that" id="${pushkey}">${getHTML}</div></div>`);
         smoothScroll($('#chatarea'), false, false);
     }
     if (/pre/i.test($('#chatarea').innerHTML) &&
@@ -88,9 +81,9 @@ const startDBListener = () => {
         const all_chats_data = JSON.parse(localStorage.getItem('Chat.data'));
         all_chats_data[CHAT_ROOM_ID] = ChatData;
         localStorage.setItem('Chat.data', JSON.stringify(all_chats_data));
-        log('Chat: db update fetched');
     }, (error) => {
-        displayErrorDialog(error, 'Chat');
+        err(`Chat: ${error}`);
+        displayErrorDialog(`Chat: ${error}`);
     });
 }
 
@@ -130,18 +123,17 @@ const main = () => {
     HtmlSanitizer.AllowedCssStyles['overflow'] = true;
     HtmlSanitizer.AllowedCssStyles['transform'] = true;
     HtmlSanitizer.AllowedCssStyles['background'] = true;
-    
+
     if (CHAT_ROOM_ID != 'ejs993ejiei3') {
         const uids = CHAT_ROOM_ID.split(':u1:u2:');
         document.getElementById('roomid').innerHTML = uids[!uids.indexOf(USER_ID)];
     }
-    
+
     ChatData = JSON.parse(localStorage.getItem('Chat.data'))[CHAT_ROOM_ID];
 
     // on key up listener
     document.addEventListener('keyup', (e) => {
         const key = e.keyCode || e.charCode;
-        log(`Chat: keypress: key = ${key}`);
         const HTML = quote_reply_text + MDtoHTML.makeHtml($('#txtmsg').value.trim());
         if (HTML) {
             $('#msgpreview').style.display = 'block';
@@ -167,15 +159,13 @@ const main = () => {
             hljs.highlightAll();
         }
     });
-    
+
     // soft keyboard launch triggers window resize event
     window.addEventListener('resize', (e) => {
 
         // detects soft keyboard switch
-        if (previous_height != document.body.clientHeight && previous_width == document.body.clientWidth) {
-            softboard_open = !softboard_open;
-            log(`Chat: keyboard: switched? height diff = ${document.body.clientHeight - previous_height}`);
-        }
+        if (previous_height != document.body.clientHeight
+        && previous_width == document.body.clientWidth) softboard_open = !softboard_open;
         if (document.body.clientHeight - previous_height < 0) {
             $('#chatarea').style.scrollBehavior = 'smooth';
             $('#chatarea').scrollTop += Math.abs(document.body.clientHeight - previous_height);
@@ -309,10 +299,8 @@ const main = () => {
         let highlight_target;
 
         // title bar back arrow click
-        if (['backdiv', 'backarrow', 'dp acc_bg'].includes(e.target.className)) {
-            log('Chat: history: going back');
-            location.href = '/inbox';
-        }
+        if (['backdiv', 'backarrow', 'dp acc_bg']
+            .includes(e.target.className)) location.href = '/messaging/inbox';
         // menu copy button click
         else if (e.target.id == 'menu_copy') {
             Menu.hide(() => {
@@ -412,14 +400,14 @@ const main = () => {
          */
         else if (highlight_target = (() => {
             if (e.target.id.includes('tm_')) return $(`#${e.target.id.substring(3)}`);
-            for (let bq of $('blockquote')) if (childHasParent(e.target, bq) && bq.id.includes('tm_')) {
-                log(`Chat: generated id = #${bq.id.substring(3)}`);
-                return $(`#${bq.id.substring(3)}`);
+            for (let bq of $('blockquote')) {
+                if (childHasParent(e.target, bq) && bq.id.includes('tm_')) {
+                    return $(`#${bq.id.substring(3)}`);
+                }
             }
         })()) {
             // code starts here
             highlight_target = highlight_target.parentNode;
-            log(`Chat: highlight: bubble target id = #${highlight_target.id}`);
             if (quoted_reply_highlight_timeout) clearTimeout(quoted_reply_highlight_timeout);
             highlight_target.style.animation = '';
             const behavior = smoothScroll(highlight_target, true);
@@ -433,14 +421,13 @@ const main = () => {
         }
         /* -------------------------------------------- DO NOT TOUCH ENDS ------------------------------------ */
     });
-    
+
     // timer variable
     let longpress_timer;
     let longpress_timeout;
-    
+
     // on mouse down listener
     document.body.addEventListener('pointerdown', (e) => {
-        log(`Chat: pointerdown: id = ${e.target.id} node = ${e.target.nodeName} class = ${e.target.className}`);
 
         // bubble container long press
         if (e.target.className == 'bubbles') {
@@ -451,12 +438,9 @@ const main = () => {
                 $('#chatarea').style.userSelect = 'none';
             }, 200);
             longpress_timeout = setTimeout(() => {
-                log('Chat: long press triggered');
                 long_pressed_element = scaled_element;
                 long_pressed_element.style.transform = 'scale(1)';
                 clearTimeout(longpress_timer);
-
-                // show menu
                 Menu.display();
             }, 600);
         }
@@ -469,7 +453,6 @@ const main = () => {
                 $('#chatarea').style.userSelect = 'none';
             }, 200);
             longpress_timeout = setTimeout(() => {
-                log('Chat: long press triggered');
                 long_pressed_element = scaled_element;
                 scaled_element.style.transform = 'scale(1)';
                 clearTimeout(longpress_timer);
