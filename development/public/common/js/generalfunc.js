@@ -220,7 +220,7 @@ export const getURLQueryFieldValue = (field, querystr = location.search) => {
 /**
  * Alerts user of an error and also logs it.
  * @param {String} error The error to be reported. Can be HTML string.
- * @param {String} origin The UI from which the error originates. Eg: Chat
+ * @param {Object} error The error to be reported.
  */
 export const displayErrorDialog = (error) => {
     Dialog.display('alert', 'Fatal error', (
