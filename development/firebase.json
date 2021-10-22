@@ -12,7 +12,7 @@
     "redirects": [
       {
         "source": "/",
-        "destination": "/messaging/inbox/index.html",
+        "destination": "/messaging/inbox",
         "type": 302
       }
     ]
@@ -22,12 +22,15 @@
   },
   "emulators": {
     "database": {
+      "host": "0.0.0.0",
       "port": 9000
     },
     "hosting": {
+      "host": "0.0.0.0",
       "port": 5000
     },
     "ui": {
+      "host": "0.0.0.0",
       "enabled": true
     }
   }
