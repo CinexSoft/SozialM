@@ -56,15 +56,19 @@ const handleError = (state, { code, message, }, nodes, innernodes) => {
 }
 
 const main = () => {
+
     // root visibility flag
     let visibile_root = 'login';
+
     // checking if user is logged in, local storage does exactly what it says
     if (localStorage.getItem('Auth.UID')) {
         console.log('Log: already signed in, redirect to /messaging/inbox');
         location.href = '/messaging/inbox';
         return;
     }
+
     checkForApkUpdates();
+
     // event when the eye-slash icon is pressed
     $(".switchlink")[0].addEventListener('click', (event) => {
         resetColors();
@@ -82,7 +86,7 @@ const main = () => {
         log(`Auth: switch root: visibile_root = ${visibile_root}`);
         document.getElementById(visibile_root).style.display = 'block';
     });
-    
+
     // toggle password visibility
     for (let element of $(".fa-eye-slash")) element.addEventListener('click', (event) => {
         for (let element of $('.password')) {
@@ -100,7 +104,7 @@ const main = () => {
             }
         }
     });
-    
+
     // on focus given to an input
     document.body.addEventListener('click', (event) => {
         if (['INPUT', 'DIV'].includes(event.target.nodeName)) {
@@ -116,7 +120,7 @@ const main = () => {
             );
         }
     });
-    
+
     // login button clicked
     $('#btn_login').addEventListener('click', async (e) => {
         resetColors();
@@ -155,7 +159,7 @@ const main = () => {
             handleError('login', error, nodes, innernodes);
         });
     });
-    
+
     // signup button clicked
     $('#btn_signup').addEventListener('click', async (e) => {
         resetColors();
