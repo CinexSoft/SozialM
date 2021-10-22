@@ -51,6 +51,7 @@ export const Overlay = {
  * Needs the code for a splashscreen in the HTML document.
  */
 export const SplashScreen = {
+    visible: false,
     display(innerHTML, func) {
         if (func && typeof func != 'function') {
             throw `Error: typeof func = ${typeof func}, expected function`;
@@ -62,6 +63,7 @@ export const SplashScreen = {
             $('#splashScreen').innerHTML = innerHTML;
             $('#splashScreenRoot').style.animation = `fadeIn ${Overlay.animation_duration}ms forwards`;
             Overlay.setInstanceOpen(true);
+            this.visible = true;
             setTimeout(() => {
                 if (func) func.call();
             }, Overlay.animation_duration);
@@ -72,6 +74,7 @@ export const SplashScreen = {
         $('#splashScreenRoot').style.animation = `fadeOut ${Overlay.animation_duration}ms forwards`;
         setTimeout(() => {
             Overlay.setInstanceOpen(false);
+            this.visible = false;
             // additional function
             if (!func) return;
             if (typeof func != 'function') {
