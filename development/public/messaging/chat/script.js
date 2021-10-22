@@ -23,6 +23,9 @@ import {
 import { loadTheme, } from '/common/js/colors.js';
 import { Overlay, SplashScreen, Dialog, Menu, } from '/common/js/overlays.js';
 
+import { CHAT_ROOM_ID, } from '/messaging/script.js';
+import * as Messaging from '/messaging/script.js'
+
 // other variables
 let CHAT_ROOT;
 let CHAT_ROOM_ID;
@@ -126,19 +129,9 @@ const main = () => {
     HtmlSanitizer.AllowedCssStyles['transform'] = true;
     HtmlSanitizer.AllowedCssStyles['background'] = true;
     
-    // checking if chat room exists
-    if (localStorage.getItem('Chat.roomid')) {
-        CHAT_ROOT = `/chat/${CHAT_ROOM_ID = localStorage.getItem('Chat.roomid')}/`;
-        console.log(`Log: chat room found: ${CHAT_ROOM_ID}`);
-        localStorage.removeItem('Chat.roomid');
-    }
-    else {
-        console.log('Log: chat root not found, it must be created first, redirect to /messaging/inbox');
-        location.href = '/messaging/inbox';
-        return;
-    }
     if (CHAT_ROOM_ID != 'ejs993ejiei3') {
-        document.getElementById('roomid').innerHTML = CHAT_ROOM_ID.charAt(0).toUpperCase() + CHAT_ROOM_ID.slice(1);
+        const uids = CHAT_ROOM_ID.split(':u1:u2:');
+        document.getElementById('roomid').innerHTML = uids[!uids.indexOf(USER_ID)];
     }
     
     ChatData = JSON.parse(localStorage.getItem('Chat.data'))[CHAT_ROOM_ID];
@@ -543,4 +536,5 @@ const main = () => {
     log('Chat: document and script load complete');
 }
 
+Messaging.init();
 main();
