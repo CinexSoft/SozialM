@@ -1,4 +1,4 @@
-import { Database, Auth, } '/common/js/firebaseinit.js';
+import { Database, Auth, } from '/common/js/firebaseinit.js';
 import {
     USER_ID,
     USER_TOKEN,
@@ -20,7 +20,7 @@ const getUserData = async () => {
     const FirebaseAuth = await import('https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.js');
     FirebaseAuth.onAuthStateChanged(Auth, (user) => {
         if (!user) {
-            console.error('generalfunc.js: user signed out / not signed in');
+            console.error('init.js: user signed out / not signed in');
             localStorage.removeItem('AuthData');
             localStorage.removeItem('Auth.UID');
 
@@ -53,7 +53,7 @@ const generateUserToken = () => {
     if (!localStorage.getItem('UserData.token')) {
         setVariable('USER_TOKEN', generateToken());
         localStorage.setItem('UserData.token', USER_TOKEN);
-        console.log(`generalfunc.js: user: new token = ${USER_TOKEN}`);
+        console.log(`init.js: user: new token = ${USER_TOKEN}`);
     }
     setVariable('USER_TOKEN', localStorage.getItem('UserData.token'));
 }
