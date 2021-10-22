@@ -1,6 +1,12 @@
-import { Database, DB_ROOT, USER_ROOT, } from '/common/js/firebaseinit.js';
+import { Database, } from '/common/js/firebaseinit.js';
 import * as FirebaseDatabase from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js';
-import { USER_ID, DEBUG, EXISTS_ANDROID_INTERFACE, } from '/common/js/variables.js';
+import {
+    USER_ID,
+    DEBUG,
+    EXISTS_ANDROID_INTERFACE,
+    USER_ROOT,
+    CHAT_ROOT,
+} from '/common/js/variables.js';
 import { log, err, } from '/common/js/logging.js';
 import { 
     getTimeStamp,
@@ -25,10 +31,6 @@ import { Overlay, SplashScreen, Dialog, Menu, } from '/common/js/overlays.js';
 
 import { CHAT_ROOM_ID, } from '/messaging/script.js';
 import * as Messaging from '/messaging/script.js'
-
-// other variables
-let CHAT_ROOT;
-let CHAT_ROOM_ID;
 
 // the entire chat is downloaded and stored here
 // the data has unique random values as keys
@@ -66,7 +68,7 @@ const loadChatsToUI = () => {
 const startDBListener = () => {
 
     // db listener, fetches new msg on update
-    FirebaseDatabase.onValue(FirebaseDatabase.ref(Database, DB_ROOT + CHAT_ROOT), (snapshot) => {
+    FirebaseDatabase.onValue(FirebaseDatabase.ref(Database, CHAT_ROOT), (snapshot) => {
         // storing messages from db to local
         for ({ key } of snapshot) {
             const pushkey = key;
@@ -330,12 +332,13 @@ const main = () => {
                     Dialog.display('alert', 'Not allowed', 'You can only unsend a message within 1 hour of sending it.');
                     return;
                 }
-                FirebaseDatabase.update(FirebaseDatabase.ref(Database, DB_ROOT + CHAT_ROOT), {
+                FirebaseDatabase.update(FirebaseDatabase.ref(Database, CHAT_ROOT), {
                     [long_pressed_element.id]: null
                 }).then(() => {
                     log('Chat: msg deleted, data updated');
                 }).catch((error) => {
                     err(error);
+                    displayErrorDialog(`Chat: ${error}`);
                 });
             });
         }
