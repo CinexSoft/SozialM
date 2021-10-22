@@ -7,7 +7,7 @@ import { displayErrorDialog, } from '/common/js/generalfunc.js';
  * @type {String}
  */
 export let CHAT_ROOM_ID;
-
+// TODO: fix validation: suspect: regex test
 /**
  * Returns true if chat room id is valid.
  * @param {String} room_id Chat room id.
