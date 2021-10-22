@@ -40,14 +40,16 @@ const loadChatsToUI = () => {
     $('#chatarea').innerHTML = '<div class="info noselect sec_bg" style="font-family:sans-serif">'
                              + '<p class="fa fa-info-circle">&ensp;Your chats are only server-to-end encrypted. Chats are stored without encryption on CinexSoft databases. We\'re yet to implement end-to-end encryption.</p>'
                              + '</div>';
-    for ({ pushkey } of ChatData) {
-        const data = ChatData[pushkey];
-        const uid = data.uid;
+    for (let pushkey in ChatData) {
+        const uid = ChatData[pushkey].uid;
         const getHTML = ChatData[pushkey].message;
         if (uid == USER_ID) appendHTMLString($('#chatarea'), `<div class="bubbles"><div class="this chatbubble_bg" id="${pushkey}">${getHTML}</div></div>`);
         else appendHTMLString($('#chatarea'), `<div class="bubbles"><div class="that" id="${pushkey}">${getHTML}</div></div>`);
         smoothScroll($('#chatarea'), false, false);
     }
+    /* TODO: code highlight needs to be integrated with btnsend click and markdown preview.
+     * Global highlight needs to be disabled.
+     */
     if (/pre/i.test($('#chatarea').innerHTML) &&
         /code/i.test($('#chatarea').innerHTML)) {
         hljs.highlightAll();
@@ -63,24 +65,22 @@ const startDBListener = () => {
     // db listener, fetches new msg on update
     FirebaseDatabase.onValue(FirebaseDatabase.ref(Database, CHAT_ROOT), (snapshot) => {
         // storing messages from db to local
-        for ({ key } of snapshot) {
+        snapshot.forEach({ key }, () => {
             const pushkey = key;
+            const data = snapshot.val();
             // store data in local variable
             ChatData[pushkey] = {
-                uid,
                 pushkey,
+                uid: data.uid,
                 message: HtmlSanitizer.SanitizeHtml(decode(data.message)),
                 time: data.time,
             };
-        }
+        });
 
-        // loads messages into the UI
+        // loads messages into the UI and save to localStorage
         loadChatsToUI();
+        localStorage.setItem(`ChatData.${CHAT_ROOM_ID}`, JSON.stringify(ChatData));
 
-        // saves data in localStorage
-        const all_chats_data = JSON.parse(localStorage.getItem('Chat.data'));
-        all_chats_data[CHAT_ROOM_ID] = ChatData;
-        localStorage.setItem('Chat.data', JSON.stringify(all_chats_data));
     }, (error) => {
         err(`Chat: ${error}`);
         displayErrorDialog(`Chat: ${error}`);
@@ -129,7 +129,8 @@ const main = () => {
         document.getElementById('roomid').innerHTML = uids[!uids.indexOf(USER_ID)];
     }
 
-    ChatData = JSON.parse(localStorage.getItem('Chat.data'))[CHAT_ROOM_ID];
+    // loads chats from localStorage
+    ChatData = JSON.parse(localStorage.getItem(`ChatData.${CHAT_ROOM_ID}`) || '{}');
 
     // on key up listener
     document.addEventListener('keyup', (e) => {
@@ -155,7 +156,7 @@ const main = () => {
         }
         // if html contains code, run highlighter
         if (/pre/i.test(HTML) &&
-           /code/i.test(HTML)) {
+            /code/i.test(HTML)) {
             hljs.highlightAll();
         }
     });
