@@ -37,7 +37,7 @@ const main = () => {
      * this prompt is a temporary code while the inbox is being built
      */
     if (true) Dialog.display('alert', 'Text with',
-        + '<p>The inbox UI is not ready yet. While that is being done, you can access the chat system by entering UID of the other user.</p>'
+          '<p>The inbox UI is not ready yet. While that is being done, you can access the chat system by entering UID of the other user.</p>'
         + '<p>To connect with you, the second person needs to enter your UID.</p>'
         + '<p>You can also copy and send the link to the other user from the address bar after entering the ID and clicking <i>Load Chat</i></p>'
         + '<input type="text" id="other_user_id" placeholder="Enter user\'s ID">',

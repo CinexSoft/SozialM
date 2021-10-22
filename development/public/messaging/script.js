@@ -18,8 +18,8 @@ export const isValid = (room_id) => {
     if (uids != null
     &&  uids.length == 2
     &&  uids[0] < uids[1]
-    && !uids.every(/[^A-Za-z0-9]/.test))
-    &&  uids.includes(localStorage.getItem('Auth.UID')) return true;
+    && !uids.every(/[^A-Za-z0-9]/.test)
+    &&  uids.includes(localStorage.getItem('Auth.UID'))) return true;
     displayErrorDialog(`Error: messaging: isValid(): invalid room_id = ${room_id}`);
     return false;
 }
@@ -46,7 +46,7 @@ export const storeChatRoomId = (room_id) => {
  * @param {String} user_id ID of the other user.
  * @return {String} CHAT_ROOM_ID.
  */
-export const generateChatRoomId(user_id) {
+export const generateChatRoomId = (user_id) => {
     const room_id = [ USER_ID, user_id, ].sort()[0]
                   + ':u1:u2:'
                   + [ USER_ID, user_id, ].sort()[1];
