@@ -18,7 +18,7 @@ const getUserData = async () => {
 
     // load all auth data of the user to AuthData
     const FirebaseAuth = await import('https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.js');
-    FirebaseAuth.onAuthStateChanged(Auth, (user) => {
+    FirebaseAuth.onAuthStateChanged(Auth, async (user) => {
         if (!user) {
             console.error('init.js: user signed out / not signed in');
             localStorage.removeItem('AuthData');
