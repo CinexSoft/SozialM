@@ -266,28 +266,28 @@ const main = () => {
             }
 
             // push generates a unique id which is based on timestamp
-            const pushkey = FirebaseDatabase.push(FirebaseDatabase.ref(Database, DB_ROOT + CHAT_ROOT)).key;
-            FirebaseDatabase.update(FirebaseDatabase.ref(Database, DB_ROOT + CHAT_ROOT + pushkey + '/'), {
+            const pushkey = FirebaseDatabase.push(FirebaseDatabase.ref(Database, CHAT_ROOT)).key;
+            FirebaseDatabase.update(FirebaseDatabase.ref(Database, `${CHAT_ROOT}/${pushkey}`), {
                 time,
                 pushkey,
                 message: encode(messageHTML),
                 uid: USER_ID,
             }).then(() => {
-                log('Chat: data pushed');
                 loadTheme();
             }).catch((error) => {
                 err(error);
                 $('#txtmsg').value = msgbackup;
+                displayErrorDialog(`Chat: ${error}`);
             });
         }, Overlay.animation_duration);
     });
-    
+
     /**
      * Variable should only be used by bubble highlighter block inside the 'click' event listener.
      * @type {Number} Stores a timer id 
      */
     let quoted_reply_highlight_timeout;
-    
+
     // onclick listeners
     document.body.addEventListener('click', (e) => {
 
