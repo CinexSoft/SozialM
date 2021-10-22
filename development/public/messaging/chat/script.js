@@ -65,7 +65,7 @@ const startDBListener = () => {
     // db listener, fetches new msg on update
     FirebaseDatabase.onValue(FirebaseDatabase.ref(Database, CHAT_ROOT), (snapshot) => {
         // storing messages from db to local
-        snapshot.forEach({ key }, () => {
+        if (snapshot.exists()) snapshot.forEach(({ key }) => {
             const pushkey = key;
             const data = snapshot.val();
             // store data in local variable
@@ -76,6 +76,7 @@ const startDBListener = () => {
                 time: data.time,
             };
         });
+        else displayErrorDialog('Error: Chat: startDBListener(): snapshot doesn\'t exist');
 
         // loads messages into the UI and save to localStorage
         loadChatsToUI();
