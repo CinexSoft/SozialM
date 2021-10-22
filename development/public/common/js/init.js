@@ -42,7 +42,7 @@ const getUserData = async () => {
         setVariable('UserData', data);
         localStorage.setItem('UserData', JSON.stringify(data));
     }, (error) => {
-        displayErrorDialog(error, 'init.js: getUserData()');
+        displayErrorDialog(`Error: init.js: getUserData() ${error}`);
     });
 }
 
