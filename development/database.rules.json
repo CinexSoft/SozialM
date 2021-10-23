@@ -19,9 +19,10 @@
     "ce47119018a91ea0994c1ab82275f9e465886edabf5ec7b09e9e8e4cf5c7253d": {
       "chats": {
         "$chatroomid": {
+          // TODO: fix: check if rules are working in the expected manner
           // ".validate": "$chatroomid.split(':u1:u2:')[0] < $chatroomid.split(':u1:u2:')[1]",
-          ".read": "auth != null && $chatroomid.contains(auth.uid)",
-          ".write": "auth != null && $chatroomid.contains(auth.uid)"
+          ".read": true, // "auth != null && $chatroomid.contains(auth.uid)",
+          ".write": true //"auth != null && $chatroomid.contains(auth.uid)"
         }
       }
     },
