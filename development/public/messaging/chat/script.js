@@ -63,7 +63,9 @@ const loadChatsToUI = () => {
 const startDBListener = () => {
 
     // db listener, fetches new msg on update
-    FirebaseDatabase.onValue(FirebaseDatabase.ref(Database, CHAT_ROOT), (snapshot) => {
+    try { FirebaseDatabase.onValue(FirebaseDatabase.ref(Database, CHAT_ROOT), (snapshot) => {
+
+        // TODO: fix: for empty data, i.e. during room creation, snapshot doesn't exist error is reported
         // storing messages from db to local
         if (snapshot.exists()) snapshot.forEach(({ key }) => {
             const pushkey = key;
@@ -72,6 +74,7 @@ const startDBListener = () => {
             ChatData[pushkey] = {
                 pushkey,
                 uid: data.uid,
+                // TODO: fix: data.message is undefined
                 message: HtmlSanitizer.SanitizeHtml(decode(data.message)),
                 time: data.time,
             };
@@ -94,6 +97,10 @@ const startDBListener = () => {
         err(`Chat: ${error}`);
         displayErrorDialog(`Chat: ${error}`);
     });
+    } catch (error) {
+        err(`Chat: ${error}`);
+        displayErrorDialog(`Chat: ${error}`);
+    }
 }
 
 const main = () => {
@@ -275,9 +282,10 @@ const main = () => {
                     + Intl.DateTimeFormat().resolvedOptions().timeZone,
             }
 
+            // TODO: fix: no error, yet no data is written to db. consequently, db update isn't fetched by listener.
             // push generates a unique id which is based on timestamp
             const pushkey = FirebaseDatabase.push(FirebaseDatabase.ref(Database, CHAT_ROOT)).key;
-            FirebaseDatabase.update(FirebaseDatabase.ref(Database, `${CHAT_ROOT}/${pushkey}`), {
+            try { FirebaseDatabase.update(FirebaseDatabase.ref(Database, `${CHAT_ROOT}${pushkey}`), {
                 time,
                 pushkey,
                 message: encode(messageHTML),
@@ -289,6 +297,11 @@ const main = () => {
                 $('#txtmsg').value = msgbackup;
                 displayErrorDialog(`Chat: ${error}`);
             });
+            } catch (error) {
+                err(error);
+                $('#txtmsg').value = msgbackup;
+                displayErrorDialog(`Chat: ${error}`);
+            }
         }, Overlay.animation_duration);
     });
 
