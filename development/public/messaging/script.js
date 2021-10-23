@@ -34,7 +34,7 @@ export const isValid = (room_id = 'ejs993ejiei3') => {
 export const storeChatRoomId = (room_id) => {
 
     room_id = (room_id || 'ejs993ejiei3').replace(/[^A-Za-z0-9:]/g, '');
-    if (!isValid(room_id)) return;
+    if (!isValid(room_id)) return isValid(room_id);
 
     // stores the chat room id into localStorage and sets CHAT_ROOT, to be used by '/messaging/chat'.
     localStorage.setItem('Chat.roomid', room_id);
