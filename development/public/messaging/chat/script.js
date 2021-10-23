@@ -76,7 +76,10 @@ const startDBListener = () => {
                 time: data.time,
             };
         });
-        else displayErrorDialog('Error: Chat: startDBListener(): snapshot doesn\'t exist');
+        else displayErrorDialog( 'Error: Chat: startDBListener()\n'
+                               + 'Details:\n'
+                               + '    snapshot doesn\'t exist\n'
+                               + `    CHAT_ROOT = ${CHAT_ROOT}`);
 
         // loads messages into the UI and save to localStorage
         loadChatsToUI();
