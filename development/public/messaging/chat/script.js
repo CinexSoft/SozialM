@@ -343,7 +343,7 @@ const main = () => {
                     Dialog.display('alert', 'Not allowed', 'You can only unsend a message within 1 hour of sending it.');
                     return;
                 }
-                FirebaseDatabase.update(FirebaseDatabase.ref(Database, CHAT_ROOT), {
+                try { FirebaseDatabase.update(FirebaseDatabase.ref(Database, CHAT_ROOT), {
                     [long_pressed_element.id]: null
                 }).then(() => {
                     log('Chat: msg deleted, data updated');
@@ -351,6 +351,10 @@ const main = () => {
                     err(error);
                     displayErrorDialog(`Chat: ${error}`);
                 });
+                } catch (error) {
+                    err(error);
+                    displayErrorDialog(`Chat: ${error}`);
+                }
             });
         }
         // menu reply button click
