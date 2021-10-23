@@ -135,8 +135,9 @@ const main = () => {
 
     if (CHAT_ROOM_ID != 'ejs993ejiei3') {
         const uids = CHAT_ROOM_ID.split(':u1:u2:');
-        document.getElementById('roomid').innerHTML = uids[!uids.indexOf(USER_ID)];
+        document.getElementById('roomid').innerHTML = uids[Number(!uids.indexOf(USER_ID))];
     }
+    localStorage.removeItem('Chat.roomid');
 
     // loads chats from localStorage
     ChatData = JSON.parse(localStorage.getItem(`ChatData.${CHAT_ROOM_ID}`) || '{}');
