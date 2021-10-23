@@ -224,9 +224,16 @@ export const getURLQueryFieldValue = (field, querystr = location.search) => {
  */
 export const displayErrorDialog = (error) => {
     Dialog.display('alert', 'Fatal error', (
-          '<p>Please copy the following error and report it to <a href="mailto:cinexsoft@gmail.com">cinexsoft@gmail.com</a>.</p>'
+          '<p style="'
+        +     'margin: 2.5px;'
+        +     'text-align: justify; ">'
+        +     'Please copy the following error and report it to '
+        +     '<a href="mailto:cinexsoft@gmail.com">'
+        +         'cinexsoft@gmail.com'
+        +     '</a>.'
+        + '</p>'
         + '<pre style="'
-        +     'margin: 2px 0;'
+        +     'margin: 3px 0;'
         +     'padding: 5px;'
         +     'padding-bottom: 3px;'
         +     'width: calc(100% - 10px);'
