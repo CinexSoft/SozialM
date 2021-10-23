@@ -34,7 +34,7 @@ const getUserData = async () => {
             return;
         }
         localStorage.setItem('AuthData', JSON.stringify(user));
-        localStorage.setItem('Auth.UID', JSON.stringify(user.uid));
+        localStorage.setItem('Auth.UID', user.uid);
         setVariable('AuthData', user);
         setVariable('USER_ID', user.uid);
         setVariable('USER_ROOT', user.uid);
