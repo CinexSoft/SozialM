@@ -44,8 +44,7 @@ const main = () => {
         'Load chat', () => {
         Dialog.hide('alert', () => {
             const other_user_id = $('#other_user_id').value;
-            Messaging.generateChatRoomId(other_user_id);
-            location.href = `/messaging/chat?id=${CHAT_ROOM_ID}`;
+            if (Messaging.generateChatRoomId(other_user_id)) location.href = `/messaging/chat?id=${CHAT_ROOM_ID}`;
         });
     });
 }
