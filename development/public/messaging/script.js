@@ -7,23 +7,37 @@ import { displayErrorDialog, } from '/common/js/generalfunc.js';
  * @type {String}
  */
 export let CHAT_ROOM_ID;
-// TODO: fix validation: suspect: regex test
+
 /**
  * Returns true if chat room id is valid.
  * @param {String} room_id Chat room id.
  * @return {Boolean} true if valid.
  */
 export const isValid = (room_id = 'ejs993ejiei3') => {
-    if (typeof room_id != 'String') return false;
-    if (room_id == 'ejs993ejiei3') return true;
-    const uids = room_id.split(':u1:u2:');
-    if (uids != null
-    &&  uids.length == 2
-    &&  uids[0] < uids[1]
-    &&  uids.includes(USED_ID)
-    && !uids.every((id) => /[^A-Za-z0-9]/.test(id))) return true;
-    displayErrorDialog(`Error: messaging: isValid(): invalid room_id = ${room_id}`);
-    return false;
+    let valid = false;
+    const uids = room_id?.split(':u1:u2:');
+    valid = typeof room_id == 'string' && (
+            room_id == 'ejs993ejiei3'
+        ||  uids != null
+        &&  uids.length == 2
+        &&  uids[0] < uids[1]
+        &&  uids.includes(USER_ID)
+        &&  !/[^A-Za-z0-9:]/.test(room_id));
+    if (!valid) {
+        // TODO: remove the verbose error report a.k.a. 'details'
+        const details = 'Details:\n'
+                    + `    room_id                         = ${room_id}\n`
+                    + `    uids                            = ${uids}\n`
+                    + `    typeof room_id == 'string'      = ${typeof room_id == 'string'}\n`
+                    + `    uids != null                    = ${uids != null}\n`
+                    + `    uids.length == 2                = ${uids.length == 2}\n`
+                    + `    uids[0] < uids[1]               = ${uids[0] < uids[1]}\n`
+                    + `    uids.includes(USER_ID)          = ${uids.includes(USER_ID)}\n`
+                    + `    !/[^A-Za-z0-9:]/.test(room_id)  = ${!/[^A-Za-z0-9:]/.test(room_id)}\n`
+                    + `isValid()                           = ${valid}`;
+        displayErrorDialog(`Error: messaging: isValid(): invalid room_id = ${room_id}\n${details}`);
+    }
+    return valid;
 }
 
 /**
