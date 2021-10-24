@@ -1,5 +1,6 @@
 import { USER_ID, setVariable, } from '/common/js/variables.js';
 import { checkForApkUpdates, getURLQueryFieldValue, } from '/common/js/generalfunc.js';
+import { Dialog, } from '/common/js/overlays.js';
 
 /**
  * Stores the chat room id for /messaging/inbox and /messaging/chat
