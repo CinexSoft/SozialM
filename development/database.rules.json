@@ -21,7 +21,7 @@
         "$chatroomid": {
           ".read": "auth !== null && ($chatroomid === 'ejs993ejiei3' || $chatroomid.contains(auth.uid))",
           ".write": "auth !== null && ($chatroomid === 'ejs993ejiei3' || $chatroomid.contains(auth.uid))",
-          ".validate": "$chatroomid.beginsWith(auth.uid) ? ( auth.uid < $chatroomid.replace(auth.uid + ':u1:u2:', '') ) : ( $chatroomid.replace(':u1:u2:' + auth.uid, '') < auth.uid )"
+          ".validate": "$chatroomid === 'ejs993ejiei3' || ( $chatroomid.beginsWith(auth.uid) ? ( auth.uid < $chatroomid.replace(auth.uid + ':u1:u2:', '') ) : ( $chatroomid.replace(':u1:u2:' + auth.uid, '') < auth.uid ) )"
         }
       }
     }
