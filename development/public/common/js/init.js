@@ -7,7 +7,7 @@ import {
     EXISTS_ANDROID_INTERFACE,
     USER_ROOT,
 } from '/common/js/variables.js';
-import { generateToken, getLongDateTime, displayErrorDialog, } from '/common/js/generalfunc.js';
+import { generateToken, getLongDateTime, } from '/common/js/generalfunc.js';
 import { uploadSessionLogs, log, err, } from '/common/js/logging.js';
 import { Dialog, Menu, } from '/common/js/overlays.js';
 
@@ -46,7 +46,11 @@ const getUserData = async () => {
             setVariable('UserData', data);
             localStorage.setItem('UserData', JSON.stringify(data));
         }, (error) => {
-            displayErrorDialog(`Error: init.js: getUserData() ${error}`);
+            if (/permission|denied/i.test(String(error))) {
+                console.error(`Chat: startDBListener(): ${error}`);
+                Dialog.display('alert', 'Fatal Error!', 'You are not allowed to view this page.');
+            }
+            err(`init.js: getUserData(): ${error}`);
         });
     });
 }
