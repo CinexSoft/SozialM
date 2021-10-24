@@ -17,7 +17,6 @@ import {
     copyPlainTxt,
     getBrowser,
     checkForApkUpdates,
-    displayErrorDialog,
 } from '/common/js/generalfunc.js';
 import {
     $,
@@ -91,8 +90,11 @@ const startDBListener = () => {
             checkForApkUpdates();
         });
     }, (error) => {
-        err(`Chat: ${error}`);
-        displayErrorDialog(`Chat: ${error}`);
+        if (/permission|denied/i.test(String(error))) {
+            console.error(`Chat: startDBListener(): ${error}`);
+            Dialog.display('alert', 'Fatal Error!', 'You are not allowed to view this page.');
+        }
+        else err(`Chat: startDBListener(): ${error}`);
     });
 }
 
@@ -285,9 +287,12 @@ const main = () => {
             }).then(() => {
                 loadTheme();
             }).catch((error) => {
-                err(error);
                 $('#txtmsg').value = msgbackup;
-                displayErrorDialog(`Chat: ${error}`);
+                if (/permission|denied/i.test(String(error))) {
+                    console.error(`Chat: onclick 'btnsend': ${error}`);
+                    Dialog.display('alert', 'Fatal Error!', 'You are not allowed to take this action.');
+                }
+                else err(`Chat: onclick 'btnsend': ${error}`);
             });
         }, Overlay.animation_duration);
     });
@@ -336,8 +341,11 @@ const main = () => {
                     delete ChatData[long_pressed_element.id];
                     log('Chat: msg deleted, data updated');
                 }).catch((error) => {
-                    err(error);
-                    displayErrorDialog(`Chat: ${error}`);
+                    if (/permission|denied/i.test(String(error))) {
+                        console.error(`Chat: onclick 'menu_unsend': ${error}`);
+                        Dialog.display('alert', 'Fatal Error!', 'You are not allowed to take this action.');
+                    }
+                    else err(`Chat: onclick 'menu_unsend': ${error}`);
                 });
             });
         }
