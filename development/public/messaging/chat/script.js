@@ -65,16 +65,14 @@ const startDBListener = () => {
     // db listener, fetches new msg on update
     FirebaseDatabase.onValue(FirebaseDatabase.ref(Database, CHAT_ROOT), (snapshot) => {
 
-        // TODO: fix: for empty data, i.e. during room creation, snapshot doesn't exist error is reported
         // storing messages from db to local
         if (snapshot.exists()) snapshot.forEach(({ key }) => {
             const pushkey = key;
-            const data = snapshot.val();
+            const data = snapshot.child(pushkey).val();
             // store data in local variable
             ChatData[pushkey] = {
                 pushkey,
                 uid: data.uid,
-                // TODO: fix: data.message is undefined
                 message: HtmlSanitizer.SanitizeHtml(decode(data.message)),
                 time: data.time,
             };
@@ -278,7 +276,6 @@ const main = () => {
                     + Intl.DateTimeFormat().resolvedOptions().timeZone,
             }
 
-            // TODO: fix: no error, yet no data is written to db. consequently, db update isn't fetched by listener.
             // push generates a unique id which is based on timestamp
             const pushkey = FirebaseDatabase.push(FirebaseDatabase.ref(Database, CHAT_ROOT)).key;
             FirebaseDatabase.update(FirebaseDatabase.ref(Database, `${CHAT_ROOT}/${pushkey}`), {
