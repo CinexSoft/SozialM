@@ -24,8 +24,15 @@ export const App = initializeApp(FirebaseConfig);
 export const Database = getDatabase(App);
 export const Auth = getAuth(App);
 
-export const RTDB_USERS_ROOT = '/aa14fdd9/users';
-export const RTDB_SLOGS_ROOT = '/b6d6cc89/slogs';
-export const RTDB_CHATS_ROOT = '/ce471190/chats';
+/* Seperates roots for preview and production databases.
+ * This code checks if the URL is the production URL and accordingly sets the
+ * database root.
+ * Production URLs are sozialnmedien.web.app and sozialnmedien.firebaseapp.com
+ */
+const ROOT = (!/sozialnmedien\.web\.app|sozialnmedien\.firebaseapp\.com/i.test(location.href) ? '/preview' : '/production');
+
+export const RTDB_USERS_ROOT = ROOT + '/aa14fdd9-users';
+export const RTDB_SLOGS_ROOT = ROOT + '/b6d6cc89-slogs';
+export const RTDB_CHATS_ROOT = ROOT + '/ce471190-chats';
 
 console.log('Log: firebaseinit.js loaded');
