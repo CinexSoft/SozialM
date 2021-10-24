@@ -2,7 +2,6 @@ name: Obfuscate JS and Deploy to Preview
 on:
   push:
     branches:
-      - '*'
       - '*-prv'
       - '*-preview'
       - '!*-npv'
