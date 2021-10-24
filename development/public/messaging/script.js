@@ -1,6 +1,5 @@
 import { USER_ID, setVariable, } from '/common/js/variables.js';
 import { checkForApkUpdates, getURLQueryFieldValue, } from '/common/js/generalfunc.js';
-import { displayErrorDialog, } from '/common/js/generalfunc.js';
 
 /**
  * Stores the chat room id for /messaging/inbox and /messaging/chat
@@ -24,18 +23,8 @@ export const isValid = (room_id = 'ejs993ejiei3') => {
         &&  uids.includes(USER_ID)
         &&  !/[^A-Za-z0-9:]/.test(room_id));
     if (!valid) {
-        // TODO: remove the verbose error report a.k.a. 'details'
-        const details = 'Details:\n'
-                    + `    room_id                         = ${room_id}\n`
-                    + `    uids                            = ${uids}\n`
-                    + `    typeof room_id == 'string'      = ${typeof room_id == 'string'}\n`
-                    + `    uids != null                    = ${uids != null}\n`
-                    + `    uids.length == 2                = ${uids.length == 2}\n`
-                    + `    uids[0] < uids[1]               = ${uids[0] < uids[1]}\n`
-                    + `    uids.includes(USER_ID)          = ${uids.includes(USER_ID)}\n`
-                    + `    !/[^A-Za-z0-9:]/.test(room_id)  = ${!/[^A-Za-z0-9:]/.test(room_id)}\n`
-                    + `isValid()                           = ${valid}`;
-        displayErrorDialog(`Error: messaging: isValid(): invalid room_id = ${room_id}\n${details}`);
+        Dialog.display('alert', 'Fatal Error!', `Invalid chat room id provided.`);
+        throw `Messaging: isValid(): Invalid chat room id for room_id = ${room_id}`;
     }
     return valid;
 }
