@@ -16,8 +16,8 @@ export const FirebaseConfig = {
     measurementId: 'G-MFG92Y4C4F',
 };
 
-// if hosted on localhost, use FB emulator for database on port 9000
-if (/localhost|127\.0\.0\.1|192\.168\.43\.39/.test(location.href)) FirebaseConfig.databaseURL = 'http://0.0.0.0:9000?ns=sozialnmedien';
+// if not hosted on Firebase web, use database at localhost
+if (!/sozialnmedien\.web\.app|sozialnmedien\.firebaseapp\.com/.test(location.href)) FirebaseConfig.databaseURL = 'http://0.0.0.0:9000/?ns=sozialnmedien';
 
 // Initialize Firebase
 export const App = initializeApp(FirebaseConfig);
