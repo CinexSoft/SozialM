@@ -94,7 +94,7 @@ const startDBListener = () => {
             console.error(`Chat: startDBListener(): ${error}`);
             Dialog.display('alert', 'Fatal Error!', 'You are not allowed to view this page.');
         }
-        else err(`Chat: startDBListener(): ${error}`);
+        err(`Chat: startDBListener(): ${error}`);
     });
 }
 
@@ -292,7 +292,7 @@ const main = () => {
                     console.error(`Chat: onclick 'btnsend': ${error}`);
                     Dialog.display('alert', 'Fatal Error!', 'You are not allowed to take this action.');
                 }
-                else err(`Chat: onclick 'btnsend': ${error}`);
+                err(`Chat: onclick 'btnsend': ${error}`);
             });
         }, Overlay.animation_duration);
     });
@@ -345,7 +345,7 @@ const main = () => {
                         console.error(`Chat: onclick 'menu_unsend': ${error}`);
                         Dialog.display('alert', 'Fatal Error!', 'You are not allowed to take this action.');
                     }
-                    else err(`Chat: onclick 'menu_unsend': ${error}`);
+                    err(`Chat: onclick 'menu_unsend': ${error}`);
                 });
             });
         }
