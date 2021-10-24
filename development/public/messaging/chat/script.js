@@ -65,8 +65,11 @@ const startDBListener = () => {
     // db listener, fetches new msg on update
     FirebaseDatabase.onValue(FirebaseDatabase.ref(Database, CHAT_ROOT), (snapshot) => {
 
+        // clean up the ChatData object
+        for (let key in ChatData) delete ChatData[key];
+
         // storing messages from db to local
-        if (snapshot.exists()) snapshot.forEach(({ key }) => {
+        snapshot.forEach(({ key }) => {
             const pushkey = key;
             const data = snapshot.child(pushkey).val();
             // store data in local variable
@@ -77,10 +80,6 @@ const startDBListener = () => {
                 time: data.time,
             };
         });
-        else displayErrorDialog( 'Error: Chat: startDBListener()\n'
-                               + 'Details:\n'
-                               + '    snapshot doesn\'t exist\n'
-                               + `    CHAT_ROOT = ${CHAT_ROOT}`);
 
         // loads messages into the UI and save to localStorage
         loadChatsToUI();
@@ -334,6 +333,7 @@ const main = () => {
                 FirebaseDatabase.update(FirebaseDatabase.ref(Database, CHAT_ROOT), {
                     [long_pressed_element.id]: null
                 }).then(() => {
+                    delete ChatData[long_pressed_element.id];
                     log('Chat: msg deleted, data updated');
                 }).catch((error) => {
                     err(error);
