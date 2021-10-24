@@ -63,7 +63,7 @@ const loadChatsToUI = () => {
 const startDBListener = () => {
 
     // db listener, fetches new msg on update
-    try { FirebaseDatabase.onValue(FirebaseDatabase.ref(Database, CHAT_ROOT), (snapshot) => {
+    FirebaseDatabase.onValue(FirebaseDatabase.ref(Database, CHAT_ROOT), (snapshot) => {
 
         // TODO: fix: for empty data, i.e. during room creation, snapshot doesn't exist error is reported
         // storing messages from db to local
@@ -97,10 +97,6 @@ const startDBListener = () => {
         err(`Chat: ${error}`);
         displayErrorDialog(`Chat: ${error}`);
     });
-    } catch (error) {
-        err(`Chat: ${error}`);
-        displayErrorDialog(`Chat: ${error}`);
-    }
 }
 
 const main = () => {
@@ -285,7 +281,7 @@ const main = () => {
             // TODO: fix: no error, yet no data is written to db. consequently, db update isn't fetched by listener.
             // push generates a unique id which is based on timestamp
             const pushkey = FirebaseDatabase.push(FirebaseDatabase.ref(Database, CHAT_ROOT)).key;
-            try { FirebaseDatabase.update(FirebaseDatabase.ref(Database, `${CHAT_ROOT}${pushkey}`), {
+            FirebaseDatabase.update(FirebaseDatabase.ref(Database, `${CHAT_ROOT}/${pushkey}`), {
                 time,
                 pushkey,
                 message: encode(messageHTML),
@@ -297,11 +293,6 @@ const main = () => {
                 $('#txtmsg').value = msgbackup;
                 displayErrorDialog(`Chat: ${error}`);
             });
-            } catch (error) {
-                err(error);
-                $('#txtmsg').value = msgbackup;
-                displayErrorDialog(`Chat: ${error}`);
-            }
         }, Overlay.animation_duration);
     });
 
@@ -343,7 +334,7 @@ const main = () => {
                     Dialog.display('alert', 'Not allowed', 'You can only unsend a message within 1 hour of sending it.');
                     return;
                 }
-                try { FirebaseDatabase.update(FirebaseDatabase.ref(Database, CHAT_ROOT), {
+                FirebaseDatabase.update(FirebaseDatabase.ref(Database, CHAT_ROOT), {
                     [long_pressed_element.id]: null
                 }).then(() => {
                     log('Chat: msg deleted, data updated');
@@ -351,10 +342,6 @@ const main = () => {
                     err(error);
                     displayErrorDialog(`Chat: ${error}`);
                 });
-                } catch (error) {
-                    err(error);
-                    displayErrorDialog(`Chat: ${error}`);
-                }
             });
         }
         // menu reply button click
