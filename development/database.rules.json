@@ -1,6 +1,6 @@
 {
   "rules": {
-    "aa14fdd95c0d857ed647a819d80b0a1a343f053994be559be2a4324d513135ed": {
+    "aa14fdd9": {
       "users": {
         "$uid": {
           ".read": "auth != null && $uid === auth.uid",
@@ -8,7 +8,7 @@
         }
       }
     },
-    "b6d6cc8921d26daea31bc60f0545c97f1c34b8426237822239c9e456d1cc9a26": {
+    "b6d6cc89": {
       "slogs": {
         "$usertoken": {
           ".read": false,
@@ -16,7 +16,7 @@
         }
       }
     },
-    "ce47119018a91ea0994c1ab82275f9e465886edabf5ec7b09e9e8e4cf5c7253d": {
+    "ce471190": {
       "chats": {
         "$chatroomid": {
           // TODO: fix: check if rules are working in the expected manner
