@@ -56,6 +56,8 @@ export const uploadSessionLogs = () => {
     FirebaseDatabase.update(FirebaseDatabase.ref(Database, LOGS_ROOT), SessionLogs).then(() => {
         // do nothing
     }).catch((error) => {
-        console.error(`logging.js: ${error}`);
+        console.error(`logging.js: uploadSessionLogs(): ${error}`);
     });
 }
+
+console.log('module logging.js loaded');

@@ -98,3 +98,5 @@ export const smoothScroll = (element, get_behavior_only = false, smooth = true) 
     }
     element.scrollTop = element.scrollHeight;
 }
+
+console.log('module domfunc.js loaded');

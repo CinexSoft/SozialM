@@ -54,7 +54,7 @@ export const SplashScreen = {
     visible: false,
     display(innerHTML, func) {
         if (func && typeof func != 'function') {
-            throw `Error: typeof func = ${typeof func}, expected function`;
+            throw `Error: overlays.js: SplashScreen.display(): func is ${typeof func}, expected function`;
         }
         // delay when one overlay is already open
         let timeout = 0;
@@ -78,8 +78,7 @@ export const SplashScreen = {
             // additional function
             if (!func) return;
             if (typeof func != 'function') {
-                throw `Error: typeof func = ${typeof func}, expected function`;
-                return;
+                throw `Error: overlays.js: SplashScreen.hide(): func is ${typeof func}, expected function`;
             }
             func.call();
         }, Overlay.animation_duration);
@@ -96,10 +95,10 @@ const AlertDialog = {
     // default button is Close
     display(title = 'Alert!', message = '', button = 'Close', func) {
         if (typeof button != 'string') {
-            throw `Error: typeof button title = ${typeof button}, expected String`;
+            throw `Error: overlays.js: AlertDialog.display(): button is ${typeof button}, expected String`;
         }
         if (func && typeof func != 'function') {
-            throw `Error: typeof func = ${typeof func}, expected function`;
+            throw `Error: overlays.js: AlertDialog.display(): func is ${typeof func}, expected function`;
         }
         // delay when one overlay is already open
         let timeout = 0;
@@ -123,8 +122,7 @@ const AlertDialog = {
             // additional function
             if (!func) return;
             if (typeof func != 'function') {
-                throw `Error: typeof func = ${typeof func}, expected function`;
-                return;
+                throw `Error: overlays.js: AlertDialog.hide(): func is ${typeof func}, expected function`;
             }
             func.call();
         }, Overlay.animation_duration);
@@ -137,10 +135,10 @@ const ActionDialog = {
     // default button is Ok
     display(title = 'Alert!', message = '', button = 'OK', func) {
         if (typeof button != 'string') {
-            throw `Error: typeof button title = ${typeof button}, expected String`;
+            throw `Error: overlays.js: ActionDialog.display(): button is ${typeof button}, expected String`;
         }
         if (!func || typeof func != 'function') {
-            throw `Error: typeof func = ${typeof func}, expected function`;
+            throw `Error: overlays.js: ActionDialog.display(): func is ${typeof func}, expected function`;
         }
         // delay when one overlay is already open
         let timeout = 0;
@@ -169,8 +167,7 @@ const ActionDialog = {
             // additional function
             if (!func) return;
             if (typeof func != 'function') {
-                throw `Error: typeof func = ${typeof func}, expected function`;
-                return;
+                throw `Error: overlays.js: ActionDialog.hide(): func is ${typeof func}, expected function`;
             }
             func.call();
         }, Overlay.animation_duration);
@@ -199,7 +196,7 @@ export const Dialog = {
             AlertDialog.display(title, message, button, func);
         } else if (category == 'action') {
             ActionDialog.display(title, message, button, func);
-        } else throw `Error: dialog category = ${category}, expected 'alert' or 'action'`;
+        } else throw `Error: overlays.js: Dialog.display(): category = ${category}, expected 'alert' or 'action'`;
     },
     /**
      * Hide the dialog.
@@ -213,7 +210,7 @@ export const Dialog = {
             AlertDialog.hide(func);
         } else if (category == 'action') {
             ActionDialog.hide(func);
-        } else throw `Error: dialog category = ${category}, expected 'alert' or 'action'`;
+        } else throw `Error: overlays.js: Dialog.hide(): category = ${category}, expected 'alert' or 'action'`;
     }
 }
 
@@ -252,10 +249,11 @@ export const Menu = {
             // additional function
             if (!func) return;
             if (typeof func != 'function') {
-                throw `Error: typeof func = ${typeof func}, expected function`;
-                return;
+                throw `Error: overlays.js: Menu.hide(): func is ${typeof func}, expected function`;
             }
             func.call();
         }, Overlay.animation_duration);
     }
 }
+
+console.log('module overlays.js loaded');

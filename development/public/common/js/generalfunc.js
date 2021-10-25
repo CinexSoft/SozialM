@@ -99,13 +99,11 @@ export const downloadFile = (directurl, filename = `sozialnmedien_${getTimeStamp
             Android.download(directurl, filename);
             log('[AND]: generalfunc.js: download(): through Android WepAppInterface');
         } catch (error) {
-            err(`generalfunc.js: ${error}`);
-            throw error;
+            err(`[AND]: generalfunc.js: download(): ${error}`);
+            throw `Error: generalfunc.js: downloadFile(): ${error}`;
         }
         return;
     }
-    err('generalfunc.js: android interface doesn\'t exist');
-    throw 'Error: android interface doesn\'t exist';
     let element = document.createElement('a');
     element.setAttribute('href', directurl);
     element.setAttribute('download', filename);
@@ -122,15 +120,14 @@ export const downloadFile = (directurl, filename = `sozialnmedien_${getTimeStamp
 export const copyPlainTxt = (copytext = '') => {
     copytext = copytext.replace(/<br>/g, '\n').replace(/<[^>]*>/g, '');
     navigator.clipboard.writeText(copytext).then(() => {
-        log('generalfunc.js: text copied to clipboard');
+        // do nothing
     }).catch((error) => {
-        err(`generalfunc.js: ${error}`);
+        console.error(`generalfunc.js: copyPlainTxt(): ${error}`);
         if (EXISTS_ANDROID_INTERFACE) {
             Android.copyToClipboard(copytext);
-            log('[AND]: generalfunc.js: copyPlainTxt(): through Android WepAppInterface');
             Android.showToast('Text copied!');
         } else {
-            err('generalfunc.js: android interface doesn\'t exist');
+            console.error('generalfunc.js: copyPlainTxt():  android interface doesn\'t exist');
             Dialog.display('alert', 'Oops!', 'Copy text to clipboard failed');
         }
     });
@@ -154,27 +151,27 @@ export const getBrowser = () => {
  */
 export const checkForApkUpdates = () => {
     if (!EXISTS_ANDROID_INTERFACE) return;
-    log('[APK]: generalfunc.js: checking for update');
+    log('[AND]: generalfunc.js: checkForApkUpdates(): checking for update');
     try { 
         switch (Android.updateAvailable()) {
             case 'true':
-                log('generalfunc.js: alertDialog: launch: update available');
+                log('[AND]: generalfunc.js: checkForApkUpdates(): update available');
                 Dialog.display('alert', 'Update available', 'A new version of this Android app is available.', 'Download', () => {
                    setTimeout(() => {
                         Android.showToast('Downloading app, look into your notification panel');
                         Android.download('https://sozialnmedien.web.app/downloads/app.web.sozialnmedien.apk', 'app.web.sozialnmedien.apk');
                     }, 500);
                     Dialog.hide('alert');
-                    log('[AND]: generalfunc.js: downloaded Android app');
+                    log('[AND]: generalfunc.js: checkForApkUpdates(): downloaded Android app');
                 });
                 break;
             case 'failed':
-                err('generalfunc.js: update check failed');
+                err('[AND]: generalfunc.js: checkForApkUpdates(): update check failed');
                 break;
         }
     }
     catch (error) {
-        err(`generalfunc.js: ${error}`);
+        err(`[AND]: generalfunc.js: checkForApkUpdates(): ${error}`);
     }
 }
 
@@ -187,7 +184,7 @@ export const checkForApkUpdates = () => {
 export const getURLQuery = (fields, querystr = location.search) => {
     const Parameters = {};
     for (let item of querystr.split(/\?|\&/)) if (item) {
-        if (item.split(/=/).length != 2) throw `Error: malformed query string for parameter: ${item}`;
+        if (item.split(/=/).length != 2) throw `Error: generalfunc.js: getURLQuery(): malformed URL parameter '${item}'`;
         let param = item.split(/=/)[0];
         let value = item.split(/=/)[1];
         if (!param || !value) continue;
@@ -209,7 +206,7 @@ export const getURLQuery = (fields, querystr = location.search) => {
 export const getURLQueryFieldValue = (field, querystr = location.search) => {
     let values = [];
     for (let item of querystr.split(/\?|\&/)) if (item) {
-        if (item.split(/=/).length != 2) throw `Error: malformed query string for parameter: ${item}`;
+        if (item.split(/=/).length != 2) throw `Error: generalfunc.js: getURLQueryFieldValue(): malformed URL parameter '${item}'`;
         let param = item.split(/=/)[0];
         let value = item.split(/=/)[1];
         if (param && value && field.toLowerCase() == param.toLowerCase()) values.push(value);
@@ -248,5 +245,7 @@ export const displayErrorDialog = (error) => {
         +     '</code>'
         + '</pre>'
     ));
-    throw error;
+    throw `Error: generalfunc.js: displayErrorDialog(): ${error}`;
 }
+
+console.log('module generalfunc.js loaded');

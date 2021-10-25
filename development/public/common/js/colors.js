@@ -111,3 +111,5 @@ export const loadTheme = () => {
         element.style.color = DARK_FG_COLOR;
     }
 }
+
+console.log('module color.js loaded');

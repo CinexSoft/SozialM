@@ -35,4 +35,4 @@ export const RTDB_USERS_ROOT = ROOT + '/aa14fdd9-users';
 export const RTDB_SLOGS_ROOT = ROOT + '/b6d6cc89-slogs';
 export const RTDB_CHATS_ROOT = ROOT + '/ce471190-chats';
 
-console.log('Log: firebaseinit.js loaded');
+console.log('module firebaseinit.js loaded');

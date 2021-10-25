@@ -136,6 +136,8 @@ export const setVariable = (variable, value) => {
             CHAT_ROOT = `${RTDB_CHATS_ROOT}/${value}`;
             break;
         default:
-            throw `Error: for ${variable}, no such variable in variables.js, note that variables are case-sensitive`;
+            throw `Error: variables.js: setVariable(): no such variable: ${variable}\nNOTE: variable names are case-sensitive`;
     }
 }
+
+console.log('module variables.js loaded');

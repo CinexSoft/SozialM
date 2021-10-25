@@ -25,7 +25,7 @@ const getUserData = async () => {
     const FirebaseAuth = await import('https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.js');
     FirebaseAuth.onAuthStateChanged(Auth, async (user) => {
         if (!user) {
-            console.error('init.js: user signed out / not signed in');
+            err('init.js: getUserData(): signed out / not signed in');
             localStorage.removeItem('AuthData');
             localStorage.removeItem('UserData');
             localStorage.removeItem('Auth.UID');
@@ -47,8 +47,7 @@ const getUserData = async () => {
             localStorage.setItem('UserData', JSON.stringify(data));
         }, (error) => {
             if (/permission|denied/i.test(String(error))) {
-                console.error(`Chat: startDBListener(): ${error}`);
-                Dialog.display('alert', 'Fatal Error!', 'You are not allowed to view this page.');
+                Dialog.display('alert', 'Fatal Error!', 'An authorization error occurred. Try clearing cookies for this site and try again.');
             }
             err(`init.js: getUserData(): ${error}`);
         });
@@ -62,7 +61,7 @@ const generateUserToken = () => {
     if (!localStorage.getItem('UserData.token')) {
         setVariable('USER_TOKEN', generateToken());
         localStorage.setItem('UserData.token', USER_TOKEN);
-        console.log(`init.js: user: new token = ${USER_TOKEN}`);
+        log(`init.js: generateUserToken(): USER_TOKEN = ${USER_TOKEN}`);
     }
     setVariable('USER_TOKEN', localStorage.getItem('UserData.token'));
 }
