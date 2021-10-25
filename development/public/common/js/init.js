@@ -7,7 +7,7 @@ import {
     EXISTS_ANDROID_INTERFACE,
     USER_ROOT,
 } from '/common/js/variables.js';
-import { generateToken, getLongDateTime, } from '/common/js/generalfunc.js';
+import { generateToken, getLongDateTime, checkForApkUpdates, } from '/common/js/generalfunc.js';
 import { uploadSessionLogs, log, err, } from '/common/js/logging.js';
 import { Dialog, Menu, } from '/common/js/overlays.js';
 
@@ -77,39 +77,44 @@ const init = () => {
     /* Uncomment to start displaying logs in the console.
      * setVariable('DEBUG', true);
      */
-     
+
     /* These lines are crucial and must be run before all module functions.
      * The order of execution is important and shouldn't be messed with.
-     * getUserInfo            ->  Gets user info from Firebase db asynchronously and loads them into global variables / localStorage.
      * generateUserToken      ->  Generates a token for current user if it doesn't already exist in localStorage. Used to to recognise a device. Crucial for logging functions.
      * generateSessionToken   ->  Generates a date & time string. Crucial for logging functions.
      * setVariable LOGS_ROOT  ->  Sets LOGS_ROOT to root of current session logs.
+     * uploadSessionLogs      ->  Starts uploading logs to db for debugging.
+     * getUserData            ->  Gets user info from Firebase db asynchronously and loads them into global variables / localStorage.
      */
-    getUserData();
     generateUserToken();
     generateSessionToken();
-    if (!USER_TOKEN) throw 'Error: undefined USER_TOKEN';
-    if (!SESSION_TOKEN) throw 'Error: undefined SESSION_TOKEN';
+    if (!USER_TOKEN) throw 'Error: init.js: init(): USER_TOKEN = undefined';
+    if (!SESSION_TOKEN) throw 'Error: init.js: init(): SESSION_TOKEN = undefined';
     setVariable('LOGS_ROOT', `${USER_TOKEN}/${SESSION_TOKEN}`);
-    
-    // upload logs in intervals (of 5s) for current session
     setInterval(() => {
         uploadSessionLogs();
     }, 5000);
-    
-    // global onclick listeners
-    document.body.addEventListener('click', (e) => {
-        log(`init.js: click: id = ${e.target.id} node = ${e.target.nodeName} class = ${e.target.className}`);
-        if (['alertDialog_btn', 'actionDialog_btnClose'].includes(e.target.id) && e.target.innerHTML == 'Close') {
-            e.target.id.slice(0, 5) == 'alert' ? Dialog.hide('alert') : Dialog.hide('action');
-        } else if (['menuRoot', 'actionDialogRoot'].includes(e.target.id)) {
-            e.target.id.slice(0, 4) == 'menu' ? Menu.hide() : Dialog.hide('action');
-        }
-    });
-    
-    console.log('init.js: loaded');
-    log(`init.js: user: id = ${USER_ID}`);
-    log(`[AND]: init.js: WebAppInterface: ${EXISTS_ANDROID_INTERFACE}`);
+    getUserData();
+
+    /* Run codes only when document body is fully loaded.
+     * ONLY codes that requires DOM interaction should be placed here.
+     */
+    document.body.onload = () => {
+        // global onclick listeners
+        document.body.addEventListener('click', (e) => {
+            log(`init.js: onclick 'document.body': node = ${e.target.nodeName || 'null'} : class = ${e.target.className || 'null'} : id = ${e.target.id || 'null'}`);
+            if (['alertDialog_btn', 'actionDialog_btnClose'].includes(e.target.id) && e.target.innerHTML == 'Close') {
+                e.target.id.slice(0, 5) == 'alert' ? Dialog.hide('alert') : Dialog.hide('action');
+            } else if (['menuRoot', 'actionDialogRoot'].includes(e.target.id)) {
+                e.target.id.slice(0, 4) == 'menu' ? Menu.hide() : Dialog.hide('action');
+            }
+        });
+        checkForApkUpdates();
+    }
+
+    log(`init.js: init(): USER_ID = ${USER_ID}`);
+    log(`[AND]: init.js: init(): EXISTS_ANDROID_INTERFACE = ${EXISTS_ANDROID_INTERFACE}`);
 }
 
 init();
+console.log('module init.js loaded');
