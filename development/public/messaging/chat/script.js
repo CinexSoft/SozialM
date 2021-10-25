@@ -16,7 +16,6 @@ import {
     downloadFile,
     copyPlainTxt,
     getBrowser,
-    checkForApkUpdates,
 } from '/common/js/generalfunc.js';
 import {
     $,
@@ -87,7 +86,6 @@ const startDBListener = () => {
         // hide splashcreeen if not already hidden
         if (SplashScreen.visible) SplashScreen.hide(() => {
             smoothScroll($('#chatarea'), false, false);
-            checkForApkUpdates();
         });
     }, (error) => {
         if (/permission|denied/i.test(String(error))) {
@@ -531,7 +529,6 @@ const main = () => {
     // hide splashcreeen
     if (ChatData != {}) SplashScreen.hide(() => {
         smoothScroll($('#chatarea'), false, false);
-        checkForApkUpdates();
     });
 
     // start listening for new messages

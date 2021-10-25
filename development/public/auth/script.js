@@ -1,7 +1,6 @@
 import { Auth, } from '/common/js/firebaseinit.js';
 import { USER_ID, } from '/common/js/variables.js';
 import { log, err, } from '/common/js/logging.js';
-import { checkForApkUpdates, } from '/common/js/generalfunc.js';
 import { $, } from '/common/js/domfunc.js';
 import { Colors, } from '/common/js/colors.js';
 import { Dialog, } from '/common/js/overlays.js';
@@ -66,8 +65,6 @@ const main = () => {
         location.href = '/messaging/inbox';
         return;
     }
-
-    checkForApkUpdates();
 
     // event when the eye-slash icon is pressed
     $(".switchlink")[0].addEventListener('click', (event) => {
