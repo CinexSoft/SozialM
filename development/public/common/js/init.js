@@ -1,3 +1,9 @@
+/* Even before downloading any modules, check if user is authenticated.
+ * If not, load /auth if not already on /auth
+ */
+if (!localStorage.getItem('Auth.UID')
+&&  !location.href.includes('/auth')) location.href = '/auth';
+
 import { Database, Auth, } from '/common/js/firebaseinit.js';
 import {
     USER_ID,
