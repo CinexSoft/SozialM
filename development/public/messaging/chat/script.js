@@ -54,7 +54,6 @@ const loadChatsToUI = () => {
     }
     loadTheme();
     smoothScroll($('#chatarea'), false, false);
-    log('Chat: loaded messages from ChatData');
 }
 
 // database listener
@@ -89,10 +88,9 @@ const startDBListener = () => {
         });
     }, (error) => {
         if (/permission|denied/i.test(String(error))) {
-            console.error(`Chat: startDBListener(): ${error}`);
             Dialog.display('alert', 'Fatal Error!', 'You are not allowed to view this page.');
         }
-        err(`Chat: startDBListener(): ${error}`);
+        err(`chat: startDBListener(): ${error}`);
     });
 }
 
@@ -287,10 +285,9 @@ const main = () => {
             }).catch((error) => {
                 $('#txtmsg').value = msgbackup;
                 if (/permission|denied/i.test(String(error))) {
-                    console.error(`Chat: onclick 'btnsend': ${error}`);
                     Dialog.display('alert', 'Fatal Error!', 'You are not allowed to take this action.');
                 }
-                err(`Chat: onclick 'btnsend': ${error}`);
+                err(`chat: onclick 'btnsend': ${error}`);
             });
         }, Overlay.animation_duration);
     });
@@ -337,13 +334,11 @@ const main = () => {
                     [long_pressed_element.id]: null
                 }).then(() => {
                     delete ChatData[long_pressed_element.id];
-                    log('Chat: msg deleted, data updated');
                 }).catch((error) => {
                     if (/permission|denied/i.test(String(error))) {
-                        console.error(`Chat: onclick 'menu_unsend': ${error}`);
                         Dialog.display('alert', 'Fatal Error!', 'You are not allowed to take this action.');
                     }
-                    err(`Chat: onclick 'menu_unsend': ${error}`);
+                    err(`chat: onclick 'menu_unsend': ${error}`);
                 });
             });
         }
@@ -533,9 +528,9 @@ const main = () => {
 
     // start listening for new messages
     startDBListener();
-
-    log('Chat: document and script load complete');
 }
 
 Messaging.init();
 main();
+
+log('site /messaging/chat loaded');

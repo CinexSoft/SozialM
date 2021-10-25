@@ -30,8 +30,7 @@ const resetColors = () => {
 
 // login or signup error handler
 const handleError = (state, { code, message, }, nodes, innernodes) => {
-    log(`Auth: nodes = ${nodes}`);
-    err(`Auth: ${state}: code: ${code} msg: {message}`);
+    err(`auth: handleError(): ${state} ${code} ${message}`);
     $(`#${state}_info`).style.color = 'red';
     let outputmsg = code != 'auth/invalid-argument'
                     && code != 'auth/internal-error'
@@ -61,7 +60,7 @@ const main = () => {
 
     // checking if user is logged in, local storage does exactly what it says
     if (localStorage.getItem('Auth.UID')) {
-        console.log('Log: already signed in, redirect to /messaging/inbox');
+        log('auth: main(): already signed in');
         location.href = '/messaging/inbox';
         return;
     }
@@ -80,14 +79,12 @@ const main = () => {
             $('.switchlink')[0].innerHTML = 'Sign Up';
             visibile_root = 'login';
         }
-        log(`Auth: switch root: visibile_root = ${visibile_root}`);
         document.getElementById(visibile_root).style.display = 'block';
     });
 
     // toggle password visibility
     for (let element of $(".fa-eye-slash")) element.addEventListener('click', (event) => {
         for (let element of $('.password')) {
-            log(`Auth: togglePassVisibility: type = ${element.type}`);
             if (element.type == 'password') {
                 element.type = 'text';
                 for (let element of $('.fa-eye-slash')) {
@@ -213,7 +210,7 @@ const main = () => {
             handleError('signup', error, nodes, innernodes);
         });
     });
-    log('Auth: document and script load complete');
 }
 
 main();
+log('site /auth loaded');

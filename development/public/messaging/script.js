@@ -1,5 +1,6 @@
 import { USER_ID, setVariable, } from '/common/js/variables.js';
 import { checkForApkUpdates, getURLQueryFieldValue, } from '/common/js/generalfunc.js';
+import { log, err, } from '/common/js/logging.js';
 import { Dialog, } from '/common/js/overlays.js';
 
 /**
@@ -25,7 +26,8 @@ export const isValid = (room_id = 'ejs993ejiei3') => {
         &&  !/[^A-Za-z0-9:]/.test(room_id));
     if (!valid) {
         Dialog.display('alert', 'Fatal Error!', `Invalid chat room id provided.`);
-        throw `Messaging: isValid(): Invalid chat room id for room_id = ${room_id}`;
+        err(`messaging: isValid(): invalid room_id`);
+        throw `messaging: isValid(): invalid room_id = ${room_id}`;
     }
     return valid;
 }
@@ -74,13 +76,15 @@ export const init = () => {
     // checking if chat room exists and is valid
     if ((room_id = localStorage.getItem('Chat.roomid')) && isValid(room_id)) {
         CHAT_ROOM_ID = room_id;
-        console.log(`Log: chat room found: ${CHAT_ROOM_ID}`);
+        log(`messaging: init(): room_id = ${CHAT_ROOM_ID}`);
         if (location.href.includes('/chat')) localStorage.removeItem('Chat.roomid');
         else location.href = `/messaging/chat?id=${CHAT_ROOM_ID}`;
         return;
     }
 
     // if above check fails
-    console.log('Log: chat root not found, it must be created first');
+    log('messaging: init(): room_id = undefined');
     if (!location.href.includes('/inbox')) location.href = '/messaging/inbox';
 }
+
+log('module /messaging/script.js loaded');

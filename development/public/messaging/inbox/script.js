@@ -51,3 +51,5 @@ const main = () => {
 
 Messaging.init();
 main();
+
+log('site /messaging/inbox loaded');
