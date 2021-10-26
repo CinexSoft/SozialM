@@ -1,3 +1,6 @@
+.splashScreenRoot {
+    visibility: visible;
+}
 .background {
     position: absolute;
     inset: 0;

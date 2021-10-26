@@ -3,6 +3,8 @@ import { checkForApkUpdates, getURLQueryFieldValue, } from '/common/js/generalfu
 import { log, err, } from '/common/js/logging.js';
 import { Dialog, } from '/common/js/overlays.js';
 
+import * as Init from '/common/js/init.js';
+
 /**
  * Stores the chat room id for /messaging/inbox and /messaging/chat
  * @type {String}
@@ -17,14 +19,13 @@ export let CHAT_ROOM_ID;
 export const isValid = (room_id = 'ejs993ejiei3') => {
     let valid = false;
     const uids = room_id?.split(':u1:u2:');
-    valid = typeof room_id == 'string' && (
-            room_id == 'ejs993ejiei3'
+    valid = typeof room_id == 'string' && (room_id == 'ejs993ejiei3'
         ||  uids != null
         &&  uids.length == 2
         &&  uids[0] < uids[1]
         &&  uids.includes(USER_ID)
         &&  !/[^A-Za-z0-9:]/.test(room_id));
-    if (!uids.includes(USER_ID) && !valid) {
+    if (!uids.includes(USER_ID) && !valid ) {
         localStorage.removeItem('Chat.roomid');
         err('messaging: isValid(): unauth room_id');
         Dialog.display('alert', 'Fatal Error!', 'You are not allowed to view this page.', 'Return to inbox', () => {
@@ -58,7 +59,7 @@ export const isValid = (room_id = 'ejs993ejiei3') => {
 export const storeChatRoomId = (room_id) => {
 
     room_id = (room_id || 'ejs993ejiei3').replace(/[^A-Za-z0-9:]/g, '');
-    if (!isValid(room_id)) return isValid(room_id);
+    if (localStorage.getItem('Auth.UID') && !isValid(room_id)) return isValid(room_id);
 
     // stores the chat room id into localStorage and sets CHAT_ROOT, to be used by '/messaging/chat'.
     localStorage.setItem('Chat.roomid', room_id);
@@ -90,6 +91,8 @@ export const init = () => {
     // If chatroom id is provided as URL parameter, store it
     if ((room_id = getURLQueryFieldValue('id'))
     && !Array.isArray(room_id)) storeChatRoomId(room_id);
+
+    Init.init();
 
     // checking if chat room exists and is valid
     if ((room_id = localStorage.getItem('Chat.roomid')) && isValid(room_id)) {

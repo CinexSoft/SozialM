@@ -530,7 +530,7 @@ const main = () => {
     startDBListener();
 }
 
+log('site /messaging/chat loaded');
+
 Messaging.init();
 main();
-
-log('site /messaging/chat loaded');

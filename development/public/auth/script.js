@@ -3,7 +3,9 @@ import { USER_ID, } from '/common/js/variables.js';
 import { log, err, } from '/common/js/logging.js';
 import { $, } from '/common/js/domfunc.js';
 import { Colors, } from '/common/js/colors.js';
-import { Dialog, } from '/common/js/overlays.js';
+import { Dialog, SplashScreen, } from '/common/js/overlays.js';
+
+import * as Init from '/common/js/init.js';
 
 // reset colors
 const resetColors = () => {
@@ -61,7 +63,7 @@ const main = () => {
     // checking if user is logged in, local storage does exactly what it says
     if (localStorage.getItem('Auth.UID')) {
         log('auth: main(): already signed in');
-        location.href = '/messaging/inbox';
+        location.href = '/';
         return;
     }
 
@@ -210,7 +212,10 @@ const main = () => {
             handleError('signup', error, nodes, innernodes);
         });
     });
+    SplashScreen.hide();
 }
 
-main();
 log('site /auth loaded');
+
+Init.init();
+main();
