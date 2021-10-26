@@ -55,7 +55,7 @@ jobs:
 
           # extract the PREVIEW_URL - the actual URL.
           PREVIEW_URL=$(echo "$URL_STRING"             | cut -d " " -f 7)
-          echo "preview URL: $PREVIEW_URL"             | tee -a ./preview.build.list
+          echo "URL: $PREVIEW_URL"                     | tee -a ./preview.build.list
           echo                                         | tee -a ./preview.build.list
 
           cd ../   
@@ -66,7 +66,7 @@ jobs:
         run: |
           git config --global user.name "CinexSoft"
           git config --global user.email "cinexsoft@gmail.com"
-          COMMIT_M=$(cat ./preview/preview.build.list | tail -n 2 | grep "\.web\.app")
-          git add -A                                              | tee -a ./preview/preview.build.list
-          git commit -m "deployed to preview" -m "$COMMIT_M"      | tee -a ./preview/preview.build.list
-          git push                                                | tee -a ./preview/preview.build.list
+          COMMIT_M=$(cat ./preview/preview.build.list | tail -n 2          | grep "\.web\.app")
+          git add -A                                                       | tee -a ./preview/preview.build.list
+          git commit -m "deployed to preview: $COMMIT_M" -m "$COMMIT_M"    | tee -a ./preview/preview.build.list
+          git push                                                         | tee -a ./preview/preview.build.list
