@@ -20,41 +20,52 @@ jobs:
       - name: Obfuscate codes
         run: | 
           npm i -g javascript-obfuscator
-          cp -r ./development/public ./production/
-          javascript-obfuscator ./production/public/ --output ./production/public/
+          cp -r ./development/public ./preview/
+          javascript-obfuscator ./preview/public/ --output ./preview/public/
       - name: List development files
         run: |
-          echo -e "Built on $(date)\n"       | tee ./production/preview.build.list
-          echo "Readable code sizes:"        | tee -a ./production/preview.build.list
-          du -ha ./development/public/       | grep "\.js" | tee -a ./production/preview.build.list
-          echo                               | tee -a ./production/preview.build.list
-      - name: List production files
+          echo -e "Built on $(date)\n"       | tee ./preview/preview.build.list
+          echo "Readable code sizes:"        | tee -a ./preview/preview.build.list
+          du -ha ./development/public/       | grep "\.js" | tee -a ./preview/preview.build.list
+          echo                               | tee -a ./preview/preview.build.list
+      - name: List preview files
         run: |
-          echo "Obfuscated code sizes:"      | tee -a ./production/preview.build.list
-          du -ha ./production/public/        | grep "\.js" | tee -a ./production/preview.build.list
-          echo                               | tee -a ./production/preview.build.list
+          echo "Obfuscated code sizes:"      | tee -a ./preview/preview.build.list
+          du -ha ./preview/public/           | grep "\.js" | tee -a ./preview/preview.build.list
+          echo                               | tee -a ./preview/preview.build.list
       - name: Install Firebase tools
         run: |
           npm i -g firebase-tools
       - name: Deploy preview
         run: |
-          cd ./production
+          cd ./preview
           firebase use sozialnmedien --token "${{ secrets.FIREBASE_TOKEN }}"
-          firebase hosting:channel:deploy -e 2d $(git branch --show-current | sed "s/\//-/g")-$(date | sed "s/\s//g" | sed "s/://g") --token "${{ secrets.FIREBASE_TOKEN }}"
+
+          # generate CHANNEL_ID
+          CHANNEL_ID=$(git branch --show-current | sed "s/\//-/g")-$(date | sed "s/\s//g" | sed "s/://g")
+
+          # run firebase and store the output in a variable
+          DEPLOY_MESSAGE="$(firebase hosting:channel:deploy -e 2d $CHANNEL_ID --token ${{ secrets.FIREBASE_TOKEN }})"
+          echo "$DEPLOY_MESSAGE"
+
+          # extract the URL_STRING - string containing the URL.
+          URL_STRING=$(echo "$DEPLOY_MESSAGE" | grep -i "\-$CHANNEL_ID\-")
+
+          # extract and the PREVIEW_URL - the actual URL.
+          export PREVIEW_URL=$(echo "$URL_STRING" | cut -d " " -f 7)
+
           cd ../
-      - name: List preview channels
+      - name: View preview URL
         run: |
-          cd ./production
-          firebase hosting:channel:list --token "${{ secrets.FIREBASE_TOKEN }}" | tee -a ./preview.build.list
-          echo                               | tee -a ./preview.build.list
-          cd ../
-      - name: Delete production files
+          echo "deploy preview: $PREVIEW_URL"   | tee -a ./preview.build.list
+          echo                                  | tee -a ./preview.build.list
+      - name: Delete preview files
         run: |
-          rm -rf ./production/public/*
+          rm -rf ./preview/public/*
       - name: Git commit and push
         run: |
           git config --global user.name "CinexSoft"
           git config --global user.email "cinexsoft@gmail.com"
-          git add -A                                               | tee -a ./production/preview.build.list
-          git commit -m "Obfuscated JS and deployed to Preview"    | tee -a ./production/preview.build.list
-          git push                                                 | tee -a ./production/preview.build.list
+          git add -A                                               | tee -a ./preview/preview.build.list
+          git commit -m "deploy preview: $PREVIEW_URL"             | tee -a ./preview/preview.build.list
+          git push                                                 | tee -a ./preview/preview.build.list
