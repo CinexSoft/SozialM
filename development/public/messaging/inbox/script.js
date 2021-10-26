@@ -50,7 +50,7 @@ const main = () => {
     });
 }
 
+log('site /messaging/inbox loaded');
+
 Messaging.init();
 main();
-
-log('site /messaging/inbox loaded');

@@ -5,6 +5,8 @@ import { $, } from '/common/js/domfunc.js';
 import { Colors, } from '/common/js/colors.js';
 import { Dialog, SplashScreen, } from '/common/js/overlays.js';
 
+import * as Init from '/common/js/init.js';
+
 // reset colors
 const resetColors = () => {
     /* hide login and signup info, $ is a css style selector function
@@ -213,5 +215,7 @@ const main = () => {
     SplashScreen.hide();
 }
 
-main();
 log('site /auth loaded');
+
+Init.init();
+main();

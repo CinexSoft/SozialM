@@ -3,6 +3,8 @@ import { checkForApkUpdates, getURLQueryFieldValue, } from '/common/js/generalfu
 import { log, err, } from '/common/js/logging.js';
 import { Dialog, } from '/common/js/overlays.js';
 
+import * as Init from '/common/js/init.js';
+
 /**
  * Stores the chat room id for /messaging/inbox and /messaging/chat
  * @type {String}
@@ -92,6 +94,8 @@ export const init = () => {
     // If chatroom id is provided as URL parameter, store it
     if ((room_id = getURLQueryFieldValue('id'))
     && !Array.isArray(room_id)) storeChatRoomId(room_id);
+
+    Init.init();
 
     // checking if chat room exists and is valid
     if ((room_id = localStorage.getItem('Chat.roomid')) && isValid(room_id)) {
