@@ -24,7 +24,7 @@ export const isValid = (room_id = 'ejs993ejiei3') => {
         &&  uids[0] < uids[1]
         &&  uids.includes(USER_ID)
         &&  !/[^A-Za-z0-9:]/.test(room_id));
-    if (!uids.includes(USER_ID)) {
+    if (!uids.includes(USER_ID) && !valid) {
         localStorage.removeItem('Chat.roomid');
         err('messaging: isValid(): unauth room_id');
         Dialog.display('alert', 'Fatal Error!', 'You are not allowed to view this page.', 'Return to inbox', () => {
