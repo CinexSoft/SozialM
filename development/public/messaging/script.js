@@ -24,9 +24,16 @@ export const isValid = (room_id = 'ejs993ejiei3') => {
         &&  uids[0] < uids[1]
         &&  uids.includes(USER_ID)
         &&  !/[^A-Za-z0-9:]/.test(room_id));
-    if (!valid) {
-        Dialog.display('alert', 'Fatal Error!', `Invalid chat room id provided.`);
-        err(`messaging: isValid(): invalid room_id`);
+    if (!uids.includes(USER_ID)) {
+        Dialog.display('alert', 'Fatal Error!', 'You are not allowed to view this page.');
+        err('messaging: isValid(): unauth room_id');
+        localStorage.removeItem('Chat.roomid');
+        throw `Error: messaging: isValid(): unauth room_id = ${room_id}`;
+    }
+    else if (!valid) {
+        Dialog.display('alert', 'Fatal Error!', 'Invalid chat room id provided.');
+        err('messaging: isValid(): invalid room_id');
+        localStorage.removeItem('Chat.roomid');
         throw `Error: messaging: isValid(): invalid room_id = ${room_id}`;
     }
     return valid;
