@@ -3,7 +3,7 @@ import { USER_ID, } from '/common/js/variables.js';
 import { log, err, } from '/common/js/logging.js';
 import { $, } from '/common/js/domfunc.js';
 import { Colors, } from '/common/js/colors.js';
-import { Dialog, } from '/common/js/overlays.js';
+import { Dialog, SplashScreen, } from '/common/js/overlays.js';
 
 // reset colors
 const resetColors = () => {
@@ -210,6 +210,7 @@ const main = () => {
             handleError('signup', error, nodes, innernodes);
         });
     });
+    SplashScreen.hide();
 }
 
 main();
