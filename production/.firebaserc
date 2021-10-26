@@ -2,13 +2,5 @@
   "projects": {
     "production": "sozialnmedien"
   },
-  "targets": {
-    "sozialnmedien": {
-      "database": {
-        "default": [
-          "sozialnmedien"
-        ]
-      }
-    }
-  }
+  "targets": {}
 }
