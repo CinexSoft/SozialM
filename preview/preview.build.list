@@ -1,0 +1,36 @@
+Built on Tue Oct 26 18:40:46 UTC 2021
+
+Readable code sizes:
+8.0K	./development/public/common/js/colors.js
+8.0K	./development/public/common/js/domfunc.js
+4.0K	./development/public/common/js/logging.js
+8.0K	./development/public/common/js/init.js
+4.0K	./development/public/common/js/firebaseinit.js
+8.0K	./development/public/common/js/variables.js
+12K	./development/public/common/js/overlays.js
+12K	./development/public/common/js/generalfunc.js
+4.0K	./development/public/profile/script.js
+24K	./development/public/messaging/chat/script.js
+4.0K	./development/public/messaging/script.js
+4.0K	./development/public/messaging/inbox/script.js
+4.0K	./development/public/settings/script.js
+12K	./development/public/auth/script.js
+
+Obfuscated code sizes:
+4.0K	./preview/public/common/js/colors.js
+4.0K	./preview/public/common/js/domfunc.js
+4.0K	./preview/public/common/js/logging.js
+8.0K	./preview/public/common/js/init.js
+4.0K	./preview/public/common/js/firebaseinit.js
+4.0K	./preview/public/common/js/variables.js
+12K	./preview/public/common/js/overlays.js
+12K	./preview/public/common/js/generalfunc.js
+4.0K	./preview/public/profile/script.js
+24K	./preview/public/messaging/chat/script.js
+8.0K	./preview/public/messaging/script.js
+4.0K	./preview/public/messaging/inbox/script.js
+4.0K	./preview/public/settings/script.js
+12K	./preview/public/auth/script.js
+
+deploy preview: https://sozialnmedien--oogle-prv-tueoct26184457utc2021-8tlmcezj.web.app
+

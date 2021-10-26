@@ -16,7 +16,10 @@
       }
     ]
   },
-  "database": {
-    "rules": "database.rules.json"
-  }
+  "database": [
+    {
+      "target": "default",
+      "rules": "database.rules.json"
+    }
+  ]
 }
