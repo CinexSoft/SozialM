@@ -22,7 +22,7 @@ const SessionLogs = {};
  * @param {String} val The stuff to be printed
  */
 export const log = (val) => {
-    if (DEBUG) console.log(`Log: logging.js: ${val}`);
+    if (DEBUG) console.log(`Log: ${val}`);
     // write logs in local database
     SessionLogs[getTimeStamp(true)] = val;
 }
