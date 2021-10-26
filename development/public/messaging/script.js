@@ -17,14 +17,15 @@ export let CHAT_ROOM_ID;
 export const isValid = (room_id = 'ejs993ejiei3') => {
     let valid = false;
     const uids = room_id?.split(':u1:u2:');
-    valid = typeof room_id == 'string' && (
-            room_id == 'ejs993ejiei3'
+    valid = typeof room_id == 'string'
+        && (room_id == 'ejs993ejiei3'
         ||  uids != null
         &&  uids.length == 2
         &&  uids[0] < uids[1]
         &&  uids.includes(USER_ID)
-        &&  !/[^A-Za-z0-9:]/.test(room_id));
-    if (!uids.includes(USER_ID) && !valid) {
+        &&  !/[^A-Za-z0-9:]/.test(room_id))
+        ||  !localStorage.getItem('Auth.UID');
+    if (!uids.includes(USER_ID) && !valid ) {
         localStorage.removeItem('Chat.roomid');
         err('messaging: isValid(): unauth room_id');
         Dialog.display('alert', 'Fatal Error!', 'You are not allowed to view this page.', 'Return to inbox', () => {
@@ -47,6 +48,7 @@ export const isValid = (room_id = 'ejs993ejiei3') => {
         });
         throw `Error: messaging: isValid(): invalid room_id = ${room_id}`;
     }
+    if (!localStorage.getItem('Auth.UID')) throw 'Error: messaging: isValid(): user not signed in';
     return valid;
 }
 

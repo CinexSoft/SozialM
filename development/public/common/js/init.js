@@ -2,7 +2,10 @@
  * If not, load /auth if not already on /auth
  */
 if (!localStorage.getItem('Auth.UID')
-&&  !location.href.includes('/auth')) location.href = '/auth';
+&&  !location.href.includes('/auth')) {
+    location.href = '/auth';
+    throw 'Error: init: user not signed in';
+}
 
 import { Database, Auth, } from '/common/js/firebaseinit.js';
 import {
