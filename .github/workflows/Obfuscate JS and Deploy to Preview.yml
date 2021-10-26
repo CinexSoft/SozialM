@@ -42,7 +42,7 @@ jobs:
           firebase use sozialnmedien --token "${{ secrets.FIREBASE_TOKEN }}"
 
           # generate CHANNEL_ID
-          CHANNEL_ID=$(git branch --show-current  | sed "s/\//-/g")-$(date | sed "s/\s//g" | sed "s/://g")
+          CHANNEL_ID=$(git branch --show-current       | sed "s/\//-/g")-$(date | sed "s/\s//g" | sed "s/://g")
           echo "channel = $CHANNEL_ID"
 
           # run firebase and store the output in a variable
@@ -50,13 +50,13 @@ jobs:
           echo "$DEPLOY_MESSAGE"
 
           # extract the URL_STRING - string containing the URL.
-          URL_STRING=$(echo "$DEPLOY_MESSAGE"     | grep -i "\-$CHANNEL_ID\-")
+          URL_STRING=$(echo "$DEPLOY_MESSAGE"          | grep -i "\-$CHANNEL_ID\-")
           echo "url_string = $URL_STRING"
 
           # extract the PREVIEW_URL - the actual URL.
-          export PREVIEW_URL=$(echo "$URL_STRING" | cut -d " " -f 7)
-          echo "deploy preview: $PREVIEW_URL"     | tee -a ./preview.build.list
-          echo                                    | tee -a ./preview.build.list
+          PREVIEW_URL=$(echo "$URL_STRING"             | cut -d " " -f 7)
+          echo "URL: $PREVIEW_URL"                     | tee -a ./preview.build.list
+          echo                                         | tee -a ./preview.build.list
 
           cd ../   
       - name: Delete preview files
@@ -66,6 +66,7 @@ jobs:
         run: |
           git config --global user.name "CinexSoft"
           git config --global user.email "cinexsoft@gmail.com"
-          git add -A                                               | tee -a ./preview/preview.build.list
-          git commit -m "deploy preview: $PREVIEW_URL"             | tee -a ./preview/preview.build.list
-          git push                                                 | tee -a ./preview/preview.build.list
+          COMMIT_M=$(cat ./preview/preview.build.list | tail -n 2          | grep "\.web\.app")
+          git add -A                                                       | tee -a ./preview/preview.build.list
+          git commit -m "deployed to preview: $COMMIT_M" -m "$COMMIT_M"    | tee -a ./preview/preview.build.list
+          git push                                                         | tee -a ./preview/preview.build.list
