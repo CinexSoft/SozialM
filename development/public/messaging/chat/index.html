@@ -27,7 +27,9 @@
     <link rel="stylesheet" href="/common/css/markdown.css">
     <link rel="stylesheet" href="/common/css/overlays.css">
     <!-- this stylesheet -->
-    <link rel="stylesheet" href="/chat/styles.css">
+    <link rel="stylesheet" href="/messaging/chat/styles.css">
+    <!-- global script -->
+    <script type="module" src="/common/js/init.js"></script>
 </head>
 <body class="prim_bg">
     <!-- 4 types of overlays -->
@@ -40,6 +42,24 @@
                 <button id="menu_reply">Reply</button><hr>
                 <button id="menu_details">Details</button>
             </div>
+        </div>
+    </div>
+    <div class="splashScreenRoot" id="splashScreenRoot">
+        <div class="splashScreen" id="splashScreen">
+            <h2 class="">Warnings</h2><hr>
+            <p class="content">
+                This isn't even Alpha Software. Your chats may completely disappear. We don't guarantee
+                anything, but if you write to as at <a href="mailto:cinexsoft@gmail.com">cinexsoft@gmail.com</a>
+                from your registered email, with your user id, we will try not to wipe your chats.
+            </p><hr>
+            <p class="content">
+                You can find your user id by long pressing on the empty space left of the message bubble you sent.
+                This will open the Menu. Then navigate to Details <code>→</code> Advanced and copy the code beside
+                the <code>id</code> key.
+            </p><hr>
+            <p class="content">
+                For this session, your chats are being fetched. Once done, this message will self close.
+            </p>
         </div>
     </div>
     <div class="actionDialogRoot" id="actionDialogRoot">
@@ -61,24 +81,6 @@
                 Content
             </div><hr>
             <button id="alertDialog_btn">Close</button>
-        </div>
-    </div>
-    <div class="splashScreenRoot" id="splashScreenRoot">
-        <div class="splashScreen" id="splashScreen">
-            <h2 class="">Warnings</h2><hr>
-            <p class="content">
-                This isn't even Alpha Software. Your chats may completely disappear. We don't guarantee
-                anything, but if you write to as at <a href="mailto:cinexsoft@gmail.com">cinexsoft@gmail.com</a>
-                from your registered email, with your user id, we will try not to wipe your chats.
-            </p><hr>
-            <p class="content">
-                You can find your user id by long pressing on the empty space left of the message bubble you sent.
-                This will open the Menu. Then navigate to Details <code>→</code> Advanced and copy the code beside
-                the <code>id</code> key.
-            </p><hr>
-            <p class="content">
-                For this session, your chats are being fetched. Once done, this message will self close.
-            </p>
         </div>
     </div>
     <div class="root">
@@ -110,9 +112,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.1/showdown.min.js"></script>
     <!-- HTML sanitizer -->
     <script src="https://cdn.jsdelivr.net/gh/jitbit/HtmlSanitizer@master/HtmlSanitizer.js"></script>
-    <!-- global script -->
-    <script type="module" src="/common/js/init.js"></script>
     <!-- main script -->
-    <script type="module" src="/chat/script.js"></script>
+    <script type="module" src="/messaging/chat/script.js"></script>
 </body>
 </html>

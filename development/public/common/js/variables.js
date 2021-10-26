@@ -9,8 +9,22 @@
  * works for each and every webpage.
  */
 
+import { RTDB_USERS_ROOT, RTDB_SLOGS_ROOT, RTDB_CHATS_ROOT, } from '/common/js/firebaseinit.js';
+ 
 /**
- * Used to recognise a user.
+ * Holds authentication info about the user.
+ * @type {Object} Stores user info from Firebase Auth.
+ */
+export let AuthData = {};
+
+/**
+ * Holds non-auth info about the user.
+ * @type {Object} Stores user info from Firebase Auth.
+ */
+export let UserData = {}; 
+
+/**
+ * Holds UID.
  * @type {String} Stores UID from Firebase Auth.
  */
 export let USER_ID = '';
@@ -42,6 +56,24 @@ export let LOAD_THEME = !true;
 export let SESSION_TOKEN;
 
 /**
+ * Database root
+ * @type {String} root location of user data in database.
+ */
+export let USER_ROOT;
+
+/**
+ * Database root
+ * @type {String} root location of logs in database.
+ */
+export let LOGS_ROOT;
+
+/**
+ * Database root
+ * @type {String} root location of chats in database.
+ */
+export let CHAT_ROOT;
+
+/**
  * Checks if the Android WebAppInterface exists.
  * The `Android` WebAppInterface is a class available in the Android APK of this project.
  * The interface allows the website to use Android features through javascript without requiring an independent Android app to be developed.
@@ -55,19 +87,30 @@ export const EXISTS_ANDROID_INTERFACE = typeof Android !== 'undefined'
 /**
  * Setter for global variables.
  *
- * Available values:
- - USER_ID
- - USER_TOKEN
- - DEBUG
- - LOAD_THEME
- - SESSION_TOKEN
- *
  * This is for scripts that import modules.js.
- * @param {String} variable Variable identifier - case sensitive.
- * @param {*} value New value of variable.
+ * @param {String} variable Variable identifier, valid values are listed below - case sensitive.
+ * @param {Any} value New value of variable.
+ *
+ * Available values of parameter 'variable':
+ * @param {Object}  AuthData
+ * @param {Object}  UserData
+ * @param {String}  USER_ID
+ * @param {String}  USER_TOKEN
+ * @param {Boolean} DEBUG
+ * @param {Boolean} LOAD_THEME
+ * @param {String}  SESSION_TOKEN
+ * @param {String}  USER_ROOT - ONLY pass in the user id, DON'T pass in database root.
+ * @param {String}  LOGS_ROOT - ONLY pass in the user token + session token, DON'T pass in database root.
+ * @param {String}  CHAT_ROOT - ONLY pass in the chat room id, DON'T pass in database root.
  */
 export const setVariable = (variable, value) => {
     switch (variable) {
+        case 'AuthData':
+            UserData = value;
+            break;
+        case 'UserData':
+            UserData = value;
+            break;
         case 'USER_ID':
             USER_ID = value;
             break;
@@ -83,7 +126,18 @@ export const setVariable = (variable, value) => {
         case 'SESSION_TOKEN':
             SESSION_TOKEN = value;
             break;
+        case 'USER_ROOT':
+            USER_ROOT = `${RTDB_USERS_ROOT}/${value}`;
+            break;
+        case 'LOGS_ROOT':
+            LOGS_ROOT = `${RTDB_SLOGS_ROOT}/${value}`;
+            break;
+        case 'CHAT_ROOT':
+            CHAT_ROOT = `${RTDB_CHATS_ROOT}/${value}`;
+            break;
         default:
-            throw `Error: for ${variable}, no such variable in variables.js, note that variables are case-sensitive`;
+            throw `Error: variables.js: setVariable(): no such variable: ${variable}\nNOTE: variable names are case-sensitive`;
     }
 }
+
+console.log('module variables.js loaded');

@@ -10,7 +10,6 @@
  */
 
 import { LOAD_THEME, } from '/common/js/variables.js';
-import { log, } from '/common/js/logging.js';
 import { $, } from '/common/js/domfunc.js';
 
 /**
@@ -111,5 +110,6 @@ export const loadTheme = () => {
         element.style.borderColor = CONTROL_COLOR;
         element.style.color = DARK_FG_COLOR;
     }
-    log('colors.js: loadTheme(): loaded');
 }
+
+console.log('module color.js loaded');

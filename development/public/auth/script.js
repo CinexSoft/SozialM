@@ -1,6 +1,6 @@
 import { Auth, } from '/common/js/firebaseinit.js';
+import { USER_ID, } from '/common/js/variables.js';
 import { log, err, } from '/common/js/logging.js';
-import { checkForApkUpdates, } from '/common/js/generalfunc.js';
 import { $, } from '/common/js/domfunc.js';
 import { Colors, } from '/common/js/colors.js';
 import { Dialog, } from '/common/js/overlays.js';
@@ -30,8 +30,7 @@ const resetColors = () => {
 
 // login or signup error handler
 const handleError = (state, { code, message, }, nodes, innernodes) => {
-    log(`Auth: nodes = ${nodes}`);
-    err(`Auth: ${state}: code: ${code} msg: {message}`);
+    err(`auth: handleError(): ${state} ${code} ${message}`);
     $(`#${state}_info`).style.color = 'red';
     let outputmsg = code != 'auth/invalid-argument'
                     && code != 'auth/internal-error'
@@ -41,6 +40,10 @@ const handleError = (state, { code, message, }, nodes, innernodes) => {
     }
     $(`#${state}_info`).innerHTML = outputmsg;
     $(`#${state}_info`).style.display = 'block';
+    $('#btn_login').innerHTML = 'Login';
+    $('#btn_signup').innerHTML = 'Sign up';
+    $('#btn_login').disabled = false;
+    $('#btn_signup').disabled = false;
     for (let element of nodes) {
         element.style.color = 'red';
         element.style.borderColor = 'tomato';
@@ -51,15 +54,17 @@ const handleError = (state, { code, message, }, nodes, innernodes) => {
 }
 
 const main = () => {
+
     // root visibility flag
     let visibile_root = 'login';
+
     // checking if user is logged in, local storage does exactly what it says
-    if (localStorage.getItem('Auth.user')) {
-        console.log('Log: already signed in, redirect to /chat');
-        location.href = '/inbox';
+    if (localStorage.getItem('Auth.UID')) {
+        log('auth: main(): already signed in');
+        location.href = '/messaging/inbox';
         return;
     }
-    checkForApkUpdates();
+
     // event when the eye-slash icon is pressed
     $(".switchlink")[0].addEventListener('click', (event) => {
         resetColors();
@@ -74,14 +79,12 @@ const main = () => {
             $('.switchlink')[0].innerHTML = 'Sign Up';
             visibile_root = 'login';
         }
-        log(`Auth: switch root: visibile_root = ${visibile_root}`);
         document.getElementById(visibile_root).style.display = 'block';
     });
-    
+
     // toggle password visibility
     for (let element of $(".fa-eye-slash")) element.addEventListener('click', (event) => {
         for (let element of $('.password')) {
-            log(`Auth: togglePassVisibility: type = ${element.type}`);
             if (element.type == 'password') {
                 element.type = 'text';
                 for (let element of $('.fa-eye-slash')) {
@@ -95,7 +98,7 @@ const main = () => {
             }
         }
     });
-    
+
     // on focus given to an input
     document.body.addEventListener('click', (event) => {
         if (['INPUT', 'DIV'].includes(event.target.nodeName)) {
@@ -111,19 +114,31 @@ const main = () => {
             );
         }
     });
-    
+
     // login button clicked
     $('#btn_login').addEventListener('click', async (e) => {
         resetColors();
-        $('#login_info').style.color = '#555';
-        $('#login_info').innerHTML = 'Logging you in, please wait...';
-        $('#login_info').style.display = 'block';
         const email = $('#login_email').value;
         const password = $('#login_pass').value;
+        $('#btn_login').disabled = true;
+        $('#btn_signup').disabled = true;
+        // code for loading spin animation - a styled div
+        $('#btn_login').innerHTML = (
+            '<div style="'
+          +     'margin: 0 auto;'
+          +     'margin-bottom: 2px;'
+          +     'border: 1.5px solid var(--accent-bgcolor);'
+          +     'border-top: 1.5px solid transparent;'
+          +     'border-radius: 50%;'
+          +     'width: 0px;'
+          +     'height: 0px;'
+          +     'background-color: transparent;'
+          +     'animation: loadspin 1s linear infinite; ">'
+          + '</div>'
+        );
         const FirebaseAuth = await import('https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.js');
         FirebaseAuth.signInWithEmailAndPassword(Auth, email, password).then((userCredential) => {
             const user = userCredential.user;
-            localStorage.setItem('Auth.user', JSON.stringify(user));
             location.href = '/';
         })
         .catch((error) => {
@@ -138,13 +153,10 @@ const main = () => {
             handleError('login', error, nodes, innernodes);
         });
     });
-    
+
     // signup button clicked
     $('#btn_signup').addEventListener('click', async (e) => {
         resetColors();
-        $('#signup_info').style.color = '#555';
-        $('#signup_info').innerHTML = 'Signing you up, please wait...';
-        $('#signup_info').style.display = 'block';
         const email = $('#signup_email').value;
         if ($('#signup_pass').value != $('#signup_pass_c').value) {
             handleError('signup', {
@@ -162,10 +174,25 @@ const main = () => {
             return;
         }
         const password = $('#signup_pass').value;
+        $('#btn_login').disabled = true;
+        $('#btn_signup').disabled = true;
+        // code for loading spin animation - a styled div
+        $('#btn_signup').innerHTML = (
+            '<div style="'
+          +     'margin: 0 auto;'
+          +     'margin-bottom: 2px;'
+          +     'border: 1.5px solid var(--accent-bgcolor);'
+          +     'border-top: 1.5px solid transparent;'
+          +     'border-radius: 50%;'
+          +     'width: 0px;'
+          +     'height: 0px;'
+          +     'background-color: transparent;'
+          +     'animation: loadspin 1s linear infinite; ">'
+          + '</div>'
+        );
         const FirebaseAuth = await import('https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.js');
         FirebaseAuth.createUserWithEmailAndPassword(Auth, email, password).then((userCredential) => {
             const user = userCredential.user;
-            localStorage.setItem('Auth.user', JSON.stringify(user));
             location.href = '/';
         })
         .catch((error) => {
@@ -183,7 +210,7 @@ const main = () => {
             handleError('signup', error, nodes, innernodes);
         });
     });
-    log('Auth: document and script load complete');
 }
 
 main();
+log('site /auth loaded');

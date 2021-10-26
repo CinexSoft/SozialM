@@ -1,26 +1,44 @@
 {
   "rules": {
-    "Ci4j82hg96y36rfi96vfrwog7h85f4jh870bpgw52fekftt95hjo7d2i3jgie64k": {
-      "chat": {
-        "$chatroomid": {
-          ".read": "auth != null",
-          ".write": "auth != null"
+    "preview": {
+      "aa14fdd9-users": {
+        "$uid": {
+          ".read": "auth != null && $uid === auth.uid",
+          ".write": "auth != null && $uid === auth.uid"
         }
       },
-      "records": {
-        "sessionlogs": {
-          "$usertoken": {
-            ".read": false,
-            ".write": true
-          }
+      "b6d6cc89-slogs": {
+        "$usertoken": {
+          ".read": false,
+          ".write": true
+        }
+      },
+      "ce471190-chats": {
+        "$chatroomid": {
+          ".read": "auth !== null && ($chatroomid === 'ejs993ejiei3' || $chatroomid.contains(auth.uid))",
+          ".write": "auth !== null && ($chatroomid === 'ejs993ejiei3' || $chatroomid.contains(auth.uid))",
+          ".validate": "$chatroomid === 'ejs993ejiei3' || ( $chatroomid.beginsWith(auth.uid) ? ( auth.uid < $chatroomid.replace(auth.uid + ':u1:u2:', '') ) : ( $chatroomid.replace(':u1:u2:' + auth.uid, '') < auth.uid ) )"
         }
       }
     },
-    "Ci4j87hg96h36rfi66vfrfog7h85f4jh8g0bpgw52felutt95hgoud2i3ngie64k": {
-      "userdata": {
+    "production": {
+      "aa14fdd9-users": {
         "$uid": {
-          ".read": "$uid === auth.uid",
-          ".write": "$uid === auth.uid"
+          ".read": "auth != null && $uid === auth.uid",
+          ".write": "auth != null && $uid === auth.uid"
+        }
+      },
+      "b6d6cc89-slogs": {
+        "$usertoken": {
+          ".read": false,
+          ".write": true
+        }
+      },
+      "ce471190-chats": {
+        "$chatroomid": {
+          ".read": "auth !== null && ($chatroomid === 'ejs993ejiei3' || $chatroomid.contains(auth.uid))",
+          ".write": "auth !== null && ($chatroomid === 'ejs993ejiei3' || $chatroomid.contains(auth.uid))",
+          ".validate": "$chatroomid === 'ejs993ejiei3' || ( $chatroomid.beginsWith(auth.uid) ? ( auth.uid < $chatroomid.replace(auth.uid + ':u1:u2:', '') ) : ( $chatroomid.replace(':u1:u2:' + auth.uid, '') < auth.uid ) )"
         }
       }
     }

@@ -2,5 +2,13 @@
   "projects": {
     "dev": "sozialnmedien"
   },
-  "targets": {}
+  "targets": {
+    "sozialnmedien": {
+      "database": {
+        "default": [
+          "sozialnmedien"
+        ]
+      }
+    }
+  }
 }

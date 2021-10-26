@@ -24,7 +24,9 @@
     <link rel="stylesheet" href="/common/css/keyframes.css">
     <link rel="stylesheet" href="/common/css/overlays.css">
     <!-- this stylesheet -->
-    <link rel="stylesheet" href="/inbox/styles.css">
+    <link rel="stylesheet" href="/messaging/inbox/styles.css">
+    <!-- global script -->
+    <script type="module" src="/common/js/init.js"></script>
 </head>
 <body class="prim_img_bg">
     <!-- 4 types of overlays -->
@@ -36,6 +38,11 @@
                 <button id="menu_btn2">Button</button><hr>
                 <button id="menu_btn3">Button</button>
             </div>
+        </div>
+    </div>
+    <div class="splashScreenRoot" id="splashScreenRoot">
+        <div class="splashScreen" id="splashScreen">
+            <!-- insides of splashscreen -->
         </div>
     </div>
     <div class="actionDialogRoot" id="actionDialogRoot">
@@ -59,14 +66,28 @@
             <button id="alertDialog_btn">Close</button>
         </div>
     </div>
-    <div class="splashScreenRoot" id="splashScreenRoot">
-        <div class="splashScreen" id="splashScreen">
-            <!-- insides of splashscreen -->
+    <div class="root">
+        <div class="titlebar acc_bg">
+            <h class="title">SozialnMedien</h>
+        </div>
+        <div class="chats_container">
+            <!-- Demo chat code
+            <div id="ejs993ejiei3" class="chat">
+                <img src="" class="dp">
+                <div class="message">
+                    <div class="info">
+                        <span class="sender">Demo Message Sender Name</span>
+                        <span class="time">01/01/2000 02:05</span>
+                    </div>
+                    <div class="body">
+                        <span class="content">Demo Message contents</span>
+                    </div>
+                </div>
+            </div>
+            -->
         </div>
     </div>
-    <!-- global script -->
-    <script type="module" src="/common/js/init.js"></script>
     <!-- main script -->
-    <script type="module" src="/inbox/script.js"></script>
+    <script type="module" src="/messaging/inbox/script.js"></script>
 </body>
 </html>

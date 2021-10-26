@@ -20,6 +20,10 @@
 .menu {
     top: 10px;
 }
+.alertDialog p.justify {
+    margin: 2.5px;
+    text-align: justify;
+}
 .titlebar {
     height: 54px;
     display: flex;
@@ -57,7 +61,6 @@
 .title {
     font-size: 1.3rem;
     margin: auto 5px auto;
-    padding-top: 2px;
     overflow: auto;
     width: calc(100% - 20px - 10px - 35px - 10px - 20px);
 }

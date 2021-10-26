@@ -12,22 +12,28 @@
     "redirects": [
       {
         "source": "/",
-        "destination": "/inbox/index.html",
+        "destination": "/messaging/inbox",
         "type": 302
       }
     ]
   },
-  "database": {
-    "rules": "database.rules.json"
-  },
+  "database": [
+    {
+      "target": "default",
+      "rules": "database.rules.json"
+    }
+  ],
   "emulators": {
     "database": {
+      "host": "0.0.0.0",
       "port": 9000
     },
     "hosting": {
+      "host": "0.0.0.0",
       "port": 5000
     },
     "ui": {
+      "host": "0.0.0.0",
       "enabled": true
     }
   }

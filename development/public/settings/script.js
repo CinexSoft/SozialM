@@ -4,4 +4,4 @@ import { Auth, Database } from '/common/js/firebaseinit.js';
 import { checkForApkUpdates, } from '/common/js/generalfunc.js';
 import { log, err, } from '/common/js/logging.js';
 
-checkForApkUpdates();
+log('site /settings loaded');

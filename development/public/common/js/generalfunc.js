@@ -11,11 +11,8 @@
 
 import { Auth } from '/common/js/firebaseinit.js';
 import {
-    USER_ID,
-    USER_TOKEN,
     DEBUG,
     EXISTS_ANDROID_INTERFACE,
-    setVariable,
 } from '/common/js/variables.js';
 import { log, err, } from '/common/js/logging.js';
 import { Dialog } from '/common/js/overlays.js';
@@ -65,35 +62,6 @@ export const generateToken = (length = 64) => {
 }
 
 /**
- * Creates the user token and stores it in the global variable USER_TOKEN.
- */
-export const generateUserToken = () => {
-    if (!localStorage.getItem('User.token')) {
-        setVariable('USER_TOKEN', generateToken());
-        localStorage.setItem('User.token', USER_TOKEN);
-        log(`generalfunc.js: user: new token = ${USER_TOKEN}`);
-    }
-    setVariable('USER_TOKEN', localStorage.getItem('User.token'));
-}
-
-/**
- * Gets current user info from Firebase Auth and stores the id in the global variable USER_ID.
- */
-export const getUserInfo = async () => {
-    const FirebaseAuth = await import('https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.js');
-    FirebaseAuth.onAuthStateChanged(Auth, (user) => {
-        if (!user) {
-            err('generalfunc.js: user not signed in');
-            localStorage.removeItem('Auth.user');
-            return;
-        }
-        setVariable('USER_ID', user.uid);
-        localStorage.setItem('Auth.user', JSON.stringify(user));
-        log(`generalfunc.js: user: id = ${USER_ID}`);
-    });
-}
-
-/**
  * Replace certain special characters of a string with 'ASCII[character_code]'.
  * @param {String} str The string to be encoded.
  * @return {String} The encoded string.
@@ -103,7 +71,6 @@ export const encode = (str) => {
     for (let character of specialChars) {
         str = str.replaceAll(character, `ASCII${character.charCodeAt(0)}`);
     }
-    if (DEBUG) console.log(`Log: generalfunc.js: encode(): str = ${str}`);
     return str;
 }
 
@@ -117,7 +84,6 @@ export const decode = (str) => {
     for (let character of specialChars) {
         str = str.replaceAll(`ASCII${character.charCodeAt(0)}`, character);
     }
-    if (DEBUG) console.log(`Log: generalfunc.js: decode(): str = ${str}`);
     return str;
 }
 
@@ -133,13 +99,11 @@ export const downloadFile = (directurl, filename = `sozialnmedien_${getTimeStamp
             Android.download(directurl, filename);
             log('[AND]: generalfunc.js: download(): through Android WepAppInterface');
         } catch (error) {
-            err(`generalfunc.js: ${error}`);
-            throw error;
+            err(`[AND]: generalfunc.js: download(): ${error}`);
+            throw `Error: generalfunc.js: downloadFile(): ${error}`;
         }
         return;
     }
-    err('generalfunc.js: android interface doesn\'t exist');
-    throw 'Error: android interface doesn\'t exist';
     let element = document.createElement('a');
     element.setAttribute('href', directurl);
     element.setAttribute('download', filename);
@@ -156,15 +120,14 @@ export const downloadFile = (directurl, filename = `sozialnmedien_${getTimeStamp
 export const copyPlainTxt = (copytext = '') => {
     copytext = copytext.replace(/<br>/g, '\n').replace(/<[^>]*>/g, '');
     navigator.clipboard.writeText(copytext).then(() => {
-        log('generalfunc.js: text copied to clipboard');
+        // do nothing
     }).catch((error) => {
-        err(`generalfunc.js: ${error}`);
+        console.error(`generalfunc.js: copyPlainTxt(): ${error}`);
         if (EXISTS_ANDROID_INTERFACE) {
             Android.copyToClipboard(copytext);
-            log('[AND]: generalfunc.js: copyPlainTxt(): through Android WepAppInterface');
             Android.showToast('Text copied!');
         } else {
-            err('generalfunc.js: android interface doesn\'t exist');
+            console.error('generalfunc.js: copyPlainTxt():  android interface doesn\'t exist');
             Dialog.display('alert', 'Oops!', 'Copy text to clipboard failed');
         }
     });
@@ -188,27 +151,27 @@ export const getBrowser = () => {
  */
 export const checkForApkUpdates = () => {
     if (!EXISTS_ANDROID_INTERFACE) return;
-    log('[APK]: generalfunc.js: checking for update');
+    log('[AND]: generalfunc.js: checkForApkUpdates(): checking for update');
     try { 
         switch (Android.updateAvailable()) {
             case 'true':
-                log('generalfunc.js: alertDialog: launch: update available');
+                log('[AND]: generalfunc.js: checkForApkUpdates(): update available');
                 Dialog.display('alert', 'Update available', 'A new version of this Android app is available.', 'Download', () => {
                    setTimeout(() => {
                         Android.showToast('Downloading app, look into your notification panel');
                         Android.download('https://sozialnmedien.web.app/downloads/app.web.sozialnmedien.apk', 'app.web.sozialnmedien.apk');
                     }, 500);
                     Dialog.hide('alert');
-                    log('[AND]: generalfunc.js: downloaded Android app');
+                    log('[AND]: generalfunc.js: checkForApkUpdates(): downloaded Android app');
                 });
                 break;
             case 'failed':
-                err('generalfunc.js: update check failed');
+                err('[AND]: generalfunc.js: checkForApkUpdates(): update check failed');
                 break;
         }
     }
     catch (error) {
-        err(`generalfunc.js: ${error}`);
+        err(`[AND]: generalfunc.js: checkForApkUpdates(): ${error}`);
     }
 }
 
@@ -221,7 +184,7 @@ export const checkForApkUpdates = () => {
 export const getURLQuery = (fields, querystr = location.search) => {
     const Parameters = {};
     for (let item of querystr.split(/\?|\&/)) if (item) {
-        if (item.split(/=/).length != 2) throw `Error: malformed query string for parameter: ${item}`;
+        if (item.split(/=/).length != 2) throw `Error: generalfunc.js: getURLQuery(): malformed URL parameter '${item}'`;
         let param = item.split(/=/)[0];
         let value = item.split(/=/)[1];
         if (!param || !value) continue;
@@ -243,10 +206,46 @@ export const getURLQuery = (fields, querystr = location.search) => {
 export const getURLQueryFieldValue = (field, querystr = location.search) => {
     let values = [];
     for (let item of querystr.split(/\?|\&/)) if (item) {
-        if (item.split(/=/).length != 2) throw `Error: malformed query string for parameter: ${item}`;
+        if (item.split(/=/).length != 2) throw `Error: generalfunc.js: getURLQueryFieldValue(): malformed URL parameter '${item}'`;
         let param = item.split(/=/)[0];
         let value = item.split(/=/)[1];
         if (param && value && field.toLowerCase() == param.toLowerCase()) values.push(value);
     }
     return values.length > 0 ? (values.length == 1 ? values[0] : values) : undefined;
 }
+
+/**
+ * Alerts user of an error and also logs it.
+ * @param {String} error The error to be reported. Can be HTML string.
+ * @param {Object} error The error to be reported.
+ */
+export const displayErrorDialog = (error) => {
+    Dialog.display('alert', 'Fatal error', (
+          '<p style="'
+        +     'margin: 2.5px;'
+        +     'text-align: justify; ">'
+        +     'Please copy the following error and report it to '
+        +     '<a href="mailto:cinexsoft@gmail.com">'
+        +         'cinexsoft@gmail.com'
+        +     '</a>.'
+        + '</p>'
+        + '<pre style="'
+        +     'margin: 3px 0;'
+        +     'padding: 5px;'
+        +     'padding-bottom: 3px;'
+        +     'width: calc(100% - 10px);'
+        +     'background-color:#efefef;'
+        +     'border-radius: 5px;'
+        +     'overflow: auto;'
+        +     'text-align:left;'
+        +     'font-size: 0.8rem;'
+        +     'font-family: sans-serif; ">'
+        +     '<code>'
+        +         error // JSON.stringify({ error.name, error.message, error.stack, }, null, 4)
+        +     '</code>'
+        + '</pre>'
+    ));
+    throw `Error: generalfunc.js: displayErrorDialog(): ${error}`;
+}
+
+console.log('module generalfunc.js loaded');

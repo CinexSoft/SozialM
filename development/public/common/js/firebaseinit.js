@@ -16,14 +16,23 @@ export const FirebaseConfig = {
     measurementId: 'G-MFG92Y4C4F',
 };
 
-// if hosted on localhost, use FB emulator for database on port 9000
-if (location.href.includes('localhost')) FirebaseConfig.databaseURL = 'http://localhost:9000?ns=sozialnmedien';
+// If hosted on localhost, use database at localhost
+if (/localhost|127\.0.\.0\.1/i.test(location.href)) FirebaseConfig.databaseURL = 'http://localhost:9000/?ns=sozialnmedien';
 
 // Initialize Firebase
 export const App = initializeApp(FirebaseConfig);
 export const Database = getDatabase(App);
 export const Auth = getAuth(App);
 
-// database root
-export const DB_ROOT = '/Ci4j82hg96y36rfi96vfrwog7h85f4jh870bpgw52fekftt95hjo7d2i3jgie64k';
-console.log('Log: firebaseinit.js loaded');
+/* Seperates roots for preview and production databases.
+ * This code checks if the URL is the production URL and accordingly sets the
+ * database root.
+ * Production URLs are sozialnmedien.web.app and sozialnmedien.firebaseapp.com
+ */
+const ROOT = (!/sozialnmedien\.web\.app|sozialnmedien\.firebaseapp\.com/i.test(location.href) ? '/preview' : '/production');
+
+export const RTDB_USERS_ROOT = ROOT + '/aa14fdd9-users';
+export const RTDB_SLOGS_ROOT = ROOT + '/b6d6cc89-slogs';
+export const RTDB_CHATS_ROOT = ROOT + '/ce471190-chats';
+
+console.log('module firebaseinit.js loaded');
