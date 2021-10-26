@@ -1,6 +1,6 @@
 {
   "projects": {
-    "dev": "sozialnmedien"
+    "production": "sozialnmedien"
   },
   "targets": {
     "sozialnmedien": {
