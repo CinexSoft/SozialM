@@ -25,15 +25,26 @@ export const isValid = (room_id = 'ejs993ejiei3') => {
         &&  uids.includes(USER_ID)
         &&  !/[^A-Za-z0-9:]/.test(room_id));
     if (!uids.includes(USER_ID)) {
-        Dialog.display('alert', 'Fatal Error!', 'You are not allowed to view this page.');
-        err('messaging: isValid(): unauth room_id');
         localStorage.removeItem('Chat.roomid');
+        err('messaging: isValid(): unauth room_id');
+        Dialog.display('alert', 'Fatal Error!', 'You are not allowed to view this page.', 'Return to inbox', () => {
+            Dialog.hide('alert', () => {
+                location.href = '/messaging/inbox';
+            });
+        });
         throw `Error: messaging: isValid(): unauth room_id = ${room_id}`;
     }
     else if (!valid) {
-        Dialog.display('alert', 'Fatal Error!', 'Invalid chat room id provided.');
-        err('messaging: isValid(): invalid room_id');
         localStorage.removeItem('Chat.roomid');
+        err('messaging: isValid(): invalid room_id');
+        Dialog.display('alert', 'Fatal Error!',
+            '<p class="justify">Can\'t load this chat. Make sure you\'ve provided a valid UID.</p>'
+          + '<p class="justify">If you\'ve not entered a UID, and instead you\'re visiting a link, it\'s invalid.</p>',
+            'Return to inbox', () => {
+            Dialog.hide('alert', () => {
+                location.href = '/messaging/inbox';
+            });
+        });
         throw `Error: messaging: isValid(): invalid room_id = ${room_id}`;
     }
     return valid;

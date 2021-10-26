@@ -1,4 +1,4 @@
-.alertDialog p {
+.alertDialog p.justify {
     margin: 2.5px;
     text-align: justify;
 }
