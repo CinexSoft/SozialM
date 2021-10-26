@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "preview": "sozialnmedien"
+  },
+  "targets": {
+    "sozialnmedien": {
+      "database": {
+        "default": [
+          "sozialnmedien"
+        ]
+      }
+    }
+  }
+}
