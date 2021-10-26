@@ -63,7 +63,7 @@ const main = () => {
     // checking if user is logged in, local storage does exactly what it says
     if (localStorage.getItem('Auth.UID')) {
         log('auth: main(): already signed in');
-        location.href = '/messaging/inbox';
+        location.href = '/';
         return;
     }
 
