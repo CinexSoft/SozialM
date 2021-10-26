@@ -1,12 +1,3 @@
-/* Even before downloading any modules, check if user is authenticated.
- * If not, load /auth if not already on /auth
- */
-if (!localStorage.getItem('Auth.UID')
-&&  !location.href.includes('/auth')) {
-    location.href = '/auth';
-    throw 'Error: init: user not signed in';
-}
-
 import { Database, Auth, } from '/common/js/firebaseinit.js';
 import {
     USER_ID,
@@ -82,10 +73,23 @@ const generateSessionToken = () => {
     setVariable('SESSION_TOKEN', getLongDateTime());
 }
 
-const init = () => {
-    /* Uncomment to start displaying logs in the console.
-     * setVariable('DEBUG', true);
-     */
+/**
+ * It is crucial for this function to run before any other functions.
+ * This function runs if init.js is imported into any script file or if
+ * it is linked into a <script>.
+ *
+ * Purposes:
+ *   Initialises USER_TOKEN & SESSION_TOKEN - variables used by logger.
+ *   Starts the logger.
+ *   Initialises USER_ID.
+ *   Downloads user authentication information.
+ *
+ * Without this, multiple scripts will misbehave.
+ */
+const preInit = () => {
+
+    // Uncomment to start displaying logs in the console.
+    // setVariable('DEBUG', true);
 
     /* These lines are crucial and must be run before all module functions.
      * The order of execution is important and shouldn't be messed with.
@@ -93,7 +97,6 @@ const init = () => {
      * generateSessionToken   ->  Generates a date & time string. Crucial for logging functions.
      * setVariable LOGS_ROOT  ->  Sets LOGS_ROOT to root of current session logs.
      * uploadSessionLogs      ->  Starts uploading logs to db for debugging.
-     * getUserData            ->  Gets user info from Firebase db asynchronously and loads them into global variables / localStorage.
      */
     generateUserToken();
     generateSessionToken();
@@ -103,7 +106,21 @@ const init = () => {
     setInterval(() => {
         uploadSessionLogs();
     }, 5000);
+
+    // gets user info from Firebase db asynchronously and loads them into global variables / localStorage.
     getUserData();
+
+    log(`init.js: init(): USER_ID = ${USER_ID}`);
+    log(`[AND]: init.js: init(): EXISTS_ANDROID_INTERFACE = ${EXISTS_ANDROID_INTERFACE}`);
+}
+
+export const init = () => {
+
+    if (!localStorage.getItem('Auth.UID')
+    &&  !location.href.includes('/auth')) {
+        location.href = '/auth';
+        throw 'Error: init: user not signed in';
+    }
 
     /* Run codes only when document body is fully loaded.
      * ONLY codes that requires DOM interaction should be placed here.
@@ -120,10 +137,8 @@ const init = () => {
         });
         checkForApkUpdates();
     }
-
-    log(`init.js: init(): USER_ID = ${USER_ID}`);
-    log(`[AND]: init.js: init(): EXISTS_ANDROID_INTERFACE = ${EXISTS_ANDROID_INTERFACE}`);
 }
 
-init();
 console.log('module init.js loaded');
+
+preInit();
