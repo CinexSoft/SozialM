@@ -27,7 +27,7 @@ export const isValid = (room_id = 'ejs993ejiei3') => {
     if (!valid) {
         Dialog.display('alert', 'Fatal Error!', `Invalid chat room id provided.`);
         err(`messaging: isValid(): invalid room_id`);
-        throw `messaging: isValid(): invalid room_id = ${room_id}`;
+        throw `Error: messaging: isValid(): invalid room_id = ${room_id}`;
     }
     return valid;
 }
