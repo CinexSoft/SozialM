@@ -11,6 +11,16 @@
     "trailingSlash": false,
     "redirects": [
       {
+        "source": "/inbox",
+        "destination": "/messaging/inbox",
+        "type": 301
+      },
+      {
+        "source": "/chat",
+        "destination": "/messaging/chat",
+        "type": 301
+      },
+      {
         "source": "/",
         "destination": "/messaging/inbox",
         "type": 302
