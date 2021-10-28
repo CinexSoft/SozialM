@@ -57,6 +57,21 @@ const handleError = (state, { code, message, }, nodes, innernodes) => {
 
 const main = () => {
 
+    const loadspin_HTML = (
+        '<div style="'
+      +     'margin: 0 auto;'
+      +     'margin-bottom: 2px;'
+      +     'border: 1.5px solid var(--control-color);'
+      +     'filter: brightness(1000%);'
+      +     'border-top: 1.5px solid transparent;'
+      +     'border-radius: 50%;'
+      +     'width: 0px;'
+      +     'height: 0px;'
+      +     'background-color: transparent;'
+      +     'animation: loadspin 1s linear infinite; ">'
+      + '</div>'
+    );
+
     // root visibility flag
     let visibile_root = 'login';
 
@@ -125,19 +140,7 @@ const main = () => {
         $('#btn_login').disabled = true;
         $('#btn_signup').disabled = true;
         // code for loading spin animation - a styled div
-        $('#btn_login').innerHTML = (
-            '<div style="'
-          +     'margin: 0 auto;'
-          +     'margin-bottom: 2px;'
-          +     'border: 1.5px solid var(--accent-bgcolor);'
-          +     'border-top: 1.5px solid transparent;'
-          +     'border-radius: 50%;'
-          +     'width: 0px;'
-          +     'height: 0px;'
-          +     'background-color: transparent;'
-          +     'animation: loadspin 1s linear infinite; ">'
-          + '</div>'
-        );
+        $('#btn_login').innerHTML = loadspin_HTML;
         const FirebaseAuth = await import('https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.js');
         FirebaseAuth.signInWithEmailAndPassword(Auth, email, password).then((userCredential) => {
             const user = userCredential.user;
@@ -179,19 +182,7 @@ const main = () => {
         $('#btn_login').disabled = true;
         $('#btn_signup').disabled = true;
         // code for loading spin animation - a styled div
-        $('#btn_signup').innerHTML = (
-            '<div style="'
-          +     'margin: 0 auto;'
-          +     'margin-bottom: 2px;'
-          +     'border: 1.5px solid var(--accent-bgcolor);'
-          +     'border-top: 1.5px solid transparent;'
-          +     'border-radius: 50%;'
-          +     'width: 0px;'
-          +     'height: 0px;'
-          +     'background-color: transparent;'
-          +     'animation: loadspin 1s linear infinite; ">'
-          + '</div>'
-        );
+        $('#btn_signup').innerHTML = loadspin_HTML;
         const FirebaseAuth = await import('https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.js');
         FirebaseAuth.createUserWithEmailAndPassword(Auth, email, password).then((userCredential) => {
             const user = userCredential.user;
