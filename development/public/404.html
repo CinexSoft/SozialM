@@ -34,17 +34,24 @@
             transform: rotate(0);    /* initially I wanted to give the background a slant */
         }
         .backhead {
-            margin: calc(50% - 1.25rem)
-            color: white;
-            position: fixed;
-            inset: 0;
-            top: 20px;
+            margin: 13vh auto;
+            width: fit-content;
+            width: -moz-fit-content;
+            height: 2.5rem;
+            padding: 10px;
+            border-radius: 10px;
             font-size: 2.5rem;
             text-align: center;
-            height: 2.5rem;
+            color: white;
+            cursor: pointer;
+            transition-duration: 200ms;
+        }
+        .backhead:hover,
+        .backhead:active {
+            background-color: rgba(0, 0, 0, 0.1);
         }
         .root {
-            position: relative;
+            position: absolute;
             inset: 0;
             top: 35vh;
             margin: auto;
@@ -81,9 +88,6 @@
         @media only screen and (orientation: landscape) and (max-height: 480px) {
             body {
                 height: 140vh;
-            }
-            .backhead {
-                top: 0;
             }
             .background {
                 height: 70vh;

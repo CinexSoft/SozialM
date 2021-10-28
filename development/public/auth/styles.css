@@ -9,27 +9,35 @@
     transform: rotate(0);    /* initially I wanted to give the background a slant */
 }
 .backhead {
-    margin: calc(50% - 1.25rem)
-    color: white;
-    position: fixed;
-    inset: 0;
-    top: 20px;
+    margin: 15vh auto;
+    width: fit-content;
+    width: -moz-fit-content;
+    height: 2.5rem;
+    padding: 10px;
+    border-radius: 10px;
     font-size: 2.5rem;
     text-align: center;
-    height: 2.5rem;
+    color: white;
+    cursor: pointer;
+    transition-duration: 200ms;
+}
+.backhead:hover,
+.backhead:active {
+     background-color: rgba(0, 0, 0, 0.1);
 }
 .root {
-    position: relative;
+    position: absolute;
     inset: 0;
-    top: 40vh;
+    top: 20vh;
     margin: auto;
-    width: 270px;
+    width: 280px;
     height: fit-content;
     height: -moz-fit-content;
     background: white;
     padding: 7px 25px 7px;
     border-radius: 10px;
     box-shadow: 1px 1px 2px #aaa;
+    z-index: 1;
 }
 .root h3 {
     margin: 10px auto 10px;
@@ -117,23 +125,6 @@
     background-color: var(--control-color);
     filter: brightness(90%);
 }
-@media only screen and (orientation: landscape) and (max-height: 480px) {
-   body {
-       height: 140vh;
-   }
-   .backhead {
-       top: 0;
-   }
-   .root {
-       z-index: 1;
-   }
-   .background {
-       height: 70vh;
-   }
-   footer {
-       z-index: 0;
-   }
-}
 /* if screen width is over 400px, scale the root slightly
  * They'll scale out if width decreases below 400px
  */
@@ -142,7 +133,27 @@
         transform: scale(1.15);
     }
 }
-/* Animation for loader
+/* if screen width is over 500px and landscape, scale the root more
+ * They'll scale out if width decreases below 400px
+ */
+@media only screen and (min-width: 500px) {
+    .root {
+        width: 360px;
+        transform: scale(1.25);
+    }
+}
+@media only screen and (orientation: landscape) and (max-height: 480px) {
+   body {
+       height: 140vh;
+   }
+   .root {
+       transform: scale(1.5);
+   }
+   footer {
+       z-index: 0;
+   }
+}
+/* 'Loading' animation
  */
 @-webkit-keyframes loadspin {
     0% {
