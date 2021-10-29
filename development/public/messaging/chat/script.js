@@ -74,30 +74,24 @@ const loadMessagesToUI = (key = null) => {
 // database listener
 const onChatDBUpdated = () => {
 
-    // db listener, fetches new msg on update
-    FirebaseDB.onValue(FirebaseDB.ref(Database, CHAT_ROOT), (snapshot) => {
-        // clean up the ChatData object
-        for (let key in ChatData) delete ChatData[key];
-
+    // db listener, fetches new message from database
+    FirebaseDB.onChildAdded(FirebaseDB.ref(Database, CHAT_ROOT), (snapshot) => {
         // storing messages from db to local
-        snapshot.forEach(({ key }) => {
-            const pushkey = key;
-            const data = snapshot.child(pushkey).val();
-            // store data in local variable
-            ChatData[pushkey] = {
-                pushkey,
-                uid: data.uid,
-                message: HtmlSanitizer.SanitizeHtml(decode(data.message)),
-                time: data.time,
-            };
-        });
+        const data = snapshot.val();
+        const pushkey = data.pushkey;
+        // store data in local variable
+        ChatData[pushkey] = {
+            pushkey,
+            uid: data.uid,
+            message: HtmlSanitizer.SanitizeHtml(decode(data.message)),
+            time: data.time,
+        };
 
         // loads messages into the UI and save to localStorage
         loadMessagesToUI(pushkey);
         localStorage.setItem(`ChatData.${CHAT_ROOM_ID}`, JSON.stringify(ChatData));
 
-        // hide splashcreeen if not already hidden
-        if (SplashScreen.visible) SplashScreen.hide(() => {
+        SplashScreen.hide(() => {
             smoothScroll($('#chatarea'), false, false);
         });
     }, (error) => {
