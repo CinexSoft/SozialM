@@ -98,7 +98,21 @@ const onChatDBUpdated = () => {
         if (/permission|denied/i.test(String(error))) {
             Dialog.display('alert', 'Fatal Error!', 'You are not allowed to view this page.');
         }
-        err(`chat: onChatDBUpdated(): ${error}`);
+        err(`chat: onChatDBUpdated(): onChildAdded(): ${error}`);
+    });
+
+    // removes message from UI, ChatData and localStorage on child removed
+    FirebaseDB.onChildRemoved(FirebaseDB.ref(Database, CHAT_ROOT), (snapshot) => {
+        const pushkey = snapshot.val().pushkey;
+        const node_id = `#${pushkey}`;
+        $(node_id).parentNode.parentNode.removeChild($(node_id).parentNode);
+        delete ChatData[pushkey];
+        localStorage.setItem(`ChatData.${CHAT_ROOM_ID}`, JSON.stringify(ChatData));
+    }, (error) => {
+        if (/permission|denied/i.test(String(error))) {
+            Dialog.display('alert', 'Fatal Error!', 'You are not allowed to view this page.');
+        }
+        err(`chat: onChatDBUpdated(): onChildRemoved(): ${error}`);
     });
 }
 
