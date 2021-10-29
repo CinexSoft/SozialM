@@ -78,7 +78,7 @@ const onChatDBUpdated = () => {
         });
 
         // loads messages into the UI and save to localStorage
-        loadMessagesToUI();
+        loadMessagesToUI(pushkey);
         localStorage.setItem(`ChatData.${CHAT_ROOM_ID}`, JSON.stringify(ChatData));
 
         // hide splashcreeen if not already hidden
@@ -513,9 +513,7 @@ const main = () => {
      * This is done to make the dialog visible immediately after the page
      * is loaded.
      */
-    Overlay.setInstanceOpen(true);
-
-    SplashScreen.visible = true;
+    Overlay.setInstanceOpen(SplashScreen.visible = true);
 
     // load message into ui
     loadMessagesToUI();
@@ -523,10 +521,10 @@ const main = () => {
     // hide splashcreeen and get messages
     if (JSON.stringify(ChatData) != '{}') SplashScreen.hide(() => {
         smoothScroll($('#chatarea'), false, false);
+        // start listening for new messages
+        onChatDBUpdated();
     });
-
-    // start listening for new messages
-    onChatDBUpdated();
+    else onChatDBUpdated();
 }
 
 log('site /messaging/chat loaded');
