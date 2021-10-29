@@ -53,7 +53,7 @@
 .chats_container .chat .message .body {
     
 }
-@media only screen and (orientation: landscape) and (min-height: 420px) {
+@media only screen and (orientation: landscape) and (min-width: 420px) {
     .root,
     .titlebar,
     .chats_container {
