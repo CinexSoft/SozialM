@@ -206,6 +206,7 @@ export const Dialog = {
      * @param {Function} func Optional for 'alert' category, function to run if default is button clicked.
      * @throws {Error} If category is invalid.
      * @throws {Error} If no function is provided for 'action' category.
+     * NOTE: If menu is already visible, it'll throw an error. Make sure to check the console for the error when you feel like the Menu isn't working as expected.
      */
     display(category, title, message, button, func) {
         if (category == 'alert') {
