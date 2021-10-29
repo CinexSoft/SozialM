@@ -16,9 +16,6 @@ export const FirebaseConfig = {
     measurementId: 'G-MFG92Y4C4F',
 };
 
-// If hosted on localhost, use database at localhost
-if (/localhost|127\.0.\.0\.1/i.test(location.href)) FirebaseConfig.databaseURL = 'http://localhost:9000/?ns=sozialnmedien';
-
 // Initialize Firebase
 export const App = initializeApp(FirebaseConfig);
 export const Database = getDatabase(App);
