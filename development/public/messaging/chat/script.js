@@ -35,17 +35,32 @@ import * as Messaging from '/messaging/script.js'
 // the data has unique random values as keys
 let ChatData = {};
 
-const loadMessagesToUI = () => {
-    $('#chatarea').innerHTML = '<div class="info noselect sec_bg" style="font-family:sans-serif">'
-                             + '<p class="fa fa-info-circle">&ensp;Your chats are only server-to-end encrypted. Chats are stored without encryption on CinexSoft databases. We\'re yet to implement end-to-end encryption.</p>'
-                             + '</div>';
-    for (let pushkey in ChatData) {
+/**
+ * Loads message(s) from ChatData into the UI
+ * @param {String} key If it contains a key, only that specific message will be appended to the document. Otherwise the whole of ChatData is used to overwrite the endure HTML document.
+ */
+const loadMessagesToUI = (key = null) => {
+    /**
+     * Actually appends to the UI.
+     * @param {String} pushkey The key of the message that's present in ChatData.
+     */
+    const loadMessageFrom = (pushkey) => {
         const uid = ChatData[pushkey].uid;
-        const getHTML = ChatData[pushkey].message;
-        if (uid == USER_ID) appendHTMLString($('#chatarea'), `<div class="bubbles"><div class="this chatbubble_bg" id="${pushkey}">${getHTML}</div></div>`);
-        else appendHTMLString($('#chatarea'), `<div class="bubbles"><div class="that" id="${pushkey}">${getHTML}</div></div>`);
-        smoothScroll($('#chatarea'), false, false);
+        const code_HTML = ChatData[pushkey].message;
+        if (uid == USER_ID) appendHTMLString($('#chatarea'), `<div class="bubbles"><div class="this chatbubble_bg" id="${pushkey}">${code_HTML}</div></div>`);
+        else appendHTMLString($('#chatarea'), `<div class="bubbles"><div class="that" id="${pushkey}">${code_HTML}</div></div>`);
     }
+    const head_banner = '<div class="info noselect sec_bg" style="font-family:sans-serif">'
+                      + '<p class="fa fa-info-circle">&ensp;Your chats are only server-to-end encrypted. Chats are stored without encryption on CinexSoft databases. We\'re yet to implement end-to-end encryption.</p>'
+                      + '</div>';
+    if (!key) {
+        $('#chatarea').innerHTML = head_banner;
+        for (let pushkey in ChatData) loadMessageFrom(pushkey);
+    } else if (ChatData[key]) {
+        $('#message-placeholder')?.parentNode.parentNode.removeChild($('#message-placeholder').parentNode);
+        loadMessageFrom(key);
+    }
+    smoothScroll($('#chatarea'), false, false);
     /* TODO: code highlight needs to be integrated with btnsend click and markdown preview.
      * Global highlight needs to be disabled.
      */
@@ -54,7 +69,6 @@ const loadMessagesToUI = () => {
         hljs.highlightAll();
     }
     loadTheme();
-    smoothScroll($('#chatarea'), false, false);
 }
 
 // database listener
