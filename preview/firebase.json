@@ -10,6 +10,11 @@
     "trailingSlash": false,
     "redirects": [
       {
+        "source": "/messaging",
+        "destination": "/messaging/inbox",
+        "type": 301
+      },
+      {
         "source": "/inbox",
         "destination": "/messaging/inbox",
         "type": 301
