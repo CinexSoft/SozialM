@@ -23,6 +23,7 @@ import {
     childHasParent,
     appendHTMLString,
     smoothScroll,
+    isFullyScrolled,
 } from '/common/js/domfunc.js';
 import { loadTheme, } from '/common/js/colors.js';
 import { Overlay, SplashScreen, Dialog, Menu, } from '/common/js/overlays.js';
@@ -173,7 +174,11 @@ const main = () => {
         // detects soft keyboard switch
         if (previous_height != document.body.clientHeight
         && previous_width == document.body.clientWidth) softboard_open = !softboard_open;
-        if (document.body.clientHeight - previous_height < 0) {
+
+        // scroll chat area.
+        const keyboard_height = document.body.clientHeight - previous_height;
+        if (keyboard_height < 0
+        && isFullyScrolled($('#chatarea'), keyboard_height)) {
             $('#chatarea').style.scrollBehavior = 'smooth';
             $('#chatarea').scrollTop += Math.abs(document.body.clientHeight - previous_height);
         }
