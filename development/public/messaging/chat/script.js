@@ -279,7 +279,7 @@ const main = () => {
         /* this append is temporary and is overwritten when db update is fetched
          * which is why the class this has no pushkey id
          */
-        appendHTMLString($('#chatarea'), `<div class="bubbles"><div class="this chatbubble_bg">${messageHTML}</div></div>`);
+        appendHTMLString($('#chatarea'), `<div class="bubbles"><div class="this chatbubble_bg" id="message-placeholder">${code_HTML}</div></div>`);
         smoothScroll($('#chatarea'), false, false);
 
         // this delay is to prevent a lag that occurrs when writing to db, within which the dialog is hidden
