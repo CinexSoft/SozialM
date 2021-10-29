@@ -52,36 +52,42 @@ export const Overlay = {
  */
 export const SplashScreen = {
     visible: false,
-    display(innerHTML = '', func) {
-        if (func && typeof func != 'function') {
-            throw `Error: overlays.js: SplashScreen.display(): func is ${typeof func}, expected function`;
-        }
+    /**
+     * Display the splashscreen.
+     * NOTE: If SplashScreen is already visible, it'll throw an error. Make sure to check the console for the error when you feel like the SplashScreen isn't working as expected.
+     * @param {String} innerHTML Optional, default value = ''. Content of the SplashScreen.
+     */
+    display(innerHTML = '') {
         // delay when one overlay is already open
         let timeout = 0;
         if (Overlay.instance_open) timeout = Overlay.animation_duration;
-        setTimeout(() => {
+        if (!this.visible) setTimeout(() => {
             $('#splashScreen').innerHTML = innerHTML;
             $('#splashScreenRoot').style.animation = `fadeIn ${Overlay.animation_duration}ms forwards`;
-            Overlay.setInstanceOpen(true);
-            this.visible = true;
-            setTimeout(() => {
-                if (func) func.call();
-            }, Overlay.animation_duration);
+            Overlay.setInstanceOpen(this.visible = true);
         }, timeout);
+        else throw `Error: overlays.js: SplashScreen.display(): SplashScreen is already visible`;
     },
+    /**
+     * Hide the SplashScreen.
+     * @param {Function} func Optional, function to run once splashscreen is closed.
+     * @throws {Error} If typeof func is not function.
+     */
     hide(func) {
-        $('#splashScreen').innerHTML = '';
-        $('#splashScreenRoot').style.animation = `fadeOut ${Overlay.animation_duration}ms forwards`;
+        let timeout = Overlay.animation_duration;
+        if (this.visible) {
+            $('#splashScreen').innerHTML = '';
+            $('#splashScreenRoot').style.animation = `fadeOut ${Overlay.animation_duration}ms forwards`;
+        } else timeout = 0;
         setTimeout(() => {
-            Overlay.setInstanceOpen(false);
-            this.visible = false;
+            Overlay.setInstanceOpen(this.visible = false);
             // additional function
             if (!func) return;
             if (typeof func != 'function') {
                 throw `Error: overlays.js: SplashScreen.hide(): func is ${typeof func}, expected function`;
             }
             func.call();
-        }, Overlay.animation_duration);
+        }, timeout);
     }
 }
 
