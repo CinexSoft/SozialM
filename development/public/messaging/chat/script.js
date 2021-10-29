@@ -1,5 +1,5 @@
 import { Database, } from '/common/js/firebaseinit.js';
-import * as FirebaseDatabase from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js';
+import * as FirebaseDB from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js';
 import {
     USER_ID,
     DEBUG,
@@ -34,7 +34,7 @@ import * as Messaging from '/messaging/script.js'
 // the data has unique random values as keys
 let ChatData = {};
 
-const loadChatsToUI = () => {
+const loadMessagesToUI = () => {
     $('#chatarea').innerHTML = '<div class="info noselect sec_bg" style="font-family:sans-serif">'
                              + '<p class="fa fa-info-circle">&ensp;Your chats are only server-to-end encrypted. Chats are stored without encryption on CinexSoft databases. We\'re yet to implement end-to-end encryption.</p>'
                              + '</div>';
@@ -57,11 +57,10 @@ const loadChatsToUI = () => {
 }
 
 // database listener
-const startDBListener = () => {
+const onChatDBUpdated = () => {
 
     // db listener, fetches new msg on update
-    FirebaseDatabase.onValue(FirebaseDatabase.ref(Database, CHAT_ROOT), (snapshot) => {
-
+    FirebaseDB.onValue(FirebaseDB.ref(Database, CHAT_ROOT), (snapshot) => {
         // clean up the ChatData object
         for (let key in ChatData) delete ChatData[key];
 
@@ -79,7 +78,7 @@ const startDBListener = () => {
         });
 
         // loads messages into the UI and save to localStorage
-        loadChatsToUI();
+        loadMessagesToUI();
         localStorage.setItem(`ChatData.${CHAT_ROOM_ID}`, JSON.stringify(ChatData));
 
         // hide splashcreeen if not already hidden
@@ -90,7 +89,7 @@ const startDBListener = () => {
         if (/permission|denied/i.test(String(error))) {
             Dialog.display('alert', 'Fatal Error!', 'You are not allowed to view this page.');
         }
-        err(`chat: startDBListener(): ${error}`);
+        err(`chat: onChatDBUpdated(): ${error}`);
     });
 }
 
@@ -274,8 +273,8 @@ const main = () => {
             }
 
             // push generates a unique id which is based on timestamp
-            const pushkey = FirebaseDatabase.push(FirebaseDatabase.ref(Database, CHAT_ROOT)).key;
-            FirebaseDatabase.update(FirebaseDatabase.ref(Database, `${CHAT_ROOT}/${pushkey}`), {
+            const pushkey = FirebaseDB.push(FirebaseDB.ref(Database, CHAT_ROOT)).key;
+            FirebaseDB.update(FirebaseDB.ref(Database, `${CHAT_ROOT}/${pushkey}`), {
                 time,
                 pushkey,
                 message: encode(messageHTML),
@@ -330,7 +329,7 @@ const main = () => {
                     Dialog.display('alert', 'Not allowed', 'You can only unsend a message within 1 hour of sending it.');
                     return;
                 }
-                FirebaseDatabase.update(FirebaseDatabase.ref(Database, CHAT_ROOT), {
+                FirebaseDB.update(FirebaseDB.ref(Database, CHAT_ROOT), {
                     [long_pressed_element.id]: null
                 }).then(() => {
                     delete ChatData[long_pressed_element.id];
@@ -518,8 +517,8 @@ const main = () => {
 
     SplashScreen.visible = true;
 
-    // start listening for arrival/departure of messages
-    loadChatsToUI();
+    // load message into ui
+    loadMessagesToUI();
 
     // hide splashcreeen
     if (ChatData != {}) SplashScreen.hide(() => {
@@ -527,7 +526,7 @@ const main = () => {
     });
 
     // start listening for new messages
-    startDBListener();
+    onChatDBUpdated();
 }
 
 log('site /messaging/chat loaded');
