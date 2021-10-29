@@ -48,8 +48,8 @@ const loadMessagesToUI = () => {
     /* TODO: code highlight needs to be integrated with btnsend click and markdown preview.
      * Global highlight needs to be disabled.
      */
-    if (/pre/i.test($('#chatarea').innerHTML) &&
-        /code/i.test($('#chatarea').innerHTML)) {
+    if (/pre/i.test($('#chatarea').innerHTML)
+    &&  /code/i.test($('#chatarea').innerHTML)) {
         hljs.highlightAll();
     }
     loadTheme();
@@ -161,8 +161,8 @@ const main = () => {
             $('#msgpreview').innerHTML = '<font class="header" color="#7d7d7d">Markdown preview</font><font color="#7d7d7d">Preview appears here</font>';
         }
         // if html contains code, run highlighter
-        if (/pre/i.test(HTML) &&
-            /code/i.test(HTML)) {
+        if (/pre/i.test(HTML)
+        &&  /code/i.test(HTML)) {
             hljs.highlightAll();
         }
     });
