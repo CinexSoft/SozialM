@@ -63,7 +63,7 @@ export const SplashScreen = {
         if (Overlay.instance_open) timeout = Overlay.animation_duration;
         if (!this.visible) setTimeout(() => {
             $('#splashScreen').innerHTML = innerHTML;
-            $('#splashScreenRoot').style.animation = `fadeIn ${Overlay.animation_duration}ms forwards`;
+            $('#splashScreenRoot').style.animation = `fadeIn 0ms forwards`;
             Overlay.setInstanceOpen(this.visible = true);
         }, timeout);
         else throw `Error: overlays.js: SplashScreen.display(): SplashScreen is already visible`;
