@@ -142,11 +142,12 @@
         transform: scale(1.25);
     }
 }
-@media only screen and (orientation: landscape) and (max-height: 480px) {
+@media only screen and (orientation: landscape) and (min-width: 600px) {
    body {
        height: 140vh;
    }
    .root {
+       width: 360px;
        transform: scale(1.5);
    }
    footer {
