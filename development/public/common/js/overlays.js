@@ -238,20 +238,23 @@ export const Dialog = {
  * Needs the code for a menu in the HTML document.
  */
 export const Menu = {
+    visible: false,
     /**
      * Display the menu.
+     * NOTE: If Menu is already visible, it'll throw an error. Make sure to check the console for the error when you feel like the Menu isn't working as expected.
      * @param {String} title Optional, default value = 'Menu'. Title of the menu dialog.
      */
     display(title = 'Menu') {
         // delay when one overlay is already open
         let timeout = 0;
         if (Overlay.instance_open) timeout = Overlay.animation_duration;
-        setTimeout(() => {
+        if (!this.visible) setTimeout(() => {
             getChildElement($('#menu'), 'h2')[0].innerHTML = title.replace(/\n/g, '<br>');;
             $('#menuRoot').style.animation = `fadeIn ${Overlay.animation_duration}ms forwards`;
             $('#menu').style.animation = `scaleIn ${Overlay.animation_duration}ms forwards`;
-            Overlay.setInstanceOpen(true);
+            Overlay.setInstanceOpen(this.visible = true);
         }, timeout);
+        else throw `Error: overlays.js: Menu.display(): menu is already visible`;
     },
     /**
      * Hide the menu.
@@ -259,17 +262,20 @@ export const Menu = {
      * @throws {Error} If typeof func is not function.
      */
     hide(func) {
-        $('#menuRoot').style.animation = `fadeOut ${Overlay.animation_duration}ms forwards`;
-        $('#menu').style.animation = `scaleOut ${Overlay.animation_duration}ms forwards`;
+        let timeout = Overlay.animation_duration;
+        if (this.visible) {
+            $('#menuRoot').style.animation = `fadeOut ${Overlay.animation_duration}ms forwards`;
+            $('#menu').style.animation = `scaleOut ${Overlay.animation_duration}ms forwards`;
+        } else timeout = 0;
         setTimeout(() => {
-            Overlay.setInstanceOpen(false);
+            Overlay.setInstanceOpen(this.visible = false);
             // additional function
             if (!func) return;
             if (typeof func != 'function') {
                 throw `Error: overlays.js: Menu.hide(): func is ${typeof func}, expected function`;
             }
             func.call();
-        }, Overlay.animation_duration);
+        }, timeout);
     }
 }
 
