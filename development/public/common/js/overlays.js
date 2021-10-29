@@ -28,7 +28,7 @@ export const Overlay = {
     /**
      * @type {Number} Can be modified to increase or decrease duration of overlay animations. Too low/high values may break the UI.
      */
-    animation_duration: 350,
+    animation_duration: 250,
     /**
      * @deprecated The value associated is automatically handled by dialog.hide() and menu.hide().
      * Setter for scripts that import modules.js. Please do not use this function as the process has been made automatic.
