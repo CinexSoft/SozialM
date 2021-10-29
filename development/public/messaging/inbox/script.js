@@ -1,7 +1,7 @@
 import { Auth, } from '/common/js/firebaseinit.js';
 import { log, err, } from '/common/js/logging.js';
 import { $, } from '/common/js/domfunc.js';
-import { Dialog, SplashScreen, } from '/common/js/overlays.js';
+import { Overlay, Dialog, SplashScreen, } from '/common/js/overlays.js';
 
 import { CHAT_ROOM_ID, } from '/messaging/script.js';
 import * as Messaging from '/messaging/script.js'
@@ -31,6 +31,7 @@ const getChatHTML = ({ chat_room_id, dp_src, sender, date_time, message }) => {
 const main = () => {
 
     const chatrooms = [];
+    Overlay.setInstanceOpen(SplashScreen.visible = true);
     SplashScreen.hide();
 
     /* code to load chats belonging to the user
@@ -46,6 +47,7 @@ const main = () => {
         Dialog.hide('alert', () => {
             const other_user_id = $('#other_user_id').value;
             if (Messaging.generateChatRoomId(other_user_id)) location.href = `/messaging/chat?id=${CHAT_ROOM_ID}`;
+            SplashScreen.display();
         });
     });
 }
