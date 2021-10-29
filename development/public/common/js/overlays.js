@@ -142,8 +142,9 @@ const AlertDialog = {
 
 // actionDialog
 const ActionDialog = {
+    visible: false,
     onClickFunction: undefined,
-    // default button is Ok
+    // default button is Close
     display(title = 'Alert!', message = '', button = 'OK', func) {
         if (typeof button != 'string') {
             throw `Error: overlays.js: ActionDialog.display(): button is ${typeof button}, expected String`;
@@ -158,30 +159,34 @@ const ActionDialog = {
         // the function to run on button click
         this.onClickFunction = func;
         if (Overlay.instance_open) timeout = Overlay.animation_duration;
-        setTimeout(() => {
+        if (!this.visible) setTimeout(() => {
             getChildElement($('#actionDialog'), 'h2')[0].innerHTML = title.replace(/\n/g, '<br>');;
             getChildElement($('#actionDialog'), '.content')[0].innerHTML = message.replace(/\n/g, '<br>');
             $('#actionDialog_btnOk').innerHTML = button;    
             if (this.onClickFunction) $('#actionDialog_btnOk').addEventListener('click', this.onClickFunction);
             $('#actionDialogRoot').style.animation = `fadeIn ${Overlay.animation_duration}ms forwards`;
             $('#actionDialog').style.animation = `scaleIn ${Overlay.animation_duration}ms forwards`;
-            Overlay.setInstanceOpen(true);
+            Overlay.setInstanceOpen(this.visible = true);
         }, timeout);
+        else throw `Error: overlays.js: ActionDialog.display(): ActionDialog (a.k.a. 'action') is already visible`;
     },
     hide(func) {
-        $('#actionDialogRoot').style.animation = `fadeOut ${Overlay.animation_duration}ms forwards`;
-        $('#actionDialog').style.animation = `scaleOut ${Overlay.animation_duration}ms forwards`;
+        let timeout = Overlay.animation_duration;
+        if (this.visible) {
+            $('#actionDialogRoot').style.animation = `fadeOut ${Overlay.animation_duration}ms forwards`;
+            $('#actionDialog').style.animation = `scaleOut ${Overlay.animation_duration}ms forwards`;
+        } else timeout = 0;
         // remove button click listeners while hiding dialog, if any
         if (this.onClickFunction) $('#actionDialog_btnOk').removeEventListener('click', this.onClickFunction);
         setTimeout(() => {
-            Overlay.setInstanceOpen(false);
+            Overlay.setInstanceOpen(this.visible = false);
             // additional function
             if (!func) return;
             if (typeof func != 'function') {
                 throw `Error: overlays.js: ActionDialog.hide(): func is ${typeof func}, expected function`;
             }
             func.call();
-        }, Overlay.animation_duration);
+        }, timeout);
     }
 }
 
