@@ -98,6 +98,7 @@ export const SplashScreen = {
 
 // alertDialog
 const AlertDialog = {
+    visible: false,
     // default button is Close
     display(title = 'Alert!', message = '', button = 'Close', func) {
         if (typeof button != 'string') {
@@ -109,7 +110,7 @@ const AlertDialog = {
         // delay when one overlay is already open
         let timeout = 0;
         if (Overlay.instance_open) timeout = Overlay.animation_duration;
-        setTimeout(() => {
+        if (!this.visible) setTimeout(() => {
             getChildElement($('#alertDialog'), 'h2')[0].innerHTML = title.replace(/\n/g, '<br>');;
             getChildElement($('#alertDialog'), 'div')[0].innerHTML = message.replace(/\n/g, '<br>');
             $('#alertDialog_btn').innerHTML = button;
@@ -117,21 +118,25 @@ const AlertDialog = {
             if (func) $('#alertDialog_btn').addEventListener('click', func, { once: true });
             $('#alertDialogRoot').style.animation = `fadeIn ${Overlay.animation_duration}ms forwards`;
             $('#alertDialog').style.animation = `scaleIn ${Overlay.animation_duration}ms forwards`;
-            Overlay.setInstanceOpen(true);
+            Overlay.setInstanceOpen(this.visible = true);
         }, timeout);
+        else throw `Error: overlays.js: AlertDialog.display(): AlertDialog (a.k.a. 'alert') is already visible`;
     },
     hide(func) {
-        $('#alertDialogRoot').style.animation = `fadeOut ${Overlay.animation_duration}ms forwards`;
-        $('#alertDialog').style.animation = `scaleOut ${Overlay.animation_duration}ms forwards`;
+        let timeout = Overlay.animation_duration;
+        if (this.visible) {
+            $('#alertDialogRoot').style.animation = `fadeOut ${Overlay.animation_duration}ms forwards`;
+            $('#alertDialog').style.animation = `scaleOut ${Overlay.animation_duration}ms forwards`;
+        } else timeout = 0;
         setTimeout(() => {
-            Overlay.setInstanceOpen(false);
+            Overlay.setInstanceOpen(this.visible = false);
             // additional function
             if (!func) return;
             if (typeof func != 'function') {
                 throw `Error: overlays.js: AlertDialog.hide(): func is ${typeof func}, expected function`;
             }
             func.call();
-        }, Overlay.animation_duration);
+        }, timeout);
     }
 }
 
