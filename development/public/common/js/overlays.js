@@ -52,7 +52,7 @@ export const Overlay = {
  */
 export const SplashScreen = {
     visible: false,
-    display(innerHTML, func) {
+    display(innerHTML = '', func) {
         if (func && typeof func != 'function') {
             throw `Error: overlays.js: SplashScreen.display(): func is ${typeof func}, expected function`;
         }
