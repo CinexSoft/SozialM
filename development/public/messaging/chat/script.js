@@ -136,7 +136,7 @@ const main = () => {
     }
 
     // loads chats from localStorage
-    ChatData = JSON.parse(localStorage.getItem(`ChatData.${CHAT_ROOM_ID}`) || '{}');
+    ChatData = JSON.parse(localStorage.getItem(`ChatData.${CHAT_ROOM_ID}`)) || {};
 
     // on key up listener
     document.addEventListener('keyup', (e) => {
@@ -520,8 +520,8 @@ const main = () => {
     // load message into ui
     loadMessagesToUI();
 
-    // hide splashcreeen
-    if (ChatData != {}) SplashScreen.hide(() => {
+    // hide splashcreeen and get messages
+    if (JSON.stringify(ChatData) != '{}') SplashScreen.hide(() => {
         smoothScroll($('#chatarea'), false, false);
     });
 
