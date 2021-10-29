@@ -40,8 +40,8 @@ const getUserData = async () => {
         setVariable('USER_ROOT', user.uid);
 
         // load all data of the user to UserData
-        const FirebaseDatabase = await import('https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js');
-        FirebaseDatabase.onValue(FirebaseDatabase.ref(Database, USER_ROOT), (snapshot) => {
+        const FirebaseDB = await import('https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js');
+        FirebaseDB.onValue(FirebaseDB.ref(Database, USER_ROOT), (snapshot) => {
             const data = snapshot.val();
             setVariable('UserData', data);
             localStorage.setItem('UserData', JSON.stringify(data));
