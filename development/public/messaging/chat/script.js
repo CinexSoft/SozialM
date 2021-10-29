@@ -240,8 +240,8 @@ const main = () => {
         }
 
         // Convert and then sanitize html.
-        const messageHTML = MDtoHTML.makeHtml(msg);
-        if (!messageHTML.trim()) return;
+        const code_HTML = MDtoHTML.makeHtml(msg);
+        if (!code_HTML.trim()) return;
         quote_reply_text = '';
         $('#txtmsg').value = '';
         $('#msgpreview').innerHTML = '<font class="header" color="#7d7d7d">Markdown preview</font>';
@@ -304,7 +304,7 @@ const main = () => {
             FirebaseDB.update(FirebaseDB.ref(Database, `${CHAT_ROOT}/${pushkey}`), {
                 time,
                 pushkey,
-                message: encode(messageHTML),
+                message: encode(code_HTML),
                 uid: USER_ID,
             }).then(() => {
                 loadTheme();
