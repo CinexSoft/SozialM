@@ -545,16 +545,8 @@ const main = () => {
      */
     Overlay.setInstanceOpen(SplashScreen.visible = true);
 
-    // load message into ui
-    loadMessagesToUI();
-
-    // hide splashcreeen and get messages
-    if (JSON.stringify(ChatData) != '{}') SplashScreen.hide(() => {
-        smoothScroll($('#chatarea'), false, false);
-        // start listening for new messages
-        onChatDBUpdated();
-    });
-    else onChatDBUpdated();
+    // start listening for db changes
+    onChatDBUpdated();
 }
 
 log('site /messaging/chat loaded');
