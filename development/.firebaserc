@@ -1,12 +1,12 @@
 {
   "projects": {
-    "dev": "sozialnmedien"
+    "dev": "sozialm"
   },
   "targets": {
-    "sozialnmedien": {
+    "sozialm": {
       "database": {
         "default": [
-          "sozialnmedien"
+          "sozialm"
         ]
       }
     }

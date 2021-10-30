@@ -39,7 +39,7 @@ jobs:
       - name: Deploy to preview
         run: |
           cd ./preview
-          firebase use sozialnmedien --token "${{ secrets.FIREBASE_TOKEN }}"
+          firebase use sozialm --token "${{ secrets.FIREBASE_TOKEN }}"
 
           # generate CHANNEL_ID
           CHANNEL_ID=$(git branch --show-current       | sed "s/\//-/g")-$(date | sed "s/\s//g" | sed "s/://g")

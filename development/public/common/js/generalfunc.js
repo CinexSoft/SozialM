@@ -93,7 +93,7 @@ export const decode = (str) => {
  * @param {String} filename Optional, but recommended otherwise the file extension is set to '.bin'.
  * @throws {Error} android interface doesn't exist.
  */
-export const downloadFile = (directurl, filename = `sozialnmedien_${getTimeStamp()}.bin`) => { 
+export const downloadFile = (directurl, filename = `sozialm_${getTimeStamp()}.bin`) => {
     if (EXISTS_ANDROID_INTERFACE) {
         try {
             Android.download(directurl, filename);
@@ -159,7 +159,7 @@ export const checkForApkUpdates = () => {
                 Dialog.display('alert', 'Update available', 'A new version of this Android app is available.', 'Download', () => {
                    setTimeout(() => {
                         Android.showToast('Downloading app, look into your notification panel');
-                        Android.download('https://sozialnmedien.web.app/downloads/app.web.sozialnmedien.apk', 'app.web.sozialnmedien.apk');
+                        Android.download('https://sozialm.web.app/downloads/app.web.sozialm.apk', 'app.web.sozialm.apk');
                     }, 500);
                     Dialog.hide('alert');
                     log('[AND]: generalfunc.js: checkForApkUpdates(): downloaded Android app');

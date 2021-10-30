@@ -501,7 +501,7 @@ const main = () => {
                     Dialog.hide('action', () => {
                         try {
                             Android.showToast('Look into your notification panel for download progress');
-                            downloadFile(e.target.src, `${e.target.alt.trim() ? e.target.alt.trim() : 'image'}_sozialnmedien_${getTimeStamp()}.png`);
+                            downloadFile(e.target.src, `${e.target.alt.trim() ? e.target.alt.trim() : 'image'}_sozialm_${getTimeStamp()}.png`);
                         }
                         catch (error) {
                             Dialog.display('alert', 'Download failed', `Failed to download file. Click <a href="${e.target.src}">here</a> to visit file in browser.`);

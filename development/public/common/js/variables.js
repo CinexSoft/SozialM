@@ -81,8 +81,8 @@ export let CHAT_ROOT;
  * @type {Boolean}
  */
 export const EXISTS_ANDROID_INTERFACE = typeof Android !== 'undefined'
-                                     && typeof Android.isSozialnMedienWebapp === 'function'
-                                     && Android.isSozialnMedienWebapp();
+                                     && typeof Android.isSozialMWebapp === 'function'
+                                     && Android.isSozialMWebapp();
 
 /**
  * Setter for global variables.
