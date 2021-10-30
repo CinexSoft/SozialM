@@ -40,8 +40,8 @@ const getUserData = async () => {
         setVariable('USER_ROOT', user.uid);
 
         // load all data of the user to UserData
-        const FirebaseDatabase = await import('https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js');
-        FirebaseDatabase.onValue(FirebaseDatabase.ref(Database, USER_ROOT), (snapshot) => {
+        const FirebaseDB = await import('https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js');
+        FirebaseDB.onValue(FirebaseDB.ref(Database, USER_ROOT), (snapshot) => {
             const data = snapshot.val();
             setVariable('UserData', data);
             localStorage.setItem('UserData', JSON.stringify(data));
@@ -121,22 +121,16 @@ export const init = () => {
         location.href = '/auth';
         throw 'Error: init: user not signed in';
     }
-
-    /* Run codes only when document body is fully loaded.
-     * ONLY codes that requires DOM interaction should be placed here.
-     */
-    document.body.onload = () => {
-        // global onclick listeners
-        document.body.addEventListener('click', (e) => {
-            log(`init.js: onclick 'document.body': node = ${e.target.nodeName || 'null'} : class = ${e.target.className || 'null'} : id = ${e.target.id || 'null'}`);
-            if (['alertDialog_btn', 'actionDialog_btnClose'].includes(e.target.id) && e.target.innerHTML == 'Close') {
-                e.target.id.slice(0, 5) == 'alert' ? Dialog.hide('alert') : Dialog.hide('action');
-            } else if (['menuRoot', 'actionDialogRoot'].includes(e.target.id)) {
-                e.target.id.slice(0, 4) == 'menu' ? Menu.hide() : Dialog.hide('action');
-            }
-        });
-        checkForApkUpdates();
-    }
+    // global onclick listeners
+    document.body.addEventListener('click', (e) => {
+        log(`init.js: onclick 'document.body': node = ${e.target.nodeName || 'null'} : class = ${e.target.className || 'null'} : id = ${e.target.id || 'null'}`);
+        if (['alertDialog_btn', 'actionDialog_btnClose'].includes(e.target.id) && e.target.innerHTML == 'Close') {
+            e.target.id.slice(0, 5) == 'alert' ? Dialog.hide('alert') : Dialog.hide('action');
+        } else if (['menuRoot', 'actionDialogRoot'].includes(e.target.id)) {
+            e.target.id.slice(0, 4) == 'menu' ? Menu.hide() : Dialog.hide('action');
+        }
+    });
+    checkForApkUpdates();
 }
 
 console.log('module init.js loaded');

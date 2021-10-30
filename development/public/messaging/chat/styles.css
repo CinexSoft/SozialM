@@ -245,7 +245,7 @@
 .msgbox button:active {
     font-size: 22px;
 }
-@media only screen and (orientation: landscape) and (min-height: 420px) {
+@media only screen and (orientation: landscape) and (min-width: 420px) {
     .chatbg,
     .root,
     .titlebar,

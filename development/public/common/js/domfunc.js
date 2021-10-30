@@ -99,4 +99,15 @@ export const smoothScroll = (element, get_behavior_only = false, smooth = true) 
     element.scrollTop = element.scrollHeight;
 }
 
+/**
+ * Checks if a node is fully scrolled.
+ * @param {Node} node The node to check.
+ * @param {Number} adjustment Adjustment for keyboard popup / etc. Optional, default value is 0.
+ * @return {Boolean}
+ */
+export const isFullyScrolled = (node, adjustment = 0) => {
+    const extra_adjustment = 10;
+    return node.scrollTop + node.clientHeight >= node.scrollHeight + adjustment - extra_adjustment;
+}
+
 console.log('module domfunc.js loaded');

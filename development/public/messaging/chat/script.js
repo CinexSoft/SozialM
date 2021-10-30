@@ -1,5 +1,5 @@
 import { Database, } from '/common/js/firebaseinit.js';
-import * as FirebaseDatabase from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js';
+import * as FirebaseDB from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js';
 import {
     USER_ID,
     DEBUG,
@@ -23,6 +23,7 @@ import {
     childHasParent,
     appendHTMLString,
     smoothScroll,
+    isFullyScrolled,
 } from '/common/js/domfunc.js';
 import { loadTheme, } from '/common/js/colors.js';
 import { Overlay, SplashScreen, Dialog, Menu, } from '/common/js/overlays.js';
@@ -34,63 +35,87 @@ import * as Messaging from '/messaging/script.js'
 // the data has unique random values as keys
 let ChatData = {};
 
-const loadChatsToUI = () => {
-    $('#chatarea').innerHTML = '<div class="info noselect sec_bg" style="font-family:sans-serif">'
-                             + '<p class="fa fa-info-circle">&ensp;Your chats are only server-to-end encrypted. Chats are stored without encryption on CinexSoft databases. We\'re yet to implement end-to-end encryption.</p>'
-                             + '</div>';
-    for (let pushkey in ChatData) {
+/**
+ * Loads message(s) from ChatData into the UI
+ * @param {String} key If it contains a key, only that specific message will be appended to the document. Otherwise the whole of ChatData is used to overwrite the endure HTML document.
+ */
+const loadMessagesToUI = (key = null) => {
+    /**
+     * Actually appends to the UI.
+     * @param {String} pushkey The key of the message that's present in ChatData.
+     */
+    const loadMessageFrom = (pushkey) => {
         const uid = ChatData[pushkey].uid;
-        const getHTML = ChatData[pushkey].message;
-        if (uid == USER_ID) appendHTMLString($('#chatarea'), `<div class="bubbles"><div class="this chatbubble_bg" id="${pushkey}">${getHTML}</div></div>`);
-        else appendHTMLString($('#chatarea'), `<div class="bubbles"><div class="that" id="${pushkey}">${getHTML}</div></div>`);
-        smoothScroll($('#chatarea'), false, false);
+        const code_HTML = ChatData[pushkey].message;
+        if (uid == USER_ID) appendHTMLString($('#chatarea'), `<div class="bubbles"><div class="this chatbubble_bg" id="${pushkey}">${code_HTML}</div></div>`);
+        else appendHTMLString($('#chatarea'), `<div class="bubbles"><div class="that" id="${pushkey}">${code_HTML}</div></div>`);
     }
+    const head_banner = '<div class="info noselect sec_bg" style="font-family:sans-serif">'
+                      + '<p class="fa fa-info-circle">&ensp;Your chats are only server-to-end encrypted. Chats are stored without encryption on CinexSoft databases. We\'re yet to implement end-to-end encryption.</p>'
+                      + '</div>';
+    if (!key) {
+        $('#chatarea').innerHTML = head_banner;
+        for (let pushkey in ChatData) loadMessageFrom(pushkey);
+    } else if (ChatData[key]) {
+        $('#message-placeholder')?.parentNode.parentNode.removeChild($('#message-placeholder').parentNode);
+        loadMessageFrom(key);
+    }
+    smoothScroll($('#chatarea'), false, false);
     /* TODO: code highlight needs to be integrated with btnsend click and markdown preview.
      * Global highlight needs to be disabled.
      */
-    if (/pre/i.test($('#chatarea').innerHTML) &&
-        /code/i.test($('#chatarea').innerHTML)) {
+    if (/pre/i.test($('#chatarea').innerHTML)
+    &&  /code/i.test($('#chatarea').innerHTML)) {
         hljs.highlightAll();
     }
     loadTheme();
-    smoothScroll($('#chatarea'), false, false);
 }
 
 // database listener
-const startDBListener = () => {
+const onChatDBUpdated = () => {
 
-    // db listener, fetches new msg on update
-    FirebaseDatabase.onValue(FirebaseDatabase.ref(Database, CHAT_ROOT), (snapshot) => {
-
-        // clean up the ChatData object
-        for (let key in ChatData) delete ChatData[key];
-
-        // storing messages from db to local
-        snapshot.forEach(({ key }) => {
-            const pushkey = key;
-            const data = snapshot.child(pushkey).val();
-            // store data in local variable
+    // db listener, fetches new message from database
+    FirebaseDB.onChildAdded(FirebaseDB.ref(Database, CHAT_ROOT), (snapshot) => {
+        if (snapshot.val() != 'default-placeholder') {
+            // storing message from db to local variable
+            const data = snapshot.val();
+            const pushkey = data.pushkey;
             ChatData[pushkey] = {
                 pushkey,
                 uid: data.uid,
                 message: HtmlSanitizer.SanitizeHtml(decode(data.message)),
                 time: data.time,
             };
-        });
-
-        // loads messages into the UI and save to localStorage
-        loadChatsToUI();
-        localStorage.setItem(`ChatData.${CHAT_ROOM_ID}`, JSON.stringify(ChatData));
-
-        // hide splashcreeen if not already hidden
-        if (SplashScreen.visible) SplashScreen.hide(() => {
+            // loads messages into the UI and save to localStorage
+            loadMessagesToUI(pushkey);
+            localStorage.setItem(`ChatData.${CHAT_ROOM_ID}`, JSON.stringify(ChatData));
+        }
+        /* note that SplashScreen needs to be hidden regardless of pushkey being a placeholder.
+         * The sole purpose of the placeholder is to trigger onChildAdded, so that it can call
+         * the SplashScreen.hide().
+         */
+        SplashScreen.hide(() => {
             smoothScroll($('#chatarea'), false, false);
         });
     }, (error) => {
         if (/permission|denied/i.test(String(error))) {
             Dialog.display('alert', 'Fatal Error!', 'You are not allowed to view this page.');
         }
-        err(`chat: startDBListener(): ${error}`);
+        err(`chat: onChatDBUpdated(): onChildAdded(): ${error}`);
+    });
+
+    // removes message from UI, ChatData and localStorage on child removed
+    FirebaseDB.onChildRemoved(FirebaseDB.ref(Database, CHAT_ROOT), (snapshot) => {
+        const pushkey = snapshot.val().pushkey;
+        const node_id = `#${pushkey}`;
+        $(node_id).parentNode.parentNode.removeChild($(node_id).parentNode);
+        delete ChatData[pushkey];
+        localStorage.setItem(`ChatData.${CHAT_ROOM_ID}`, JSON.stringify(ChatData));
+    }, (error) => {
+        if (/permission|denied/i.test(String(error))) {
+            Dialog.display('alert', 'Fatal Error!', 'You are not allowed to view this page.');
+        }
+        err(`chat: onChatDBUpdated(): onChildRemoved(): ${error}`);
     });
 }
 
@@ -137,7 +162,7 @@ const main = () => {
     }
 
     // loads chats from localStorage
-    ChatData = JSON.parse(localStorage.getItem(`ChatData.${CHAT_ROOM_ID}`) || '{}');
+    ChatData = JSON.parse(localStorage.getItem(`ChatData.${CHAT_ROOM_ID}`)) || {};
 
     // on key up listener
     document.addEventListener('keyup', (e) => {
@@ -162,8 +187,8 @@ const main = () => {
             $('#msgpreview').innerHTML = '<font class="header" color="#7d7d7d">Markdown preview</font><font color="#7d7d7d">Preview appears here</font>';
         }
         // if html contains code, run highlighter
-        if (/pre/i.test(HTML) &&
-            /code/i.test(HTML)) {
+        if (/pre/i.test(HTML)
+        &&  /code/i.test(HTML)) {
             hljs.highlightAll();
         }
     });
@@ -174,7 +199,11 @@ const main = () => {
         // detects soft keyboard switch
         if (previous_height != document.body.clientHeight
         && previous_width == document.body.clientWidth) softboard_open = !softboard_open;
-        if (document.body.clientHeight - previous_height < 0) {
+
+        // scroll chat area.
+        const keyboard_height = document.body.clientHeight - previous_height;
+        if (keyboard_height < 0
+        && isFullyScrolled($('#chatarea'), keyboard_height)) {
             $('#chatarea').style.scrollBehavior = 'smooth';
             $('#chatarea').scrollTop += Math.abs(document.body.clientHeight - previous_height);
         }
@@ -214,8 +243,8 @@ const main = () => {
         }
 
         // Convert and then sanitize html.
-        const messageHTML = MDtoHTML.makeHtml(msg);
-        if (!messageHTML.trim()) return;
+        const code_HTML = MDtoHTML.makeHtml(msg);
+        if (!code_HTML.trim()) return;
         quote_reply_text = '';
         $('#txtmsg').value = '';
         $('#msgpreview').innerHTML = '<font class="header" color="#7d7d7d">Markdown preview</font>';
@@ -253,7 +282,7 @@ const main = () => {
         /* this append is temporary and is overwritten when db update is fetched
          * which is why the class this has no pushkey id
          */
-        appendHTMLString($('#chatarea'), `<div class="bubbles"><div class="this chatbubble_bg">${messageHTML}</div></div>`);
+        appendHTMLString($('#chatarea'), `<div class="bubbles"><div class="this chatbubble_bg" id="message-placeholder">${code_HTML}</div></div>`);
         smoothScroll($('#chatarea'), false, false);
 
         // this delay is to prevent a lag that occurrs when writing to db, within which the dialog is hidden
@@ -274,11 +303,11 @@ const main = () => {
             }
 
             // push generates a unique id which is based on timestamp
-            const pushkey = FirebaseDatabase.push(FirebaseDatabase.ref(Database, CHAT_ROOT)).key;
-            FirebaseDatabase.update(FirebaseDatabase.ref(Database, `${CHAT_ROOT}/${pushkey}`), {
+            const pushkey = FirebaseDB.push(FirebaseDB.ref(Database, CHAT_ROOT)).key;
+            FirebaseDB.update(FirebaseDB.ref(Database, `${CHAT_ROOT}/${pushkey}`), {
                 time,
                 pushkey,
-                message: encode(messageHTML),
+                message: encode(code_HTML),
                 uid: USER_ID,
             }).then(() => {
                 loadTheme();
@@ -330,7 +359,7 @@ const main = () => {
                     Dialog.display('alert', 'Not allowed', 'You can only unsend a message within 1 hour of sending it.');
                     return;
                 }
-                FirebaseDatabase.update(FirebaseDatabase.ref(Database, CHAT_ROOT), {
+                FirebaseDB.update(FirebaseDB.ref(Database, CHAT_ROOT), {
                     [long_pressed_element.id]: null
                 }).then(() => {
                     delete ChatData[long_pressed_element.id];
@@ -472,7 +501,7 @@ const main = () => {
                     Dialog.hide('action', () => {
                         try {
                             Android.showToast('Look into your notification panel for download progress');
-                            downloadFile(e.target.src, `${e.target.alt.trim() ? e.target.alt.trim() : 'image'}_sozialnmedien_${getTimeStamp()}.png`);
+                            downloadFile(e.target.src, `${e.target.alt.trim() ? e.target.alt.trim() : 'image'}_sozialm_${getTimeStamp()}.png`);
                         }
                         catch (error) {
                             Dialog.display('alert', 'Download failed', `Failed to download file. Click <a href="${e.target.src}">here</a> to visit file in browser.`);
@@ -514,20 +543,10 @@ const main = () => {
      * This is done to make the dialog visible immediately after the page
      * is loaded.
      */
-    Overlay.setInstanceOpen(true);
+    Overlay.setInstanceOpen(SplashScreen.visible = true);
 
-    SplashScreen.visible = true;
-
-    // start listening for arrival/departure of messages
-    loadChatsToUI();
-
-    // hide splashcreeen
-    if (ChatData != {}) SplashScreen.hide(() => {
-        smoothScroll($('#chatarea'), false, false);
-    });
-
-    // start listening for new messages
-    startDBListener();
+    // start listening for db changes
+    onChatDBUpdated();
 }
 
 log('site /messaging/chat loaded');

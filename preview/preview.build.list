@@ -1,4 +1,4 @@
-Built on Tue Oct 26 22:20:43 UTC 2021
+Built on Sat Oct 30 14:53:46 UTC 2021
 
 Readable code sizes:
 8.0K	./development/public/common/js/colors.js
@@ -7,14 +7,14 @@ Readable code sizes:
 8.0K	./development/public/common/js/init.js
 4.0K	./development/public/common/js/firebaseinit.js
 8.0K	./development/public/common/js/variables.js
-12K	./development/public/common/js/overlays.js
+16K	./development/public/common/js/overlays.js
 12K	./development/public/common/js/generalfunc.js
 4.0K	./development/public/profile/script.js
 24K	./development/public/messaging/chat/script.js
-4.0K	./development/public/messaging/script.js
+8.0K	./development/public/messaging/script.js
 4.0K	./development/public/messaging/inbox/script.js
 4.0K	./development/public/settings/script.js
-12K	./development/public/auth/script.js
+8.0K	./development/public/auth/script.js
 
 Obfuscated code sizes:
 4.0K	./preview/public/common/js/colors.js
@@ -26,11 +26,11 @@ Obfuscated code sizes:
 12K	./preview/public/common/js/overlays.js
 12K	./preview/public/common/js/generalfunc.js
 4.0K	./preview/public/profile/script.js
-20K	./preview/public/messaging/chat/script.js
+24K	./preview/public/messaging/chat/script.js
 8.0K	./preview/public/messaging/script.js
 4.0K	./preview/public/messaging/inbox/script.js
 4.0K	./preview/public/settings/script.js
 12K	./preview/public/auth/script.js
 
-URL: https://sozialnmedien--oogle-prv-tueoct26222112utc2021-scugm5bv.web.app
+URL: https://sozialm--oogle-prv-satoct30145436utc2021-a9gbiotn.web.app
 

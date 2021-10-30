@@ -3,7 +3,7 @@ import { USER_ID, } from '/common/js/variables.js';
 import { log, err, } from '/common/js/logging.js';
 import { $, } from '/common/js/domfunc.js';
 import { Colors, } from '/common/js/colors.js';
-import { Dialog, SplashScreen, } from '/common/js/overlays.js';
+import { Overlay, Dialog, SplashScreen, } from '/common/js/overlays.js';
 
 import * as Init from '/common/js/init.js';
 
@@ -203,7 +203,8 @@ const main = () => {
             handleError('signup', error, nodes, innernodes);
         });
     });
-    SplashScreen.hide();
+    Overlay.setInstanceOpen(SplashScreen.visible = true);
+    document.body.onload = () => SplashScreen.hide();
 }
 
 log('site /auth loaded');
