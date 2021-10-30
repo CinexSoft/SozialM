@@ -106,7 +106,8 @@ export const smoothScroll = (element, get_behavior_only = false, smooth = true) 
  * @return {Boolean}
  */
 export const isFullyScrolled = (node, adjustment = 0) => {
-    return node.scrollTop + node.clientHeight >= node.scrollHeight + adjustment;
+    const extra_adjustment = 10;
+    return node.scrollTop + node.clientHeight >= node.scrollHeight + adjustment - extra_adjustment;
 }
 
 console.log('module domfunc.js loaded');
