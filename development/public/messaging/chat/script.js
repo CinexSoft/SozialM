@@ -76,21 +76,24 @@ const onChatDBUpdated = () => {
 
     // db listener, fetches new message from database
     FirebaseDB.onChildAdded(FirebaseDB.ref(Database, CHAT_ROOT), (snapshot) => {
-        // storing messages from db to local
-        const data = snapshot.val();
-        const pushkey = data.pushkey;
-        // store data in local variable
-        ChatData[pushkey] = {
-            pushkey,
-            uid: data.uid,
-            message: HtmlSanitizer.SanitizeHtml(decode(data.message)),
-            time: data.time,
-        };
-
-        // loads messages into the UI and save to localStorage
-        loadMessagesToUI(pushkey);
-        localStorage.setItem(`ChatData.${CHAT_ROOM_ID}`, JSON.stringify(ChatData));
-
+        if (snapshot.val() != 'default-placeholder') {
+            // storing message from db to local variable
+            const data = snapshot.val();
+            const pushkey = data.pushkey;
+            ChatData[pushkey] = {
+                pushkey,
+                uid: data.uid,
+                message: HtmlSanitizer.SanitizeHtml(decode(data.message)),
+                time: data.time,
+            };
+            // loads messages into the UI and save to localStorage
+            loadMessagesToUI(pushkey);
+            localStorage.setItem(`ChatData.${CHAT_ROOM_ID}`, JSON.stringify(ChatData));
+        }
+        /* note that SplashScreen needs to be hidden regardless of pushkey being a placeholder.
+         * The sole purpose of the placeholder is to trigger onChildAdded, so that it can call
+         * the SplashScreen.hide().
+         */
         SplashScreen.hide(() => {
             smoothScroll($('#chatarea'), false, false);
         });
