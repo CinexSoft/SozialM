@@ -45,8 +45,5 @@
         "type": 301
       }
     ]
-  },
-  "database": {
-    "rules": "database.rules.json"
   }
 }
