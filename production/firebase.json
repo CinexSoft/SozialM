@@ -11,7 +11,37 @@
     "redirects": [
       {
         "source": "/",
+        "destination": "https://sozialm.web.app",
+        "type": 301
+      },
+      {
+        "source": "/auth",
+        "destination": "https://sozialm.web.app/auth",
+        "type": 301
+      },
+      {
+        "source": "/messaging",
         "destination": "https://sozialm.web.app/messaging/inbox",
+        "type": 301
+      },
+      {
+        "source": "/inbox",
+        "destination": "https://sozialm.web.app/messaging/inbox",
+        "type": 301
+      },
+      {
+        "source": "/chat",
+        "destination": "https://sozialm.web.app/messaging/chat",
+        "type": 301
+      },
+      {
+        "source": "/messaging/inbox",
+        "destination": "https://sozialm.web.app/messaging/inbox",
+        "type": 301
+      },
+      {
+        "source": "/messaging/chat",
+        "destination": "https://sozialm.web.app/messaging/chat",
         "type": 301
       }
     ]
