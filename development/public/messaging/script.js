@@ -1,4 +1,6 @@
-import { USER_ID, setVariable, } from '/common/js/variables.js';
+import { Database, } from '/common/js/firebaseinit.js';
+import * as FirebaseDB from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js';
+import { USER_ID, setVariable, CHAT_ROOT, } from '/common/js/variables.js';
 import { checkForApkUpdates, getURLQueryFieldValue, } from '/common/js/generalfunc.js';
 import { log, err, } from '/common/js/logging.js';
 import { Dialog, } from '/common/js/overlays.js';
@@ -97,9 +99,23 @@ export const init = () => {
     // checking if chat room exists and is valid
     if ((room_id = localStorage.getItem('Chat.roomid')) && isValid(room_id)) {
         CHAT_ROOM_ID = room_id;
-        log(`messaging: init(): room_id = ${CHAT_ROOM_ID}`);
-        if (location.href.includes('/chat')) localStorage.removeItem('Chat.roomid');
-        else location.href = `/messaging/chat?id=${CHAT_ROOM_ID}`;
+        /* This code writes a placeholder in the database which allows onChildAdded
+         * to be triggered.
+         * onChildAdded doesn't trigger on an empty database, so this code is meant
+         * specifically for empty databases.
+         * This code is harmless for non-empty databases.
+         */
+        FirebaseDB.update(FirebaseDB.ref(Database, CHAT_ROOT), {
+            ' placeholder': 'default-placeholder',
+        }).then(() => {
+            if (location.href.includes('/chat')) localStorage.removeItem('Chat.roomid');
+            else location.href = `/messaging/chat?id=${CHAT_ROOM_ID}`;
+        }).catch((error) => {
+            if (/permission|denied/i.test(String(error))) {
+                Dialog.display('alert', 'Fatal Error!', 'You are not allowed to view this page.');
+            }
+            err(`messaging: init(): FirebaseDB.update(): ${error}`);
+        });
         return;
     }
 
