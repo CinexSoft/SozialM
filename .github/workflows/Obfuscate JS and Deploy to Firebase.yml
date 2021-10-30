@@ -33,7 +33,7 @@ jobs:
       - name: Firebase deploy
         run: |
           cd ./production
-          firebase use sozialnmedien --token "${{ secrets.FIREBASE_TOKEN }}"
+          firebase use sozialm --token "${{ secrets.FIREBASE_TOKEN }}"
           firebase deploy --token "${{ secrets.FIREBASE_TOKEN }}"
           cd ../
       - name: Delete production files
