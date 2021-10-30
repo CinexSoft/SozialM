@@ -4,7 +4,7 @@ A shot at a social media platform. Front-end only.
 ## Hosting
 - Firebase is used for hosting and database.
 - Project is hosted at [https://sozialm.web.app](https://sozialm.web.app).
-- Webview based APK [release](https://github.com/CinexSoft/SozialMApk/releases/tag/v2021.09.20.16.50)
+- Webview based APK [release](https://github.com/CinexSoft/SozialMApk/releases/tag/v2021.10.30.19.25)
 
 ## Contribute
 - Please go through [CONTRIBUTING.md](docs/CONTRIBUTING.md).
