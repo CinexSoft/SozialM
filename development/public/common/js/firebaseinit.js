@@ -6,14 +6,13 @@ import { getAuth } from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 export const FirebaseConfig = {
-    apiKey: 'AIzaSyBeOE11fAnnEQTimqK8VClhlWMzyOu3ob8',
+    apiKey: 'AIzaSyAcHY3en-8pRN7Y4fdOVhd6a5pPpDPcrWo',
     authDomain: 'sozialm.firebaseapp.com',
-    databaseURL: 'https://sozialm-default-rtdb.firebaseio.com',
+    databaseURL: 'https://sozialm-default-rtdb.asia-southeast1.firebasedatabase.app',
     projectId: 'sozialm',
     storageBucket: 'sozialm.appspot.com',
-    messagingSenderId: '584583202268',
-    appId: '1:584583202268:web:60e4997e7a59138bdfbb19',
-    measurementId: 'G-MFG92Y4C4F',
+    messagingSenderId: '809208104657',
+    appId: '1:809208104657:web:b251dc9676fa16bf1ba7f0',
 };
 
 // If hosted on localhost, use database at localhost
