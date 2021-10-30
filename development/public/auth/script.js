@@ -204,7 +204,7 @@ const main = () => {
         });
     });
     Overlay.setInstanceOpen(SplashScreen.visible = true);
-    SplashScreen.hide();
+    document.body.onload = () => SplashScreen.hide();
 }
 
 log('site /auth loaded');

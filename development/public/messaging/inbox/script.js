@@ -32,7 +32,7 @@ const main = () => {
 
     const chatrooms = [];
     Overlay.setInstanceOpen(SplashScreen.visible = true);
-    SplashScreen.hide();
+    document.body.onload = () => SplashScreen.hide();
 
     /* code to load chats belonging to the user
      * If chatroom id doesn't exist, user will be prompted for it.
