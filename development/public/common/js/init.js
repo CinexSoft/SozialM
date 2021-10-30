@@ -121,22 +121,16 @@ export const init = () => {
         location.href = '/auth';
         throw 'Error: init: user not signed in';
     }
-
-    /* Run codes only when document body is fully loaded.
-     * ONLY codes that requires DOM interaction should be placed here.
-     */
-    document.body.onload = () => {
-        // global onclick listeners
-        document.body.addEventListener('click', (e) => {
-            log(`init.js: onclick 'document.body': node = ${e.target.nodeName || 'null'} : class = ${e.target.className || 'null'} : id = ${e.target.id || 'null'}`);
-            if (['alertDialog_btn', 'actionDialog_btnClose'].includes(e.target.id) && e.target.innerHTML == 'Close') {
-                e.target.id.slice(0, 5) == 'alert' ? Dialog.hide('alert') : Dialog.hide('action');
-            } else if (['menuRoot', 'actionDialogRoot'].includes(e.target.id)) {
-                e.target.id.slice(0, 4) == 'menu' ? Menu.hide() : Dialog.hide('action');
-            }
-        });
-        checkForApkUpdates();
-    }
+    // global onclick listeners
+    document.body.addEventListener('click', (e) => {
+        log(`init.js: onclick 'document.body': node = ${e.target.nodeName || 'null'} : class = ${e.target.className || 'null'} : id = ${e.target.id || 'null'}`);
+        if (['alertDialog_btn', 'actionDialog_btnClose'].includes(e.target.id) && e.target.innerHTML == 'Close') {
+            e.target.id.slice(0, 5) == 'alert' ? Dialog.hide('alert') : Dialog.hide('action');
+        } else if (['menuRoot', 'actionDialogRoot'].includes(e.target.id)) {
+            e.target.id.slice(0, 4) == 'menu' ? Menu.hide() : Dialog.hide('action');
+        }
+    });
+    checkForApkUpdates();
 }
 
 console.log('module init.js loaded');
