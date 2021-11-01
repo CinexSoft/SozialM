@@ -36,6 +36,19 @@ import * as Messaging from '/messaging/script.js'
 let ChatData = {};
 
 /**
+ * Convert HTML code to highlighted HTML code.
+ * @param {String} code_HTML The HTML string.
+ * @return {String} Highlighted HTML code.
+ */
+const getHighlitedCode = (code_HTML) => {
+    const code_element = document.createElement('pre');
+    code_element.innerHTML = code_HTML;
+    hljs.highlightElement(code_element);
+    const highlighted_code_HTML = code_element.innerHTML;
+    return highlighted_code_HTML;
+}
+
+/**
  * Loads message(s) from ChatData into the UI
  * @param {String} key If it contains a key, only that specific message will be appended to the document. Otherwise the whole of ChatData is used to overwrite the endure HTML document.
  */
@@ -61,13 +74,6 @@ const loadMessagesToUI = (key = null) => {
         loadMessageFrom(key);
     }
     smoothScroll($('#chatarea'), false, false);
-    /* TODO: code highlight needs to be integrated with btnsend click and markdown preview.
-     * Global highlight needs to be disabled.
-     */
-    if (/pre/i.test($('#chatarea').innerHTML)
-    &&  /code/i.test($('#chatarea').innerHTML)) {
-        hljs.highlightAll();
-    }
     loadTheme();
 }
 
@@ -186,10 +192,15 @@ const main = () => {
             $('#txtmsg').style.borderRadius = '40px';
             $('#msgpreview').innerHTML = '<font class="header" color="#7d7d7d">Markdown preview</font><font color="#7d7d7d">Preview appears here</font>';
         }
-        // if html contains code, run highlighter
-        if (/pre/i.test(HTML)
-        &&  /code/i.test(HTML)) {
-            hljs.highlightAll();
+        /* If html contains pre > code, run highlighter.
+         * This is done by getting a reference to the <code>
+         * element at pre > code.
+         * We then modify the innerHTML of the referenced <code>
+         * to the highlighted HTML code.
+         */
+        for (const pre of getChildElement($('#msgpreview'), 'pre')) {
+            const code_element = getChildElement(pre, 'code')[0];
+            code_element.innerHTML = getHighlitedCode(code_element.innerHTML);
         }
     });
 
@@ -251,6 +262,24 @@ const main = () => {
         $('#msgpreview').style.display = 'none';
         $('#txtmsg').style.borderRadius = '40px';
         $('#txtmsg').focus();
+
+        /* Create a detached <pre> element for buffering.
+         * pre is used to preserve newlines and spaces.
+         * Store the message in code_HTML in the buffer.
+         * Get the <code> element at buffer_pre > pre > code.
+         * This code element contains the code to be highlighted.
+         * Replace innerHTML of the code element with the highlighted HTML code.
+         * This is done by getting a reference to the <code> element at buffer_pre > pre > code.
+         * We then modify the innerHTML of the referenced <code> to the highlighted HTML code.
+         * Then, store the modified HTMl from buffer to original message variable code_HTML.
+         */
+        const buffer_pre = document.createElement('pre');
+        buffer_pre.innerHTML = code_HTML;
+        for (const pre of getChildElement(buffer_pre, 'pre')) {
+            const code_element = getChildElement(pre, 'code')[0];
+            code_element.innerHTML = getHighlitedCode(code_element.innerHTML);
+        }
+        code_HTML = buffer_pre.innerHTML;
 
         // months array
         const months = [
