@@ -253,8 +253,8 @@ const main = () => {
             return;
         }
 
-        // Convert and then sanitize html.
-        const code_HTML = MDtoHTML.makeHtml(msg);
+        // Convert markdown to html.
+        let code_HTML = MDtoHTML.makeHtml(msg);
         if (!code_HTML.trim()) return;
         quote_reply_text = '';
         $('#txtmsg').value = '';
