@@ -26,14 +26,10 @@ import {
     isFullyScrolled,
 } from '/common/js/domfunc.js';
 import { loadTheme, } from '/common/js/colors.js';
-import { Overlay, SplashScreen, Dialog, Menu, } from '/common/js/overlays.js';
+import { Overlay, Dialog, Menu, } from '/common/js/overlays.js';
 
-import { CHAT_ROOM_ID, } from '/messaging/script.js';
+import { CHAT_ROOM_ID, ChatData, } from '/messaging/script.js';
 import * as Messaging from '/messaging/script.js'
-
-// the entire chat is downloaded and stored here
-// the data has unique random values as keys
-let ChatData = {};
 
 /**
  * Convert HTML code to highlighted HTML code.
@@ -94,15 +90,8 @@ const onChatDBUpdated = () => {
             };
             // loads messages into the UI and save to localStorage
             loadMessagesToUI(pushkey);
-            localStorage.setItem(`ChatData.${CHAT_ROOM_ID}`, JSON.stringify(ChatData));
+            // localStorage.setItem(`ChatData.${CHAT_ROOM_ID}`, JSON.stringify(ChatData));
         }
-        /* note that SplashScreen needs to be hidden regardless of pushkey being a placeholder.
-         * The sole purpose of the placeholder is to trigger onChildAdded, so that it can call
-         * the SplashScreen.hide().
-         */
-        SplashScreen.hide(() => {
-            smoothScroll($('#chatarea'), false, false);
-        });
     }, (error) => {
         if (/permission|denied/i.test(String(error))) {
             Dialog.display('alert', 'Fatal Error!', 'You are not allowed to view this page.');
@@ -166,9 +155,6 @@ const main = () => {
         const uids = CHAT_ROOM_ID.split(':u1:u2:');
         document.getElementById('roomid').innerHTML = uids[Number(!uids.indexOf(USER_ID))];
     }
-
-    // loads chats from localStorage
-    ChatData = JSON.parse(localStorage.getItem(`ChatData.${CHAT_ROOM_ID}`)) || {};
 
     // on key up listener
     document.addEventListener('keyup', (e) => {
@@ -566,13 +552,8 @@ const main = () => {
         clearTimeout(longpress_timeout);
     });
 
-    /* Although deprecated, this function is used because
-     * the SplashScreen is not shown using SplashScreen.display().
-     * Instead it's shown using CSS style 'visibility: visible'.
-     * This is done to make the dialog visible immediately after the page
-     * is loaded.
-     */
-    Overlay.setInstanceOpen(SplashScreen.visible = true);
+    loadMessagesToUI();
+    smoothScroll($('#chatarea'), false, false);
 
     // start listening for db changes
     onChatDBUpdated();
