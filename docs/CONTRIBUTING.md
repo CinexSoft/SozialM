@@ -1,7 +1,7 @@
 ## Index
-1. [Introduction](1-introduction)
-2. [Directory structure](2-directory-structure)
-3. [Deployment channels](3-deployment-channels)
+1. [Introduction](#1-introduction)
+2. [Directory structure](#2-directory-structure)
+3. [Deployment channels](#3-deployment-channels)
 4. [Workflow automation]()
 5. [Deployment process]()
 6. 
