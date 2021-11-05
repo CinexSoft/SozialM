@@ -1,9 +1,9 @@
 ## Index
-1. Introduction
-2. Directory structure
-3. Deployment channels
-4. Workflow automation
-5. Deployment process
+1. [Introduction](1-introduction)
+2. [Directory structure](2-directory-structure)
+3. [Deployment channels](3-deployment-channels)
+4. [Workflow automation]()
+5. [Deployment process]()
 6. 
 
 ## 1. Introduction
@@ -89,3 +89,5 @@
     &#9500; <a href="#">LICENSE.txt</a>
     &#9492; <a href="#">README.md</a>
 </pre>
+
+## 3. Deployment channels
