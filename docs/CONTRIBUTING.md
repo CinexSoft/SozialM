@@ -13,7 +13,7 @@
     width: calc(100% - 10px);
     padding: 5px;
     overflow: auto; ">
-<a href="../#">Repo Root</a>
+<a href="../">Repo Root</a>
     &#9500; <a href="../.github/">.github</a>
     &#9474;    &#9500; <a href="../.github/ISSUE_TEMPLATE/">ISSUE_TEMPLATE</a>
     &#9474;    &#9474;    &#9500; <a href="../.github/ISSUE_TEMPLATE/bug_report.md">bug_report.md</a>
