@@ -10,7 +10,7 @@ A shot at a social media platform. Front-end only.
 - Please go through [CONTRIBUTING.md](docs/CONTRIBUTING.md).
 - During code review, if your code is found to deviate too far from the rules mentioned, your code won't be merged.
 
-## 2. Directory structure
+## Directory structure
 <pre style="
     width: calc(100% - 10px);
     padding: 5px;
