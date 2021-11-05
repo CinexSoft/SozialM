@@ -46,9 +46,9 @@
     &#9474;    &#9474;    &#9474;    &#9474;    &#9500; <a href="#">overlays.js</a>
     &#9474;    &#9474;    &#9474;    &#9474;    &#9492; <a href="#">variables.js</a>
     &#9474;    &#9474;    &#9474;    &#9492; <a href="#">res</a>
-    &#9474;    &#9474;    &#9474;    &#9474;    &#9500; <a href="#">backarrow100white.png</a>
-    &#9474;    &#9474;    &#9474;    &#9474;    &#9500; <a href="#">defaultdp.png</a>
-    &#9474;    &#9474;    &#9474;    &#9474;    &#9492; <a href="#">whatsappbg.png</a>
+    &#9474;    &#9474;    &#9474;         &#9500; <a href="#">backarrow100white.png</a>
+    &#9474;    &#9474;    &#9474;         &#9500; <a href="#">defaultdp.png</a>
+    &#9474;    &#9474;    &#9474;         &#9492; <a href="#">whatsappbg.png</a>
     &#9474;    &#9474;    &#9500; <a href="#">downloads</a>
     &#9474;    &#9474;    &#9474;    &#9500; <a href="#">app.web.sozialm.apk</a>
     &#9474;    &#9474;    &#9474;    &#9492; <a href="#">app.web.sozialm.localhost.apk</a>
