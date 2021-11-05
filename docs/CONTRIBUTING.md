@@ -13,7 +13,7 @@
     width: calc(100% - 10px);
     padding: 5px;
     overflow: auto;
-    font-family: monospace">
+    font-family: ui-monospace;">
 Repo Root
     &#9500; <a href="#">.github</a>
     &#9474;    &#9500; <a href="#">ISSUE_TEMPLATE</a>
