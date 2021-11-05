@@ -20,8 +20,8 @@
     &#9474;    &#9474;    &#9500; <a href="#">custom.md</a>
     &#9474;    &#9474;    &#9492; <a href="#">feature_request.md</a>
     &#9474;    &#9492; <a href="#">workflows</a>
-    &#9474;          &#9500; <a href="#">Obfuscate JS and Deploy to Firebase.yml</a>
-    &#9474;          &#9492; <a href="#">Obfuscate JS and Deploy to Preview.yml</a>
+    &#9474;         &#9500; <a href="#">Obfuscate JS and Deploy to Firebase.yml</a>
+    &#9474;         &#9492; <a href="#">Obfuscate JS and Deploy to Preview.yml</a>
     &#9500; <a href="#">development</a>
     &#9474;    &#9500; <a href="#">public</a>
     &#9474;    &#9474;    &#9500; <a href="#">auth</a>
