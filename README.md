@@ -34,7 +34,7 @@ A shot at a social media platform. Front-end only.
     &#9474;    &#9474;    &#9474;    &#9500; <a href="development/public/common/css/">css</a>
     &#9474;    &#9474;    &#9474;    &#9474;    &#9500; <a href="development/public/common/css/colors.css">colors.css</a>
     &#9474;    &#9474;    &#9474;    &#9474;    &#9500; <a href="development/public/common/css/common.css">common.css</a>
-    &#9474;    &#9474;    &#9474;    &#9474;    &#9500; <a href="development/public/common/css/keyfeames.css">keyfeames.css</a>
+    &#9474;    &#9474;    &#9474;    &#9474;    &#9500; <a href="development/public/common/css/keyframes.css">keyframes.css</a>
     &#9474;    &#9474;    &#9474;    &#9474;    &#9500; <a href="development/public/common/css/markdown.css">markdown.css</a>
     &#9474;    &#9474;    &#9474;    &#9474;    &#9500; <a href="development/public/common/css/mediaqueries.css">mediaqueries.css</a>
     &#9474;    &#9474;    &#9474;    &#9474;    &#9492; <a href="development/public/common/css/overlays.css">overlays.css</a>
@@ -63,7 +63,7 @@ A shot at a social media platform. Front-end only.
     &#9474;    &#9474;    &#9474;    &#9474;    &#9500; <a href="development/public/messaging/inbox/index.html">index.html</a>
     &#9474;    &#9474;    &#9474;    &#9474;    &#9500; <a href="development/public/messaging/inbox/script.js">script.js</a>
     &#9474;    &#9474;    &#9474;    &#9474;    &#9492; <a href="development/public/messaging/inbox/styles.css">styles.css</a>
-    &#9474;    &#9474;    &#9474;    &#9492; <a href="#">script.js</a>
+    &#9474;    &#9474;    &#9474;    &#9492; <a href="development/public/messaging/script.js">script.js</a>
     &#9474;    &#9474;    &#9500; <a href="development/public/profile/">profile</a>
     &#9474;    &#9474;    &#9474;    &#9500; <a href="development/public/profile/index.html">index.html</a>
     &#9474;    &#9474;    &#9474;    &#9500; <a href="development/public/profile/script.js">script.js</a>
