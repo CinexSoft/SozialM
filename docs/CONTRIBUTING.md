@@ -20,8 +20,8 @@
     &#9474;    &#9474;    &#9500; <a href="#">custom.md</a>
     &#9474;    &#9474;    &#9492; <a href="#">feature_request.md</a>
     &#9474;    &#9492; <a href="#">workflows</a>
-    &#9474;          &#9500; <a href="#">Obfuscate JS and Deploy to Firebase.yml</a>
-    &#9474;          &#9492; <a href="#">Obfuscate JS and Deploy to Preview.yml</a>
+    &#9474;         &#9500; <a href="#">Obfuscate JS and Deploy to Firebase.yml</a>
+    &#9474;         &#9492; <a href="#">Obfuscate JS and Deploy to Preview.yml</a>
     &#9500; <a href="#">development</a>
     &#9474;    &#9500; <a href="#">public</a>
     &#9474;    &#9474;    &#9500; <a href="#">auth</a>
@@ -42,8 +42,8 @@
     &#9474;    &#9474;    &#9474;    &#9474;    &#9500; <a href="#">firebaseinit.js</a>
     &#9474;    &#9474;    &#9474;    &#9474;    &#9500; <a href="#">generalfunc.js</a>
     &#9474;    &#9474;    &#9474;    &#9474;    &#9500; <a href="#">init.js</a>
-    &#9474;    &#9474;    &#9474;    &#9474;    &#9492; <a href="#">logging.js</a>
-    &#9474;    &#9474;    &#9474;    &#9474;    &#9492; <a href="#">overlays.js</a>
+    &#9474;    &#9474;    &#9474;    &#9474;    &#9500; <a href="#">logging.js</a>
+    &#9474;    &#9474;    &#9474;    &#9474;    &#9500; <a href="#">overlays.js</a>
     &#9474;    &#9474;    &#9474;    &#9474;    &#9492; <a href="#">variables.js</a>
     &#9474;    &#9474;    &#9474;    &#9492; <a href="#">res</a>
     &#9474;    &#9474;    &#9474;    &#9474;    &#9500; <a href="#">backarrow100white.png</a>
