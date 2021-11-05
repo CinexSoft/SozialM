@@ -26,14 +26,23 @@ import {
     isFullyScrolled,
 } from '/common/js/domfunc.js';
 import { loadTheme, } from '/common/js/colors.js';
-import { Overlay, SplashScreen, Dialog, Menu, } from '/common/js/overlays.js';
+import { Overlay, Dialog, Menu, } from '/common/js/overlays.js';
 
-import { CHAT_ROOM_ID, } from '/messaging/script.js';
+import { CHAT_ROOM_ID, ChatData, } from '/messaging/script.js';
 import * as Messaging from '/messaging/script.js'
 
-// the entire chat is downloaded and stored here
-// the data has unique random values as keys
-let ChatData = {};
+/**
+ * Convert HTML code to highlighted HTML code.
+ * @param {String} code_HTML The HTML string.
+ * @return {String} Highlighted HTML code.
+ */
+const getHighlitedCode = (code_HTML) => {
+    const code_element = document.createElement('pre');
+    code_element.innerHTML = code_HTML;
+    hljs.highlightElement(code_element);
+    const highlighted_code_HTML = code_element.innerHTML;
+    return highlighted_code_HTML;
+}
 
 /**
  * Loads message(s) from ChatData into the UI
@@ -61,13 +70,6 @@ const loadMessagesToUI = (key = null) => {
         loadMessageFrom(key);
     }
     smoothScroll($('#chatarea'), false, false);
-    /* TODO: code highlight needs to be integrated with btnsend click and markdown preview.
-     * Global highlight needs to be disabled.
-     */
-    if (/pre/i.test($('#chatarea').innerHTML)
-    &&  /code/i.test($('#chatarea').innerHTML)) {
-        hljs.highlightAll();
-    }
     loadTheme();
 }
 
@@ -88,15 +90,8 @@ const onChatDBUpdated = () => {
             };
             // loads messages into the UI and save to localStorage
             loadMessagesToUI(pushkey);
-            localStorage.setItem(`ChatData.${CHAT_ROOM_ID}`, JSON.stringify(ChatData));
+            // localStorage.setItem(`ChatData.${CHAT_ROOM_ID}`, JSON.stringify(ChatData));
         }
-        /* note that SplashScreen needs to be hidden regardless of pushkey being a placeholder.
-         * The sole purpose of the placeholder is to trigger onChildAdded, so that it can call
-         * the SplashScreen.hide().
-         */
-        SplashScreen.hide(() => {
-            smoothScroll($('#chatarea'), false, false);
-        });
     }, (error) => {
         if (/permission|denied/i.test(String(error))) {
             Dialog.display('alert', 'Fatal Error!', 'You are not allowed to view this page.');
@@ -110,7 +105,7 @@ const onChatDBUpdated = () => {
         const node_id = `#${pushkey}`;
         $(node_id).parentNode.parentNode.removeChild($(node_id).parentNode);
         delete ChatData[pushkey];
-        localStorage.setItem(`ChatData.${CHAT_ROOM_ID}`, JSON.stringify(ChatData));
+        // localStorage.setItem(`ChatData.${CHAT_ROOM_ID}`, JSON.stringify(ChatData));
     }, (error) => {
         if (/permission|denied/i.test(String(error))) {
             Dialog.display('alert', 'Fatal Error!', 'You are not allowed to view this page.');
@@ -161,9 +156,6 @@ const main = () => {
         document.getElementById('roomid').innerHTML = uids[Number(!uids.indexOf(USER_ID))];
     }
 
-    // loads chats from localStorage
-    ChatData = JSON.parse(localStorage.getItem(`ChatData.${CHAT_ROOM_ID}`)) || {};
-
     // on key up listener
     document.addEventListener('keyup', (e) => {
         const key = e.keyCode || e.charCode;
@@ -186,10 +178,15 @@ const main = () => {
             $('#txtmsg').style.borderRadius = '40px';
             $('#msgpreview').innerHTML = '<font class="header" color="#7d7d7d">Markdown preview</font><font color="#7d7d7d">Preview appears here</font>';
         }
-        // if html contains code, run highlighter
-        if (/pre/i.test(HTML)
-        &&  /code/i.test(HTML)) {
-            hljs.highlightAll();
+        /* If html contains pre > code, run highlighter.
+         * This is done by getting a reference to the <code>
+         * element at pre > code.
+         * We then modify the innerHTML of the referenced <code>
+         * to the highlighted HTML code.
+         */
+        for (const pre of getChildElement($('#msgpreview'), 'pre')) {
+            const code_element = getChildElement(pre, 'code')[0];
+            code_element.innerHTML = getHighlitedCode(code_element.innerHTML);
         }
     });
 
@@ -242,8 +239,8 @@ const main = () => {
             return;
         }
 
-        // Convert and then sanitize html.
-        const code_HTML = MDtoHTML.makeHtml(msg);
+        // Convert markdown to html.
+        let code_HTML = MDtoHTML.makeHtml(msg);
         if (!code_HTML.trim()) return;
         quote_reply_text = '';
         $('#txtmsg').value = '';
@@ -251,6 +248,24 @@ const main = () => {
         $('#msgpreview').style.display = 'none';
         $('#txtmsg').style.borderRadius = '40px';
         $('#txtmsg').focus();
+
+        /* Create a detached <pre> element for buffering.
+         * pre is used to preserve newlines and spaces.
+         * Store the message in code_HTML in the buffer.
+         * Get the <code> element at buffer_pre > pre > code.
+         * This code element contains the code to be highlighted.
+         * Replace innerHTML of the code element with the highlighted HTML code.
+         * This is done by getting a reference to the <code> element at buffer_pre > pre > code.
+         * We then modify the innerHTML of the referenced <code> to the highlighted HTML code.
+         * Then, store the modified HTMl from buffer to original message variable code_HTML.
+         */
+        const buffer_pre = document.createElement('pre');
+        buffer_pre.innerHTML = code_HTML;
+        for (const pre of getChildElement(buffer_pre, 'pre')) {
+            const code_element = getChildElement(pre, 'code')[0];
+            code_element.innerHTML = getHighlitedCode(code_element.innerHTML);
+        }
+        code_HTML = buffer_pre.innerHTML;
 
         // months array
         const months = [
@@ -537,13 +552,8 @@ const main = () => {
         clearTimeout(longpress_timeout);
     });
 
-    /* Although deprecated, this function is used because
-     * the SplashScreen is not shown using SplashScreen.display().
-     * Instead it's shown using CSS style 'visibility: visible'.
-     * This is done to make the dialog visible immediately after the page
-     * is loaded.
-     */
-    Overlay.setInstanceOpen(SplashScreen.visible = true);
+    loadMessagesToUI();
+    smoothScroll($('#chatarea'), false, false);
 
     // start listening for db changes
     onChatDBUpdated();

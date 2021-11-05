@@ -1,9 +1,10 @@
 import { Database, } from '/common/js/firebaseinit.js';
 import * as FirebaseDB from 'https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js';
 import { USER_ID, setVariable, CHAT_ROOT, } from '/common/js/variables.js';
-import { checkForApkUpdates, getURLQueryFieldValue, } from '/common/js/generalfunc.js';
+import { checkForApkUpdates, getURLQueryFieldValue, decode, } from '/common/js/generalfunc.js';
 import { log, err, } from '/common/js/logging.js';
-import { Dialog, } from '/common/js/overlays.js';
+import { $, smoothScroll, } from '/common/js/domfunc.js';
+import { Overlay, SplashScreen, Dialog, } from '/common/js/overlays.js';
 
 import * as Init from '/common/js/init.js';
 
@@ -12,6 +13,12 @@ import * as Init from '/common/js/init.js';
  * @type {String}
  */
 export let CHAT_ROOM_ID;
+
+/* The entire chat is downloaded and stored here.
+ * The data has unique random values as keys.
+ * @type {Object}
+ */
+export let ChatData = {};
 
 /**
  * Returns true if chat room id is valid.
@@ -83,6 +90,36 @@ export const generateChatRoomId = (user_id) => {
     return storeChatRoomId(room_id);
 }
 
+const downloadMessages = (onDownload) => {
+
+    if (typeof onDownload != 'function') throw `Error: messaging: downloadMessages(): onDownload is ${typeof func}, expected function`;
+
+    /* NOTE that the following code must not run outside the chat UI.
+     * Otherwise it will simply fail, taking the chat UI down with it.
+     * Once placeholder is successfully placed, download the entire
+     * chat to localStorage, and save a copy in ChatData variable.
+     */
+    FirebaseDB.get(FirebaseDB.ref(Database, CHAT_ROOT)).then((snapshot) => {
+        snapshot.forEach(({ key }) => {
+            const pushkey = key;
+            const data = snapshot.child(pushkey).val();
+            if (data == 'default-placeholder') return;
+            ChatData[pushkey] = {
+                pushkey,
+                uid: data.uid,
+                message: HtmlSanitizer.SanitizeHtml(decode(data.message)),
+                time: data.time,
+            };
+        });
+        onDownload();
+    }).catch((error) => {
+        if (/permission|denied/i.test(String(error))) {
+            Dialog.display('alert', 'Fatal Error!', 'You are not allowed to view this page.');
+        }
+        err(`messaging: init(): FirebaseDB.get(): ${error}`);
+    });
+}
+
 /**
  * Initialises common variables for /messaging/inbox and /messaging/chat.
  */
@@ -96,9 +133,11 @@ export const init = () => {
 
     Init.init();
 
-    // checking if chat room exists and is valid
+    // checking if chat room exists and is valid, if so, /messaging/chat is loaded
     if ((room_id = localStorage.getItem('Chat.roomid')) && isValid(room_id)) {
+
         CHAT_ROOM_ID = room_id;
+
         /* This code writes a placeholder in the database which allows onChildAdded
          * to be triggered.
          * onChildAdded doesn't trigger on an empty database, so this code is meant
@@ -108,8 +147,28 @@ export const init = () => {
         FirebaseDB.update(FirebaseDB.ref(Database, CHAT_ROOT), {
             ' placeholder': 'default-placeholder',
         }).then(() => {
-            if (location.href.includes('/chat')) localStorage.removeItem('Chat.roomid');
-            else location.href = `/messaging/chat?id=${CHAT_ROOM_ID}`;
+            if (!location.href.includes('/chat')) {
+                location.href = `/messaging/chat?id=${CHAT_ROOM_ID}`;
+                return;
+            }
+            downloadMessages(() => {
+                // localStorage.setItem(`ChatData.${CHAT_ROOM_ID}`, JSON.stringify(ChatData));ages(() => {
+                localStorage.removeItem('Chat.roomid');
+
+                /* Although deprecated, this function is used because
+                 * the SplashScreen is not shown using SplashScreen.display().
+                 * Instead it's shown using CSS style 'visibility: visible'.
+                 * This is done to make the dialog visible immediately after the page
+                 * is loaded.
+                 */
+                Overlay.setInstanceOpen(SplashScreen.visible = true);
+
+                 /* Note that SplashScreen needs to be hidden regardless of pushkey being a placeholder.
+                  * The sole purpose of the placeholder is to trigger onChildAdded, so that it can call
+                  * the SplashScreen.hide().
+                  */
+                 SplashScreen.hide();
+            });
         }).catch((error) => {
             if (/permission|denied/i.test(String(error))) {
                 Dialog.display('alert', 'Fatal Error!', 'You are not allowed to view this page.');
@@ -119,7 +178,7 @@ export const init = () => {
         return;
     }
 
-    // if above check fails
+    // if above check fails, inbox is loaded
     log('messaging: init(): room_id = undefined');
     if (!location.href.includes('/inbox')) location.href = '/messaging/inbox';
 }
