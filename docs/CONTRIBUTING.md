@@ -12,7 +12,8 @@
 <pre style="
     width: calc(100% - 10px);
     padding: 5px;
-    overflow: auto; ">
+    overflow: auto;
+    font-family: monospace">
 Repo Root
     &#9500; <a href="#">.github</a>
     &#9474;    &#9500; <a href="#">ISSUE_TEMPLATE</a>
