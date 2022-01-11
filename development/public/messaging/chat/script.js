@@ -58,6 +58,7 @@ const loadMessagesToUI = (key = null) => {
         const code_HTML = ChatData[pushkey].message;
         if (uid == USER_ID) appendHTMLString($('#chatarea'), `<div class="bubbles"><div class="this chatbubble_bg" id="${pushkey}">${code_HTML}</div></div>`);
         else appendHTMLString($('#chatarea'), `<div class="bubbles"><div class="that" id="${pushkey}">${code_HTML}</div></div>`);
+        smoothScroll($('#chatarea'), false, false);
     }
     const head_banner = '<div class="info noselect sec_bg" style="font-family:sans-serif">'
                       + '<p class="fa fa-info-circle">&ensp;Your chats are only server-to-end encrypted. Chats are stored without encryption on CinexSoft databases. We\'re yet to implement end-to-end encryption.</p>'
@@ -553,7 +554,6 @@ const main = () => {
     });
 
     loadMessagesToUI();
-    smoothScroll($('#chatarea'), false, false);
 
     // start listening for db changes
     onChatDBUpdated();
