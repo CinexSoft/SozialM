@@ -1,0 +1,73 @@
+.
+├── LICENSE.txt
+├── README.md
+├── development
+│   ├── database.rules.json
+│   ├── firebase.json
+│   └── public
+│       ├── 404.html
+│       ├── a2hs.webmanifest
+│       ├── auth
+│       │   ├── index.html
+│       │   ├── script.js
+│       │   └── styles.css
+│       ├── common
+│       │   ├── css
+│       │   │   ├── colors.css
+│       │   │   ├── common.css
+│       │   │   ├── keyframes.css
+│       │   │   ├── markdown.css
+│       │   │   ├── mediaqueries.css
+│       │   │   └── overlays.css
+│       │   ├── js
+│       │   │   ├── colors.js
+│       │   │   ├── domfunc.js
+│       │   │   ├── firebaseinit.js
+│       │   │   ├── generalfunc.js
+│       │   │   ├── init.js
+│       │   │   ├── logging.js
+│       │   │   ├── overlays.js
+│       │   │   └── variables.js
+│       │   └── res
+│       │       ├── backarrow100white.png
+│       │       ├── defaultdp.png
+│       │       └── whatsappbg.png
+│       ├── downloads
+│       │   ├── app.web.sozialm.apk
+│       │   └── app.web.sozialm.localhost.apk
+│       ├── favicon.ico
+│       ├── index.html
+│       ├── messaging
+│       │   ├── chat
+│       │   │   ├── index.html
+│       │   │   ├── script.js
+│       │   │   └── styles.css
+│       │   ├── inbox
+│       │   │   ├── index.html
+│       │   │   ├── script.js
+│       │   │   └── styles.css
+│       │   └── script.js
+│       ├── profile
+│       │   ├── index.html
+│       │   ├── script.js
+│       │   └── styles.css
+│       ├── records
+│       │   └── currentapkversion
+│       └── settings
+│           ├── index.html
+│           ├── script.js
+│           └── styles.css
+├── docs
+│   ├── CODE_OF_CONDUCT.md
+│   ├── CONTRIBUTING.bkp.md
+│   └── CONTRIBUTING.md
+├── file
+├── preview
+│   ├── database.rules.json
+│   ├── firebase.json
+│   └── preview.build.list
+└── production
+    ├── database.rules.json
+    └── firebase.json
+
+17 directories, 53 files
