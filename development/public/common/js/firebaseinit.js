@@ -16,7 +16,7 @@ export const FirebaseConfig = {
 };
 
 // If hosted on localhost, use database at localhost
-if (/localhost|127\.0.\.0\.1/i.test(location.href)) FirebaseConfig.databaseURL = 'http://localhost:9000/?ns=sozialm';
+if (/localhost|127\.0\.0\.1/i.test(location.href)) FirebaseConfig.databaseURL = 'http://localhost:9000/?ns=sozialm';
 
 // Initialize Firebase
 export const App = initializeApp(FirebaseConfig);
